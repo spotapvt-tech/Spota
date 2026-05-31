@@ -1,0 +1,63 @@
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 80px; /* slightly taller for mobile touch targets */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom);
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+  z-index: var(--z-nav);
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+.nav-item span {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.nav-item.active {
+  color: var(--color-text-primary);
+}
+
+.nav-item.active span {
+  opacity: 1;
+}
+
+.nav-item:active {
+  transform: scale(0.92);
+}
+
+.add-btn {
+  transform: translateY(-20px);
+}
+
+.add-icon-wrapper {
+  background-color: var(--color-accent);
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 16px rgba(108, 140, 116, 0.3);
+  transition: transform var(--transition-fast), background-color var(--transition-fast);
+}
+
+.add-btn:active .add-icon-wrapper {
+  transform: scale(0.92);
+  background-color: var(--color-accent-hover);
+}
