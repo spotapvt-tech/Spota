@@ -6,6 +6,7 @@ import ProfileView from './pages/ProfileView';
 import AddGemView from './pages/AddGemView';
 import AuthView from './pages/AuthView';
 import AdminView from './pages/AdminView';
+import ChatView from './pages/ChatView';
 import { NotificationProvider } from './context/NotificationContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
@@ -25,6 +26,7 @@ function AppContent() {
           <Route path="add" element={<AddGemView />} />
           <Route path="profile" element={<ProfileView />} />
           <Route path="admin" element={<AdminView />} />
+          <Route path="chat" element={<ChatView />} />
         </Route>
       </Routes>
     </NotificationProvider>

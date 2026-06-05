@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { X, Heart, Share, AlertTriangle, Trash2, Sparkles, Navigation, ListPlus, Film, Image as ImageIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { X, Heart, Share, AlertTriangle, Trash2, Sparkles, Navigation, ListPlus, Film, Image as ImageIcon, MessageSquare } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import './SpotDetailsModal.css';
@@ -12,6 +13,7 @@ const REACTION_EMOJIS = {
 };
 
 export default function SpotDetailsModal({ spot, onClose }) {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [isSaved, setIsSaved] = useState(false);
   const [reactions, setReactions] = useState({ '🧘': 0, '🔥': 0, '❤️': 0, '🌟': 0 });
@@ -748,23 +750,49 @@ export default function SpotDetailsModal({ spot, onClose }) {
 
           {/* Creator Attribution */}
           {creatorProfile && (
-            <div className="creator-attribution" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px solid var(--color-border)' }}>
-              <div className="creator-avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--color-accent)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, overflow: 'hidden' }}>
-                {creatorProfile.avatar_url ? (
-                  <img src={creatorProfile.avatar_url} alt={creatorProfile.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
-                  creatorProfile.username.substring(0, 2).toUpperCase()
-                )}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '10px', color: 'var(--color-text-secondary)', lineHeight: '1.2' }}>Dropped by</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-primary)' }}>{creatorProfile.username}</span>
-                  {creatorProfile.is_verified && (
-                    <span style={{ backgroundColor: 'rgba(108,140,116,0.15)', color: 'var(--color-accent)', padding: '1px 5px', borderRadius: '4px', fontSize: '8px', fontWeight: 700, textTransform: 'uppercase' }} title="Verified Contributor">Verified</span>
+            <div className="creator-attribution" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px solid var(--color-border)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div className="creator-avatar" style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: 'var(--color-accent)', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, overflow: 'hidden' }}>
+                  {creatorProfile.avatar_url ? (
+                    <img src={creatorProfile.avatar_url} alt={creatorProfile.username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    creatorProfile.username.substring(0, 2).toUpperCase()
                   )}
                 </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--color-text-secondary)', lineHeight: '1.2' }}>Dropped by</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-primary)' }}>{creatorProfile.username}</span>
+                    {creatorProfile.is_verified && (
+                      <span style={{ backgroundColor: 'rgba(108,140,116,0.15)', color: 'var(--color-accent)', padding: '1px 5px', borderRadius: '4px', fontSize: '8px', fontWeight: 700, textTransform: 'uppercase' }} title="Verified Contributor">Verified</span>
+                    )}
+                  </div>
+                </div>
               </div>
+
+              {/* Message Creator button */}
+              {user && !user.isGuest && spot.user_id && spot.user_id !== user.id && (
+                <button 
+                  onClick={() => navigate('/chat', { state: { startChatWith: { id: spot.user_id, username: creatorProfile.username, avatar_url: creatorProfile.avatar_url } } })}
+                  style={{
+                    background: 'rgba(108, 140, 116, 0.12)',
+                    border: 'none',
+                    color: 'var(--color-accent)',
+                    padding: '6px 12px',
+                    borderRadius: 'var(--radius-full)',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  title="Send Message"
+                >
+                  <MessageSquare size={14} />
+                  <span>Message</span>
+                </button>
+              )}
             </div>
           )}
           

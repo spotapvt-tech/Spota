@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Camera, MapPin, UploadCloud, X } from 'lucide-react';
+import { Camera, MapPin, UploadCloud, X, Video } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
@@ -572,11 +572,15 @@ export default function AddGemView() {
           {!imageUrl ? (
             <div className="photo-source-selector">
               <button type="button" className="photo-source-card" onClick={triggerCameraUpload}>
-                <Camera size={28} />
+                <div className="icon-container">
+                  <Camera size={22} />
+                </div>
                 <span>Take Photo</span>
               </button>
               <button type="button" className="photo-source-card" onClick={triggerGalleryUpload}>
-                <UploadCloud size={28} />
+                <div className="icon-container">
+                  <UploadCloud size={22} />
+                </div>
                 <span>Local Storage</span>
               </button>
               {/* Hidden file inputs for Web/Mobile Web */}
@@ -599,8 +603,9 @@ export default function AddGemView() {
           ) : (
             <div className="image-preview-wrapper">
               <img src={imageUrl} alt="Preview" className="image-preview" />
-              <button type="button" className="remove-image-btn glass-panel" onClick={removeImage}>
-                <X size={20} />
+              <div className="preview-badge">Selected Photo</div>
+              <button type="button" className="remove-image-btn" onClick={removeImage} aria-label="Remove image">
+                <X size={18} />
               </button>
             </div>
           )}
@@ -610,9 +615,11 @@ export default function AddGemView() {
         <div className="form-group">
           <label>Video Vibe (Optional 15s Clip)</label>
           {!videoUrl ? (
-            <div className="photo-source-selector">
-              <button type="button" className="photo-source-card" onClick={triggerVideoUpload} style={{ width: '100%' }}>
-                <Camera size={28} />
+            <div className="photo-source-selector video-source-selector">
+              <button type="button" className="photo-source-card" onClick={triggerVideoUpload}>
+                <div className="icon-container">
+                  <Video size={22} />
+                </div>
                 <span>Record / Upload Video</span>
               </button>
               <input 
@@ -624,10 +631,11 @@ export default function AddGemView() {
               />
             </div>
           ) : (
-            <div className="image-preview-wrapper">
-              <video src={videoUrl} controls className="image-preview" style={{ maxHeight: '180px', objectFit: 'contain' }} />
-              <button type="button" className="remove-image-btn glass-panel" onClick={removeVideo}>
-                <X size={20} />
+            <div className="image-preview-wrapper video-preview-wrapper">
+              <video src={videoUrl} controls className="image-preview" />
+              <div className="preview-badge">Vibe Clip</div>
+              <button type="button" className="remove-image-btn" onClick={removeVideo} aria-label="Remove video">
+                <X size={18} />
               </button>
             </div>
           )}
