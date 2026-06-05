@@ -188,6 +188,16 @@ export default function MapView() {
         <Camera size={22} />
       </button>
 
+      {/* Floating Explore Nearby AR CTA */}
+      <button 
+        className="map-explore-cta glass-panel animate-pulse-glow"
+        onClick={() => setShowAR(true)}
+        title="Explore Nearby in Augmented Reality"
+      >
+        <Camera size={18} className="cta-icon" />
+        <span>Explore Nearby (AR)</span>
+      </button>
+
       {/* Vibe & Spot Search Overlay */}
       <div className="map-search-overlay">
         <Search size={18} className="map-search-icon" />

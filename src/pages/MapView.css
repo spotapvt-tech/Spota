@@ -272,3 +272,62 @@
   color: var(--color-accent-hover);
 }
 
+/* Floating Explore Nearby AR CTA */
+.map-explore-cta {
+  position: absolute;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  background: rgba(18, 22, 19, 0.85); /* Sleek dark theme */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.map-explore-cta:hover {
+  transform: translateX(-50%) scale(1.04);
+  background: rgba(18, 22, 19, 0.95);
+  border-color: var(--color-accent);
+  box-shadow: 0 12px 36px rgba(108, 140, 116, 0.3);
+}
+
+.map-explore-cta:active {
+  transform: translateX(-50%) scale(0.96);
+}
+
+.cta-icon {
+  animation: ctaCameraRotate 4s ease-in-out infinite;
+}
+
+@keyframes ctaCameraRotate {
+  0%, 100% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.1); }
+}
+
+/* Pulse glow animation */
+.animate-pulse-glow {
+  animation: ctaPulseGlow 3s infinite ease-in-out;
+}
+
+@keyframes ctaPulseGlow {
+  0%, 100% {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 0 0px rgba(108, 140, 116, 0.2);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25), 0 0 0 8px rgba(108, 140, 116, 0.05);
+  }
+}
+
+
