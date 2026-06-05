@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Heart, Share, AlertTriangle, Trash2, Sparkles } from 'lucide-react';
+import { X, Heart, Share, AlertTriangle, Trash2, Sparkles, Navigation, ListPlus, Film, Image as ImageIcon } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import './SpotDetailsModal.css';
@@ -17,6 +17,12 @@ export default function SpotDetailsModal({ spot, onClose }) {
   const [reactions, setReactions] = useState({ '🧘': 0, '🔥': 0, '❤️': 0, '🌟': 0 });
   const [userReactions, setUserReactions] = useState({});
   const [shareCount, setShareCount] = useState(0);
+
+  // Media selection & playlist states
+  const [mediaType, setMediaType] = useState(spot.video_url ? 'video' : 'image');
+  const [userPlaylists, setUserPlaylists] = useState([]);
+  const [playlistsWithSpot, setPlaylistsWithSpot] = useState([]);
+  const [showPlaylistDropdown, setShowPlaylistDropdown] = useState(false);
   const [creatorProfile, setCreatorProfile] = useState(null);
   
   // Comments state
@@ -67,6 +73,64 @@ export default function SpotDetailsModal({ spot, onClose }) {
       console.error('Error deleting spot:', err);
       alert('Failed to delete gem: ' + err.message);
     }
+  };
+
+  const fetchPlaylistsData = async () => {
+    if (!user || user.isGuest) return;
+    try {
+      const { data: playlistsData, error: plError } = await supabase
+        .from('playlists')
+        .select('*')
+        .eq('creator_id', user.id);
+      
+      if (plError) throw plError;
+      
+      if (playlistsData) {
+        const { data: spotMatches, error: spotsError } = await supabase
+          .from('playlist_spots')
+          .select('playlist_id')
+          .eq('spot_id', spot.id);
+        
+        if (spotsError) throw spotsError;
+        
+        const playlistIds = spotMatches ? spotMatches.map(sm => sm.playlist_id) : [];
+        setUserPlaylists(playlistsData);
+        setPlaylistsWithSpot(playlistIds);
+      }
+    } catch (err) {
+      console.error('Error fetching playlists data:', err);
+    }
+  };
+
+  const handleTogglePlaylist = async (playlistId) => {
+    if (!user || user.isGuest) return;
+    const isAdded = playlistsWithSpot.includes(playlistId);
+    try {
+      if (isAdded) {
+        const { error } = await supabase
+          .from('playlist_spots')
+          .delete()
+          .eq('playlist_id', playlistId)
+          .eq('spot_id', spot.id);
+        if (error) throw error;
+        setPlaylistsWithSpot(prev => prev.filter(id => id !== playlistId));
+      } else {
+        const { error } = await supabase
+          .from('playlist_spots')
+          .insert({ playlist_id: playlistId, spot_id: spot.id });
+        if (error) throw error;
+        setPlaylistsWithSpot(prev => [...prev, playlistId]);
+      }
+    } catch (err) {
+      console.error('Error toggling playlist spot:', err);
+      alert('Failed to update playlist: ' + err.message);
+    }
+  };
+
+  const handleDirections = () => {
+    if (!spot || spot.latitude === undefined || spot.longitude === undefined) return;
+    const url = `https://www.google.com/maps/dir/?api=1&destination=${spot.latitude},${spot.longitude}`;
+    window.open(url, '_blank');
   };
 
   const fetchComments = async () => {
@@ -425,7 +489,8 @@ export default function SpotDetailsModal({ spot, onClose }) {
     fetchCreator();
     fetchComments();
     fetchVibeRatings();
-  }, [spot]);
+    fetchPlaylistsData();
+  }, [spot, user]);
 
   // Listen to custom update events (like realtime updates)
   useEffect(() => {
@@ -622,9 +687,42 @@ export default function SpotDetailsModal({ spot, onClose }) {
           <X size={24} />
         </button>
         
-        <div className="spot-image-large">
-          {spot.image_url && (
+        <div className="spot-image-large" style={{ position: 'relative' }}>
+          {mediaType === 'video' && spot.video_url ? (
+            <video 
+              src={spot.video_url} 
+              autoPlay 
+              muted 
+              loop 
+              playsInline 
+              controls
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+            />
+          ) : spot.image_url ? (
             <img src={spot.image_url} alt={spot.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, rgba(108,140,116,0.1), rgba(108,140,116,0.3))' }} />
+          )}
+
+          {spot.video_url && (
+            <div className="media-toggle-overlay">
+              <button 
+                type="button" 
+                className={`media-toggle-btn ${mediaType === 'image' ? 'active' : ''}`}
+                onClick={() => setMediaType('image')}
+              >
+                <ImageIcon size={12} />
+                <span>Photo</span>
+              </button>
+              <button 
+                type="button" 
+                className={`media-toggle-btn ${mediaType === 'video' ? 'active' : ''}`}
+                onClick={() => setMediaType('video')}
+              >
+                <Film size={12} />
+                <span>Video Vibe</span>
+              </button>
+            </div>
           )}
         </div>
         
@@ -640,6 +738,13 @@ export default function SpotDetailsModal({ spot, onClose }) {
             <h2>{spot.title || "Unknown Spot"}</h2>
             <span className="category-badge">{spot.category || "General"}</span>
           </div>
+
+          {spot.address && (
+            <div className="spot-address-detail" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '14px', lineHeight: '1.4' }}>
+              <span>📍</span>
+              <span>{spot.address}</span>
+            </div>
+          )}
 
           {/* Creator Attribution */}
           {creatorProfile && (
@@ -694,7 +799,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
             })}
           </div>
 
-          <div className="action-buttons">
+          <div className="action-buttons" style={{ flexWrap: 'wrap', gap: '8px' }}>
             <button className={`action-btn ${isSaved ? 'active' : ''}`} onClick={toggleSave}>
               <Heart size={20} fill={isSaved ? "var(--color-live)" : "none"} color={isSaved ? "var(--color-live)" : "currentColor"} />
               <span>{isSaved ? 'Saved' : 'Save'}</span>
@@ -703,6 +808,50 @@ export default function SpotDetailsModal({ spot, onClose }) {
               <Share size={20} />
               <span>Share ({shareCount})</span>
             </button>
+            
+            {spot.latitude !== undefined && spot.longitude !== undefined && (
+              <button className="action-btn directions-btn" onClick={handleDirections} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)' }}>
+                <Navigation size={20} />
+                <span>Directions</span>
+              </button>
+            )}
+
+            {!user?.isGuest && user && (
+              <div className="playlist-dropdown-container">
+                <button 
+                  className={`action-btn playlist-btn ${showPlaylistDropdown ? 'active' : ''}`} 
+                  onClick={() => setShowPlaylistDropdown(!showPlaylistDropdown)}
+                  style={{ width: '100%' }}
+                >
+                  <ListPlus size={20} />
+                  <span>Playlist</span>
+                </button>
+                {showPlaylistDropdown && (
+                  <div className="playlist-select-dropdown glass-panel animate-fade-in" style={{ cursor: 'default' }} onClick={(e) => e.stopPropagation()}>
+                    <h4>Add to Playlist</h4>
+                    {userPlaylists.length === 0 ? (
+                      <span style={{ fontSize: '10px', color: 'var(--color-text-secondary)', textAlign: 'center', padding: '8px 0', display: 'block' }}>Create a playlist on Profile!</span>
+                    ) : (
+                      userPlaylists.map(pl => {
+                        const inPlaylist = playlistsWithSpot.includes(pl.id);
+                        return (
+                          <label key={pl.id} className="playlist-dropdown-item">
+                            <input 
+                              type="checkbox" 
+                              checked={inPlaylist}
+                              onChange={() => handleTogglePlaylist(pl.id)}
+                              style={{ accentColor: 'var(--color-accent)' }}
+                            />
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{pl.name}</span>
+                          </label>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             <button className="action-btn share-card-btn" onClick={handleExportShareCard} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)' }}>
               <Sparkles size={20} />
               <span>Share Card</span>

@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, CircleMarker } from 'react-leaflet';
 import { supabase } from '../lib/supabaseClient';
-import { Search, Camera } from 'lucide-react';
+import { Search, Camera, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { haversineDistance } from '../lib/utils';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import ARView from './ARView';
+import AIVibeMatcher from '../components/AIVibeMatcher';
 import 'leaflet/dist/leaflet.css';
 import './MapView.css';
 
@@ -42,6 +43,7 @@ export default function MapView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [showAR, setShowAR] = useState(false);
+  const [showAiMatcher, setShowAiMatcher] = useState(false);
 
   // Fetch spots on mount
   useEffect(() => {
@@ -196,6 +198,14 @@ export default function MapView() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+        <button 
+          type="button" 
+          className="map-ai-search-trigger"
+          onClick={() => setShowAiMatcher(true)}
+          title="Ask Spota Vibe AI"
+        >
+          <Sparkles size={18} />
+        </button>
       </div>
 
       {/* Range Filter Overlay */}
@@ -312,6 +322,16 @@ export default function MapView() {
 
       {selectedSpot && (
         <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
+      )}
+
+      {showAiMatcher && (
+        <AIVibeMatcher 
+          onClose={() => setShowAiMatcher(false)} 
+          onSelectSpot={(spot) => {
+            setShowAiMatcher(false);
+            setSelectedSpot(spot);
+          }}
+        />
       )}
 
       {showAR && (

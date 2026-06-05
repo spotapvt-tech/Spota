@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
-import { Search, Flame } from 'lucide-react';
+import { Search, Flame, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import { haversineDistance } from '../lib/utils';
+import AIVibeMatcher from '../components/AIVibeMatcher';
 import './FeedView.css';
 
 export default function FeedView() {
@@ -14,6 +15,7 @@ export default function FeedView() {
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
+  const [showAiMatcher, setShowAiMatcher] = useState(false);
 
   // Fetch user location for distance calculations
   useEffect(() => {
@@ -143,6 +145,14 @@ export default function FeedView() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
+          <button 
+            type="button" 
+            className="ai-search-trigger"
+            onClick={() => setShowAiMatcher(true)}
+            title="Ask Spota Vibe AI"
+          >
+            <Sparkles size={18} />
+          </button>
         </div>
 
         {/* Dynamic Filters */}
@@ -262,6 +272,16 @@ export default function FeedView() {
 
       {selectedSpot && (
         <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
+      )}
+
+      {showAiMatcher && (
+        <AIVibeMatcher 
+          onClose={() => setShowAiMatcher(false)} 
+          onSelectSpot={(spot) => {
+            setShowAiMatcher(false);
+            setSelectedSpot(spot);
+          }}
+        />
       )}
     </div>
   );
