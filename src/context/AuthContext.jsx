@@ -37,33 +37,51 @@ export function AuthProvider({ children }) {
 
   // Handle Supabase Auth state changes
   useEffect(() => {
-    // Check active session on load
+    // Check active session on load with robust error handling
     supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const enrichedUser = await fetchUserProfile(session.user);
-        setUser(enrichedUser);
-      } else {
-        // Fallback to local guest user if stored
-        const savedGuest = localStorage.getItem('spota_guest_user');
-        if (savedGuest) {
-          setUser(JSON.parse(savedGuest));
+      try {
+        if (session?.user) {
+          const enrichedUser = await fetchUserProfile(session.user);
+          setUser(enrichedUser);
+        } else {
+          // Fallback to local guest user if stored
+          const savedGuest = localStorage.getItem('spota_guest_user');
+          if (savedGuest) {
+            setUser(JSON.parse(savedGuest));
+          }
         }
+      } catch (err) {
+        console.error('Error loading user session:', err);
+      } finally {
+        setLoading(false);
+      }
+    }).catch(err => {
+      console.error('Error fetching auth session on load:', err);
+      // Fail-safe fallback to guest session if offline
+      const savedGuest = localStorage.getItem('spota_guest_user');
+      if (savedGuest) {
+        setUser(JSON.parse(savedGuest));
       }
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        const enrichedUser = await fetchUserProfile(session.user);
-        setUser(enrichedUser);
-        // Clear guest session if real user logs in
-        localStorage.removeItem('spota_guest_user');
-      } else {
-        // Keep guest session if it exists, otherwise null
-        const savedGuest = localStorage.getItem('spota_guest_user');
-        setUser(savedGuest ? JSON.parse(savedGuest) : null);
+      try {
+        if (session?.user) {
+          const enrichedUser = await fetchUserProfile(session.user);
+          setUser(enrichedUser);
+          // Clear guest session if real user logs in
+          localStorage.removeItem('spota_guest_user');
+        } else {
+          // Keep guest session if it exists, otherwise null
+          const savedGuest = localStorage.getItem('spota_guest_user');
+          setUser(savedGuest ? JSON.parse(savedGuest) : null);
+        }
+      } catch (err) {
+        console.error('Error handling auth state change:', err);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
     return () => {
@@ -132,6 +150,38 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        width: '100vw',
+        backgroundColor: '#F7F9F6',
+        color: '#2C3531',
+        fontFamily: "'Outfit', sans-serif"
+      }}>
+        <div className="pulse-loader" style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          backgroundColor: '#6C8C74',
+          animation: 'pulse 1.5s infinite ease-in-out'
+        }} />
+        <span style={{ marginTop: '16px', fontSize: '14px', fontWeight: 500, opacity: 0.8 }}>Loading Spota...</span>
+        <style>{`
+          @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -141,7 +191,7 @@ export function AuthProvider({ children }) {
       signInAnonymous,
       signOut
     }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

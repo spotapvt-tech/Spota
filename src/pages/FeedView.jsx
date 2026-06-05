@@ -3,6 +3,7 @@ import { supabase } from '../lib/supabaseClient';
 import { Search, Flame } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import SpotDetailsModal from '../components/SpotDetailsModal';
+import { haversineDistance } from '../lib/utils';
 import './FeedView.css';
 
 export default function FeedView() {
@@ -12,6 +13,20 @@ export default function FeedView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [selectedSpot, setSelectedSpot] = useState(null);
+  const [userLocation, setUserLocation] = useState(null);
+
+  // Fetch user location for distance calculations
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation([position.coords.latitude, position.coords.longitude]);
+        },
+        (err) => console.log('Geolocation bypass in feed:', err),
+        { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
+      );
+    }
+  }, []);
 
   useEffect(() => {
     async function fetchSpots() {
@@ -85,10 +100,12 @@ export default function FeedView() {
       // 1. Search Query Filter
       const query = searchQuery.toLowerCase().trim();
       if (query) {
+        const cleanQuery = query.replace(/#/g, '');
         const titleMatch = spot.title?.toLowerCase().includes(query);
         const descMatch = spot.description?.toLowerCase().includes(query) || spot.vibe?.toLowerCase().includes(query);
         const catMatch = spot.category?.toLowerCase().includes(query);
-        if (!titleMatch && !descMatch && !catMatch) return false;
+        const tagMatch = spot.tags && Array.isArray(spot.tags) && spot.tags.some(tag => tag.toLowerCase().includes(cleanQuery));
+        if (!titleMatch && !descMatch && !catMatch && !tagMatch) return false;
       }
 
       // 2. Chip Category Filter
@@ -168,6 +185,29 @@ export default function FeedView() {
           filteredSpots.map((spot) => {
             const popularity = getPopularity(spot);
             const isTrending = popularity >= 5;
+            
+            // Calculate reference distance for feed display
+            let distText = '--';
+            if (spots.length > 0) {
+              let refCoords = userLocation;
+              if (userLocation) {
+                // Remote testing fallback: if user is > 100km from the latest spot, reference latest spot coords
+                const latestSpot = spots[0];
+                const distFromLatest = haversineDistance(userLocation[0], userLocation[1], latestSpot.latitude, latestSpot.longitude);
+                if (distFromLatest > 100) {
+                  refCoords = [latestSpot.latitude, latestSpot.longitude];
+                }
+              } else {
+                // Fallback to latest spot coords if user location not loaded/granted
+                refCoords = [spots[0].latitude, spots[0].longitude];
+              }
+
+              if (refCoords) {
+                const distVal = haversineDistance(refCoords[0], refCoords[1], spot.latitude, spot.longitude);
+                distText = `${distVal.toFixed(1)} km`;
+              }
+            }
+
             return (
               <div 
                 key={spot.id} 
@@ -199,11 +239,20 @@ export default function FeedView() {
                         </span>
                       )}
                     </div>
-                    <span className="spot-distance">--</span>
+                    <span className="spot-distance">{distText}</span>
                   </div>
                   <p className="spot-vibe">
                     {spot.category.toUpperCase()} · {spot.description || "No vibe description"}
                   </p>
+                  {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
+                    <div className="spot-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
+                      {spot.tags.map((tag, idx) => (
+                        <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(108,140,116,0.08)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600 }}>
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             );

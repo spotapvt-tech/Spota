@@ -1,0 +1,180 @@
+.ar-view-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  overflow: hidden;
+  background-color: #000;
+  user-select: none;
+}
+
+.ar-camera-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.ar-camera-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 40px;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  background: radial-gradient(circle, #2C3531 0%, #111714 100%);
+}
+
+.ar-camera-fallback h3 {
+  color: #FFF;
+  margin: 0;
+  font-size: var(--font-size-lg);
+}
+
+.ar-camera-fallback p {
+  font-size: var(--font-size-sm);
+  max-width: 320px;
+}
+
+.ar-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2005;
+  transition: all 0.2s ease;
+}
+
+.ar-close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.ar-hud {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2004;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  font-family: 'Outfit', sans-serif;
+}
+
+.hud-heading {
+  background: rgba(44, 53, 49, 0.75);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #FFF;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.hud-icon {
+  color: var(--color-accent);
+}
+
+.hud-helper {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ar-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2002;
+}
+
+.ar-spot-marker {
+  position: absolute;
+  pointer-events: auto; /* enable click events on the actual floating labels */
+  transition: left 0.1s linear, top 0.1s linear; /* Smooth tracking updates */
+}
+
+.ar-marker-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(44, 53, 49, 0.65);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  color: #FFF;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  white-space: nowrap;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.2s ease;
+}
+
+.ar-marker-card:hover {
+  background: rgba(108, 140, 116, 0.75);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-4px);
+}
+
+.ar-marker-emoji {
+  font-size: 18px;
+}
+
+.ar-marker-details h4 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.ar-marker-details span {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.ar-no-spots {
+  position: absolute;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, 0.65);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 18px;
+  border-radius: var(--radius-full);
+}

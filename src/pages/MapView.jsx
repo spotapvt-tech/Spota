@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, CircleMarker } from 'react-leaflet';
 import { supabase } from '../lib/supabaseClient';
-import { Search } from 'lucide-react';
+import { Search, Camera } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { haversineDistance } from '../lib/utils';
 import SpotDetailsModal from '../components/SpotDetailsModal';
+import ARView from './ARView';
 import 'leaflet/dist/leaflet.css';
 import './MapView.css';
 
@@ -37,9 +38,10 @@ export default function MapView() {
   const [spots, setSpots] = useState([]);
   const [center, setCenter] = useState([40.7128, -74.0060]); // Default NY
   const [userLocation, setUserLocation] = useState(null);
-  const [selectedRange, setSelectedRange] = useState('All'); // 'All', 1, 5, 10, 25 (in km)
+  const [selectedRange, setSelectedRange] = useState('5'); // default 5 km, options: 'All', 1, 5, 10, 25
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpot, setSelectedSpot] = useState(null);
+  const [showAR, setShowAR] = useState(false);
 
   // Fetch spots on mount
   useEffect(() => {
@@ -115,6 +117,18 @@ export default function MapView() {
     return (reactionCount * 2) + ((spot.share_count || 0) * 3);
   };
 
+  // Get reference coordinates for range calculations (handles remote testing fallback)
+  const getReferenceCoords = () => {
+    let coords = userLocation || center;
+    if (userLocation && center) {
+      const distFromCenter = haversineDistance(userLocation[0], userLocation[1], center[0], center[1]);
+      if (distFromCenter > 100) {
+        coords = center;
+      }
+    }
+    return coords;
+  };
+
   // Filter map pins based on search query and range distance
   const filteredSpots = spots.filter((spot) => {
     // Only show approved spots, or pending spots owned by the current user
@@ -122,23 +136,56 @@ export default function MapView() {
     if (spot.status !== 'approved' && !isOwner) return false;
 
     // 1. Range proximity filter
-    if (selectedRange !== 'All' && userLocation) {
-      const distance = haversineDistance(userLocation[0], userLocation[1], spot.latitude, spot.longitude);
-      if (distance > Number(selectedRange)) return false;
+    if (selectedRange !== 'All') {
+      const refCoords = getReferenceCoords();
+      if (refCoords) {
+        const distance = haversineDistance(refCoords[0], refCoords[1], spot.latitude, spot.longitude);
+        if (distance > Number(selectedRange)) return false;
+      }
     }
 
     // 2. Search query filter
     const query = searchQuery.toLowerCase().trim();
     if (!query) return true;
+    const cleanQuery = query.replace(/#/g, '');
+    const tagMatch = spot.tags && Array.isArray(spot.tags) && spot.tags.some(tag => tag.toLowerCase().includes(cleanQuery));
     return (
       spot.title?.toLowerCase().includes(query) ||
       spot.description?.toLowerCase().includes(query) ||
-      spot.category?.toLowerCase().includes(query)
+      spot.category?.toLowerCase().includes(query) ||
+      tagMatch
     );
   });
 
   return (
     <div className="map-container-wrapper">
+      {/* AR Mode Trigger Button */}
+      <button 
+        className="map-ar-trigger-btn glass-panel animate-fade-in" 
+        onClick={() => setShowAR(true)}
+        title="Open AR Finder"
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          zIndex: 10,
+          width: '46px',
+          height: '46px',
+          borderRadius: '50%',
+          border: '1px solid var(--color-border)',
+          background: 'var(--color-bg-primary)',
+          color: 'var(--color-accent)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          transition: 'all 0.2s ease'
+        }}
+      >
+        <Camera size={22} />
+      </button>
+
       {/* Vibe & Spot Search Overlay */}
       <div className="map-search-overlay">
         <Search size={18} className="map-search-icon" />
@@ -160,10 +207,6 @@ export default function MapView() {
               key={rangeVal}
               className={`range-chip ${selectedRange === rangeVal ? 'active' : ''}`}
               onClick={() => {
-                if (rangeVal !== 'All' && !userLocation) {
-                  alert('Please enable location access to filter by range.');
-                  return;
-                }
                 setSelectedRange(rangeVal);
               }}
             >
@@ -206,9 +249,9 @@ export default function MapView() {
         )}
 
         {/* Visual Range Circle Overlay */}
-        {userLocation && selectedRange !== 'All' && (
+        {selectedRange !== 'All' && getReferenceCoords() && (
           <Circle
-            center={userLocation}
+            center={getReferenceCoords()}
             radius={Number(selectedRange) * 1000}
             pathOptions={{
               fillColor: 'var(--color-accent)',
@@ -245,6 +288,15 @@ export default function MapView() {
                   )}
                   <h3>{spot.title}</h3>
                   <p>{spot.description || spot.category}</p>
+                  {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
+                    <div className="popup-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', margin: '4px 0 8px 0' }}>
+                      {spot.tags.map((tag, idx) => (
+                        <span key={idx} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 600 }}>
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <button 
                     className="popup-details-btn" 
                     onClick={() => setSelectedSpot(spot)}
@@ -260,6 +312,18 @@ export default function MapView() {
 
       {selectedSpot && (
         <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
+      )}
+
+      {showAR && (
+        <ARView 
+          spots={spots} 
+          userLocation={userLocation} 
+          onClose={() => setShowAR(false)} 
+          onSelectSpot={(spot) => {
+            setShowAR(false);
+            setSelectedSpot(spot);
+          }}
+        />
       )}
     </div>
   );

@@ -1,0 +1,183 @@
+.vibe-drop-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(17, 23, 20, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.vibe-drop-content {
+  position: relative;
+  width: 380px;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.vibe-drop-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #FFF;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1002;
+  transition: background 0.2s ease;
+}
+
+.vibe-drop-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.scratchcard-container {
+  position: relative;
+  width: 340px;
+  height: 480px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+  background-color: #FFF;
+}
+
+.scratch-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 340px;
+  height: 480px;
+  cursor: grab;
+  z-index: 1001;
+  touch-action: none; /* Prevents scrolling when scratching on mobile */
+}
+
+.scratch-canvas:active {
+  cursor: grabbing;
+}
+
+.revealed-spot-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.revealed-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background-color: var(--color-surface);
+  overflow: hidden;
+}
+
+.revealed-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.revealed-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #6C8C74, #83C5BE);
+}
+
+.revealed-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background-color: var(--color-accent);
+  color: #FFF;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.revealed-info {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.revealed-info h3 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.revealed-category {
+  font-size: 10px;
+  background-color: rgba(108, 140, 116, 0.12);
+  color: var(--color-accent);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.revealed-desc {
+  margin: 4px 0 12px 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+.revealed-view-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-accent);
+  color: #FFF;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: auto;
+  box-shadow: 0 4px 12px rgba(108, 140, 116, 0.35);
+  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.revealed-view-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+
+@keyframes bounceIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  70% { transform: scale(0.9); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}

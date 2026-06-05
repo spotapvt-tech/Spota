@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Spota</string>
+    <string name="title_activity_main">Spota</string>
+    <string name="package_name">com.spota.app</string>
+    <string name="custom_url_scheme">com.spota.app</string>
+</resources>
