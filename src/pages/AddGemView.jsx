@@ -72,6 +72,7 @@ export default function AddGemView() {
   const videoInputRef = useRef(null);
   const [address, setAddress] = useState('');
   const [isReverseGeocoding, setIsReverseGeocoding] = useState(false);
+  const [cameraBase64, setCameraBase64] = useState(null); // Holds camera raw base64 string
   
   // Default map center: New York or user location on load
   const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]);
@@ -159,6 +160,12 @@ export default function AddGemView() {
         return;
       }
 
+      // 3-second safety timeout: resolve with original file if canvas load hangs
+      const timeoutId = setTimeout(() => {
+        console.warn('Image compression timed out, resolving with original file');
+        resolve(file);
+      }, 3000);
+
       try {
         const objectUrl = URL.createObjectURL(file);
         const img = new Image();
@@ -190,6 +197,7 @@ export default function AddGemView() {
 
             canvas.toBlob((blob) => {
               try {
+                clearTimeout(timeoutId);
                 URL.revokeObjectURL(objectUrl);
                 if (!blob) {
                   resolve(file);
@@ -209,21 +217,25 @@ export default function AddGemView() {
                 }
                 resolve(compressedFile);
               } catch (e) {
+                clearTimeout(timeoutId);
                 console.error('Error in toBlob callback:', e);
                 resolve(file);
               }
             }, 'image/jpeg', 0.6);
           } catch (e) {
+            clearTimeout(timeoutId);
             URL.revokeObjectURL(objectUrl);
             console.error('Error setting up canvas:', e);
             resolve(file);
           }
         };
         img.onerror = () => {
+          clearTimeout(timeoutId);
           URL.revokeObjectURL(objectUrl);
           resolve(file);
         };
       } catch (e) {
+        clearTimeout(timeoutId);
         console.error('Error creating object URL:', e);
         resolve(file);
       }
@@ -234,6 +246,7 @@ export default function AddGemView() {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setIsSubmitting(true);
+      setCameraBase64(null); // Reset native camera base64 reference
       try {
         if (imageUrl && imageUrl.startsWith('blob:')) {
           URL.revokeObjectURL(imageUrl);
@@ -284,6 +297,7 @@ export default function AddGemView() {
 
       if (photo && photo.base64String) {
         setIsSubmitting(true);
+        setCameraBase64(photo.base64String); // Keep raw base64 string for direct fallback
         if (imageUrl && imageUrl.startsWith('blob:')) {
           URL.revokeObjectURL(imageUrl);
         }
@@ -352,6 +366,7 @@ export default function AddGemView() {
     }
     setImageFile(null);
     setImageUrl('');
+    setCameraBase64(null); // Reset native camera base64 reference
   };
 
   const handleVideoChange = (e) => {
@@ -456,7 +471,12 @@ export default function AddGemView() {
           }
         } else {
           console.warn('Storage upload failed or timed out, attempting base64 fallback:', uploadError);
-          if (imageFile.size < 1.5 * 1024 * 1024) {
+          if (cameraBase64) {
+            // Direct native base64 fallback (extremely reliable and bypasses FileReader)
+            const format = imageFile.name ? imageFile.name.split('.').pop() : 'jpeg';
+            finalImageUrl = `data:image/${format === 'jpg' ? 'jpeg' : format};base64,${cameraBase64}`;
+          } else if (imageFile.size < 1.5 * 1024 * 1024) {
+            // Standard web FileReader fallback
             const base64Promise = fileToBase64(imageFile);
             const base64Timeout = new Promise((_, reject) =>
               setTimeout(() => reject(new Error('Base64 conversion timeout. Please try taking the photo again or use a smaller image.')), 10000)
