@@ -1,0 +1,112 @@
+.recap-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: 20px;
+}
+
+.recap-modal-content {
+  width: 100%;
+  max-width: 440px;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+.recap-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.recap-modal-header .title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recap-modal-header h3 {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  margin: 0;
+}
+
+.recap-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.recap-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(108, 140, 116, 0.08);
+}
+
+.recap-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0 0 12px 0;
+}
+
+/* Scaled Canvas Preview */
+.recap-preview-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: var(--radius-sm);
+  border: 1px dotted var(--color-border);
+  margin-bottom: 16px;
+}
+
+.recap-preview-canvas {
+  max-height: 420px; /* Scales down the 1920px height perfectly */
+  width: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  border: 1.5px solid rgba(255, 255, 255, 0.15);
+  display: block;
+}
+
+.recap-download-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color var(--transition-fast);
+}
+
+.recap-download-btn:hover {
+  background-color: var(--color-accent-hover);
+}

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { X, Heart, Share, AlertTriangle, Trash2, Sparkles, Navigation, ListPlus, Film, Image as ImageIcon, MessageSquare } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
+import { getCategoryById } from '../lib/categoryConfig';
+import GemImpactCard from './GemImpactCard';
 import './SpotDetailsModal.css';
 
 const REACTION_EMOJIS = {
@@ -15,6 +17,7 @@ const REACTION_EMOJIS = {
 export default function SpotDetailsModal({ spot, onClose }) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const catInfo = getCategoryById(spot?.category);
   const [isSaved, setIsSaved] = useState(false);
   const [reactions, setReactions] = useState({ '🧘': 0, '🔥': 0, '❤️': 0, '🌟': 0 });
   const [userReactions, setUserReactions] = useState({});
@@ -303,8 +306,8 @@ export default function SpotDetailsModal({ spot, onClose }) {
       ctx.fillText(spot.title || 'Unknown Spot', 120, 685, 560);
 
       // Category Pill
-      const catText = (spot.category || 'General').toUpperCase();
-      ctx.fillStyle = '#6C8C74';
+      const catText = `${catInfo.emoji} ${catInfo.label}`.toUpperCase();
+      ctx.fillStyle = catInfo.color;
       const pillWidth = ctx.measureText(catText).width + 24;
       ctx.beginPath();
       ctx.roundRect(120, 715, pillWidth, 32, 16);
@@ -506,6 +509,24 @@ export default function SpotDetailsModal({ spot, onClose }) {
     window.addEventListener('spota_spot_updated', handleSpotUpdate);
     return () => window.removeEventListener('spota_spot_updated', handleSpotUpdate);
   }, [spot]);
+
+  // Log spot view count in database
+  useEffect(() => {
+    if (!spot) return;
+    async function logSpotView() {
+      try {
+        await supabase
+          .from('spot_views')
+          .insert({
+            spot_id: spot.id,
+            viewer_id: user && !user.isGuest ? user.id : null
+          });
+      } catch (err) {
+        console.warn('Could not log spot view:', err);
+      }
+    }
+    logSpotView();
+  }, [spot.id, user]);
 
   if (!spot) return null;
 
@@ -738,7 +759,25 @@ export default function SpotDetailsModal({ spot, onClose }) {
           
           <div className="title-row" style={{ marginBottom: '8px' }}>
             <h2>{spot.title || "Unknown Spot"}</h2>
-            <span className="category-badge">{spot.category || "General"}</span>
+            <span 
+              className="category-badge"
+              style={{
+                backgroundColor: `${catInfo.color}26`,
+                color: catInfo.color,
+                borderColor: catInfo.color,
+                border: '1px solid',
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '11px',
+                fontWeight: 600,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              <span>{catInfo.emoji}</span>
+              <span>{catInfo.label}</span>
+            </span>
           </div>
 
           {spot.address && (
@@ -807,6 +846,11 @@ export default function SpotDetailsModal({ spot, onClose }) {
                 </span>
               ))}
             </div>
+          )}
+
+          {/* Render GemImpactCard if current user is owner of the spot */}
+          {user && !user.isGuest && spot.user_id === user.id && (
+            <GemImpactCard spot={spot} />
           )}
           
           {/* Emoji Reactions Bar */}

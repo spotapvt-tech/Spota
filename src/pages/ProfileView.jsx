@@ -1,59 +1,127 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { LogOut, Award, CheckCircle, Heart, MapPin, Gem, Shield, Trash2 } from 'lucide-react';
+import { LogOut, Award, CheckCircle, Heart, MapPin, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft } from 'lucide-react';
 import SpotDetailsModal from '../components/SpotDetailsModal';
+import { getActiveTrekLocal } from '../lib/safeTrekTimer';
 import './ProfileView.css';
 
 export default function ProfileView() {
-  const { user, signOut } = useAuth();
+  const { user: currentUser, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const targetUserId = location.state?.userId || currentUser?.id;
+  const isOwnProfile = targetUserId === currentUser?.id;
+
+  const [profileUser, setProfileUser] = useState(null);
   const [activeTab, setActiveTab] = useState('my-gems');
   const [myGems, setMyGems] = useState([]);
   const [savedGems, setSavedGems] = useState([]);
+  const [activeTrek, setActiveTrek] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSpot, setSelectedSpot] = useState(null);
 
-  // Fetch spots from Supabase
+  // Fetch spots and profiles from Supabase
   const fetchData = useCallback(async () => {
-    if (!user) return;
+    if (!targetUserId) return;
     setLoading(true);
     try {
-      // 1. Fetch user's own spots
-      let mySpots = [];
-      if (!user.isGuest) {
-        const { data, error } = await supabase
-          .from('spots')
+      // 1. Fetch Profile Info
+      if (isOwnProfile) {
+        setProfileUser({
+          id: currentUser.id,
+          username: currentUser.user_metadata?.username || currentUser.email?.split('@')[0] || 'Explorer',
+          created_at: currentUser.created_at,
+          isGuest: currentUser.isGuest,
+          email: currentUser.email,
+        });
+      } else {
+        const { data: profile, error: profileErr } = await supabase
+          .from('profiles')
           .select('*')
-          .eq('user_id', user.id)
-          .neq('status', 'deleted')
-          .order('created_at', { ascending: false });
-        if (!error && data) mySpots = data;
+          .eq('id', targetUserId)
+          .single();
+        if (!profileErr && profile) {
+          setProfileUser({
+            id: profile.id,
+            username: profile.username || 'Explorer',
+            created_at: profile.created_at || new Date().toISOString(),
+            isGuest: false,
+            avatar_url: profile.avatar_url,
+          });
+        } else {
+          setProfileUser({
+            id: targetUserId,
+            username: 'Explorer',
+            created_at: new Date().toISOString(),
+            isGuest: false,
+          });
+        }
       }
+
+      // 2. Fetch user's own spots
+      let mySpots = [];
+      const { data, error } = await supabase
+        .from('spots')
+        .select('*')
+        .eq('user_id', targetUserId)
+        .neq('status', 'deleted')
+        .order('created_at', { ascending: false });
+      if (!error && data) mySpots = data;
       setMyGems(mySpots);
 
-      // 2. Fetch saved spots by matching IDs stored in localStorage
-      const savedIds = JSON.parse(localStorage.getItem('spota_saved_spots') || '[]');
-      if (savedIds.length > 0) {
-        const { data, error } = await supabase
-          .from('spots')
-          .select('*')
-          .neq('status', 'deleted');
-        
-        if (!error && data) {
-          const filtered = data.filter(spot => savedIds.includes(spot.id));
-          setSavedGems(filtered);
+      // 3. Fetch saved spots (only show saved gems if viewing own profile)
+      if (isOwnProfile) {
+        const savedIds = JSON.parse(localStorage.getItem('spota_saved_spots') || '[]');
+        if (savedIds.length > 0) {
+          const { data: allSpots, error: spotsErr } = await supabase
+            .from('spots')
+            .select('*')
+            .neq('status', 'deleted');
+          
+          if (!spotsErr && allSpots) {
+            const filtered = allSpots.filter(spot => savedIds.includes(spot.id));
+            setSavedGems(filtered);
+          }
+        } else {
+          setSavedGems([]);
         }
       } else {
         setSavedGems([]);
+      }
+
+      // 4. Fetch active safe trek if own profile
+      if (isOwnProfile) {
+        if (currentUser.isGuest) {
+          const localTrek = getActiveTrekLocal();
+          setActiveTrek(localTrek);
+        } else {
+          try {
+            const { data: treks, error: trekErr } = await supabase
+              .from('safe_treks')
+              .select('*')
+              .eq('user_id', currentUser.id)
+              .in('status', ['active', 'overdue'])
+              .order('started_at', { ascending: false })
+              .limit(1);
+            
+            if (!trekErr && treks && treks.length > 0) {
+              setActiveTrek(treks[0]);
+            } else {
+              setActiveTrek(null);
+            }
+          } catch (err) {
+            console.error('Error fetching active trek for profile:', err);
+          }
+        }
       }
     } catch (err) {
       console.error('Error loading profile data:', err);
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [currentUser, targetUserId, isOwnProfile]);
 
   const handleDeleteSpot = async (e, spotId) => {
     e.stopPropagation();
@@ -93,30 +161,38 @@ export default function ProfileView() {
     };
   }, [fetchData]);
 
-  if (!user) return null;
+  if (!currentUser) return null;
 
   // Calculate dynamic reputation score
   const myGemsCount = myGems.length;
   const savedGemsCount = savedGems.length;
-  const totalReputation = (myGemsCount * 10) + (savedGemsCount * 5);
+  const totalReputation = (myGemsCount * 10) + (isOwnProfile ? savedGemsCount * 5 : 0);
   const isVerified = totalReputation >= 50;
-  const isAdmin = user.email?.endsWith('@spota.local') || user.email?.includes('admin');
+  const isAdmin = isOwnProfile && (currentUser.email?.endsWith('@spota.local') || currentUser.email?.includes('admin'));
 
   // Initials for avatar
-  const username = user.user_metadata?.username || user.email?.split('@')[0] || 'Explorer';
+  const username = profileUser?.username || 'Explorer';
   const initials = username.substring(0, 2).toUpperCase();
 
   // Joined date string
-  const joinedDate = user.created_at 
-    ? new Date(user.created_at).toLocaleDateString([], { month: 'long', year: 'numeric' })
-    : 'Guest Explorer';
+  const joinedDate = profileUser?.isGuest
+    ? 'Guest Explorer'
+    : profileUser?.created_at
+      ? new Date(profileUser.created_at).toLocaleDateString([], { month: 'long', year: 'numeric' })
+      : 'Explorer';
 
   return (
     <div className="profile-container animate-fade-in">
       <div className="profile-card glass-panel">
-        <button className="logout-btn-top" onClick={signOut} title="Sign Out">
-          <LogOut size={20} />
-        </button>
+        {isOwnProfile ? (
+          <button className="logout-btn-top" onClick={signOut} title="Sign Out">
+            <LogOut size={20} />
+          </button>
+        ) : (
+          <button className="logout-btn-top" style={{ left: '16px', right: 'auto' }} onClick={() => navigate(-1)} title="Back">
+            <ArrowLeft size={20} />
+          </button>
+        )}
 
         <div className="avatar-large">
           {initials}
@@ -130,7 +206,7 @@ export default function ProfileView() {
                 <CheckCircle size={18} fill="currentColor" color="var(--color-bg-primary)" />
               </span>
             )}
-            {user.isGuest && (
+            {profileUser?.isGuest && (
               <span style={{ fontSize: '10px', background: 'rgba(108,140,116,0.15)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '9999px', fontWeight: 600 }}>GUEST</span>
             )}
           </div>
@@ -151,7 +227,30 @@ export default function ProfileView() {
           </div>
         </div>
 
-        {isAdmin && (
+        {isOwnProfile && currentUser && (
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', marginTop: '16px' }}>
+            {!currentUser.isGuest && (
+              <button 
+                className="submit-auth-btn" 
+                style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(108, 140, 116, 0.12)', color: 'var(--color-accent)', border: 'none' }} 
+                onClick={() => navigate('/profile/analytics')}
+              >
+                <TrendingUp size={16} />
+                Creator Analytics
+              </button>
+            )}
+            <button 
+              className="submit-auth-btn" 
+              style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(108, 140, 116, 0.12)', color: 'var(--color-accent)', border: 'none' }} 
+              onClick={() => navigate('/safe-trek')}
+            >
+              <Shield size={16} />
+              Safe Trek Mode
+            </button>
+          </div>
+        )}
+
+        {isOwnProfile && isAdmin && (
           <button 
             className="submit-auth-btn" 
             style={{ marginTop: '16px', gap: '8px', height: 'auto', display: 'inline-flex' }} 
@@ -161,33 +260,71 @@ export default function ProfileView() {
             Admin Dashboard
           </button>
         )}
+
+        {isOwnProfile && activeTrek && (
+          <div 
+            className="active-trek-banner-profile glass-panel animate-pulse" 
+            style={{ 
+              marginTop: '16px', 
+              width: '100%', 
+              padding: '12px', 
+              borderRadius: 'var(--radius-md)', 
+              border: activeTrek.status === 'overdue' ? '1px solid rgba(224, 122, 95, 0.5)' : '1px solid rgba(108, 140, 116, 0.3)', 
+              background: activeTrek.status === 'overdue' ? 'rgba(224, 122, 95, 0.15)' : 'rgba(108, 140, 116, 0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              cursor: 'pointer'
+            }}
+            onClick={() => navigate('/safe-trek')}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <ShieldAlert size={18} color={activeTrek.status === 'overdue' ? '#e07a5f' : 'var(--color-accent)'} />
+              <div style={{ textAlign: 'left' }}>
+                <span style={{ fontSize: '12px', fontWeight: 700, color: activeTrek.status === 'overdue' ? '#e07a5f' : 'var(--color-accent)', display: 'block', lineHeight: 1.2 }}>
+                  {activeTrek.status === 'overdue' ? 'TREK OVERDUE ALERT' : 'ACTIVE TREK RUNNING'}
+                </span>
+                <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '180px' }}>
+                  Destination: {activeTrek.destination_name}
+                </span>
+              </div>
+            </div>
+            <span style={{ fontSize: '10px', fontWeight: 600, color: activeTrek.status === 'overdue' ? '#e07a5f' : 'var(--color-accent)', background: activeTrek.status === 'overdue' ? 'rgba(224, 122, 95, 0.12)' : 'rgba(108, 140, 116, 0.12)', padding: '2px 8px', borderRadius: '4px' }}>VIEW</span>
+          </div>
+        )}
       </div>
 
-      <div className="profile-tabs">
-        <button 
-          className={`tab-btn ${activeTab === 'my-gems' ? 'active' : ''}`}
-          onClick={() => setActiveTab('my-gems')}
-        >
-          My Gems ({myGemsCount})
-        </button>
-        <button 
-          className={`tab-btn ${activeTab === 'saved-gems' ? 'active' : ''}`}
-          onClick={() => setActiveTab('saved-gems')}
-        >
-          Saved Gems ({savedGemsCount})
-        </button>
-      </div>
+      {isOwnProfile ? (
+        <div className="profile-tabs">
+          <button 
+            className={`tab-btn ${activeTab === 'my-gems' ? 'active' : ''}`}
+            onClick={() => setActiveTab('my-gems')}
+          >
+            My Gems ({myGemsCount})
+          </button>
+          <button 
+            className={`tab-btn ${activeTab === 'saved-gems' ? 'active' : ''}`}
+            onClick={() => setActiveTab('saved-gems')}
+          >
+            Saved Gems ({savedGemsCount})
+          </button>
+        </div>
+      ) : (
+        <h3 style={{ marginTop: '24px', marginBottom: '16px', color: 'var(--color-text-primary)' }}>
+          Gems Dropped ({myGemsCount})
+        </h3>
+      )}
 
       <div className="tab-content">
         {loading ? (
           <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', marginTop: '20px' }}>Loading list...</p>
-        ) : activeTab === 'my-gems' ? (
+        ) : !isOwnProfile || activeTab === 'my-gems' ? (
           <div className="spot-grid">
             {myGems.length === 0 ? (
               <div className="empty-state glass-panel">
                 <Gem size={32} strokeWidth={1.5} />
                 <p>No gems dropped yet</p>
-                <span>Tap "Add" in the navigation bar to drop your first spot!</span>
+                {isOwnProfile && <span>Tap "Add" in the navigation bar to drop your first spot!</span>}
               </div>
             ) : (
               myGems.map(spot => (
@@ -202,14 +339,16 @@ export default function ProfileView() {
                       <h4 style={{ margin: 0, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }}>
                         {spot.title}
                       </h4>
-                      <button 
-                        className="profile-delete-btn" 
-                        onClick={(e) => handleDeleteSpot(e, spot.id)}
-                        title="Delete Gem"
-                        style={{ background: 'none', border: 'none', color: '#c94a4a', cursor: 'pointer', padding: '2px 0 2px 8px', display: 'flex', alignItems: 'center' }}
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      {isOwnProfile && (
+                        <button 
+                          className="profile-delete-btn" 
+                          onClick={(e) => handleDeleteSpot(e, spot.id)}
+                          title="Delete Gem"
+                          style={{ background: 'none', border: 'none', color: '#c94a4a', cursor: 'pointer', padding: '2px 0 2px 8px', display: 'flex', alignItems: 'center' }}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      )}
                     </div>
                     <p>{spot.category} · {spot.description || "No vibe description"}</p>
                   </div>

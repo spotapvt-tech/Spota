@@ -1,0 +1,124 @@
+.gem-impact-card {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.gem-impact-card.loading {
+  justify-content: center;
+  align-items: center;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  padding: 30px;
+}
+
+.impact-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.impact-header h3 {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.rank-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  background-color: rgba(108, 140, 116, 0.12);
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.impact-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.impact-stat-tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-primary);
+  border: 1px solid rgba(44, 53, 49, 0.04);
+}
+
+.tile-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tile-icon-wrapper.views {
+  background-color: rgba(74, 144, 226, 0.1);
+  color: #4A90E2;
+}
+
+.tile-icon-wrapper.saves {
+  background-color: rgba(224, 122, 95, 0.1);
+  color: #E07A5F;
+}
+
+.tile-icon-wrapper.shares {
+  background-color: rgba(221, 161, 94, 0.1);
+  color: #DDA15E;
+}
+
+.tile-icon-wrapper.reactions {
+  background-color: rgba(108, 140, 116, 0.1);
+  color: var(--color-accent);
+}
+
+.tile-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.tile-num {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.tile-label {
+  font-size: 10px;
+  color: var(--color-text-secondary);
+}
+
+.impact-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.impact-footer strong {
+  color: var(--color-text-primary);
+}

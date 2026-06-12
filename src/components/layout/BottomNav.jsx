@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Map, List, PlusCircle, User, MessageSquare } from 'lucide-react';
+import { Map, PlusCircle, User, MessageSquare, Compass, Film } from 'lucide-react';
 import './BottomNav.css';
 
 export default function BottomNav() {
@@ -14,11 +14,11 @@ export default function BottomNav() {
         )}
       </NavLink>
       
-      <NavLink to="/feed" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+      <NavLink to="/vibes" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
         {({ isActive }) => (
           <>
-            <List size={24} strokeWidth={isActive ? 2.5 : 2} />
-            <span>Feed</span>
+            <Film size={24} strokeWidth={isActive ? 2.5 : 2} />
+            <span>Vibes</span>
           </>
         )}
       </NavLink>
@@ -27,6 +27,15 @@ export default function BottomNav() {
         <div className="add-icon-wrapper">
           <PlusCircle size={28} strokeWidth={2.5} color="var(--color-bg-primary)" />
         </div>
+      </NavLink>
+
+      <NavLink to="/trips" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+        {({ isActive }) => (
+          <>
+            <Compass size={24} strokeWidth={isActive ? 2.5 : 2} />
+            <span>Trips</span>
+          </>
+        )}
       </NavLink>
 
       <NavLink to="/chat" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>

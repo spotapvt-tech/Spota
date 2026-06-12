@@ -1,0 +1,172 @@
+.invite-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: 20px;
+}
+
+.invite-modal-content {
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+}
+
+.invite-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invite-modal-header h3 {
+  font-size: var(--font-size-lg);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.invite-close-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  opacity: 0.6;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.invite-close-btn:hover {
+  opacity: 1;
+  background-color: rgba(108, 140, 116, 0.08);
+}
+
+.invite-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+
+/* QR Code styling */
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.qr-box {
+  padding: 16px;
+  background-color: #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-center-logo {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-bg-primary);
+  border: 2px solid var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-container span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Field Groups */
+.invite-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.invite-field-group label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.invite-input-wrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  height: 48px;
+}
+
+.code-display {
+  flex: 1;
+  text-align: center;
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--color-text-primary);
+}
+
+.link-display {
+  flex: 1;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  padding: 0 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copy-icon-btn {
+  width: 48px;
+  height: 100%;
+  background-color: rgba(108, 140, 116, 0.08);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--color-border);
+  transition: all var(--transition-fast);
+}
+
+.copy-icon-btn:hover {
+  background-color: var(--color-accent);
+  color: #ffffff;
+}
+
+.copy-icon-btn.success {
+  background-color: #588157;
+  color: #ffffff;
+}

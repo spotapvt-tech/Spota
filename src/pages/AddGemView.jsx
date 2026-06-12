@@ -11,6 +11,7 @@ import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import './AddGemView.css';
 import { Capacitor } from '@capacitor/core';
 import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { categories, getCategoryById } from '../lib/categoryConfig';
 
 // Fix for default Leaflet marker icons in React
 let DefaultIcon = L.icon({
@@ -73,6 +74,7 @@ export default function AddGemView() {
   const [address, setAddress] = useState('');
   const [isReverseGeocoding, setIsReverseGeocoding] = useState(false);
   const [cameraBase64, setCameraBase64] = useState(null); // Holds camera raw base64 string
+  const [successSpot, setSuccessSpot] = useState(null);
   
   // Default map center: New York or user location on load
   const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]);
@@ -440,25 +442,40 @@ export default function AddGemView() {
       .filter(tag => tag.length > 0);
 
     try {
+      // 1. Fast pre-flight check for Supabase Storage bucket configuration
+      let storageAvailable = false;
+      try {
+        const { error: bucketError } = await supabase.storage.getBucket('spot-images');
+        if (!bucketError || bucketError.message !== 'Bucket not found') {
+          storageAvailable = true;
+        }
+      } catch (e) {
+        console.warn('Pre-flight storage bucket check failed:', e);
+      }
+
       if (imageFile) {
         const fileExt = imageFile.name ? imageFile.name.split('.').pop() : 'jpg';
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `spot-images/${fileName}`;
 
         let uploadError = null;
-        try {
-          const uploadPromise = supabase.storage
-            .from('spot-images')
-            .upload(filePath, imageFile);
+        if (storageAvailable) {
+          try {
+            const uploadPromise = supabase.storage
+              .from('spot-images')
+              .upload(filePath, imageFile);
 
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Storage upload timeout')), 5000)
-          );
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('Storage upload timeout')), 5000)
+            );
 
-          const result = await Promise.race([uploadPromise, timeoutPromise]);
-          uploadError = result.error;
-        } catch (storageErr) {
-          uploadError = storageErr;
+            const result = await Promise.race([uploadPromise, timeoutPromise]);
+            uploadError = result.error;
+          } catch (storageErr) {
+            uploadError = storageErr;
+          }
+        } else {
+          uploadError = new Error('Supabase spot-images bucket not found or unconfigured');
         }
 
         if (!uploadError) {
@@ -497,19 +514,23 @@ export default function AddGemView() {
         const filePath = `spot-videos/${fileName}`;
 
         let uploadError = null;
-        try {
-          const uploadPromise = supabase.storage
-            .from('spot-videos')
-            .upload(filePath, videoFile);
+        if (storageAvailable) {
+          try {
+            const uploadPromise = supabase.storage
+              .from('spot-videos')
+              .upload(filePath, videoFile);
 
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Storage video upload timeout')), 8000)
-          );
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(() => reject(new Error('Storage video upload timeout')), 8000)
+            );
 
-          const result = await Promise.race([uploadPromise, timeoutPromise]);
-          uploadError = result.error;
-        } catch (storageErr) {
-          uploadError = storageErr;
+            const result = await Promise.race([uploadPromise, timeoutPromise]);
+            uploadError = result.error;
+          } catch (storageErr) {
+            uploadError = storageErr;
+          }
+        } else {
+          uploadError = new Error('Supabase spot-videos bucket not found or unconfigured');
         }
 
         if (!uploadError) {
@@ -548,13 +569,161 @@ export default function AddGemView() {
 
       if (error) throw error;
 
-      alert('Gem dropped successfully!');
-      navigate('/feed');
+      const newSpot = {
+        title: formData.title,
+        category: formData.category,
+        description: formData.vibe,
+        image_url: finalImageUrl
+      };
+      setSuccessSpot(newSpot);
     } catch (err) {
       console.error('Error dropping gem:', err);
       alert(`Error dropping gem: ${err.message}`);
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleExportShareCard = () => {
+    if (!successSpot) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 1200;
+    const ctx = canvas.getContext('2d');
+    
+    const gradient = ctx.createLinearGradient(0, 0, 0, 1200);
+    gradient.addColorStop(0, '#2C3531');
+    gradient.addColorStop(1, '#111714');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 800, 1200);
+
+    ctx.fillStyle = 'rgba(108, 140, 116, 0.15)'; 
+    ctx.beginPath();
+    ctx.arc(100, 200, 150, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = 'rgba(224, 122, 95, 0.1)'; 
+    ctx.beginPath();
+    ctx.arc(700, 900, 200, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = "bold 32px 'Outfit', sans-serif";
+    ctx.textAlign = 'center';
+    ctx.fillText('💎 S P O T A', 400, 80);
+
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    ctx.font = "500 16px 'Outfit', sans-serif";
+    ctx.fillText('ZEN SOCIAL DISCOVERY', 400, 115);
+
+    const drawDetails = () => {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+      ctx.lineWidth = 2;
+      
+      const x = 80, y = 620, w = 640, h = 480, r = 24;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.arcTo(x + w, y, x + w, y + h, r);
+      ctx.arcTo(x + w, y + h, x, y + h, r);
+      ctx.arcTo(x, y + h, x, y, r);
+      ctx.arcTo(x, y, x + w, y, r);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'left';
+      ctx.font = "bold 38px 'Outfit', sans-serif";
+      ctx.fillText(successSpot.title || 'New Gem', 120, 685, 560);
+
+      const catInfo = getCategoryById(successSpot.category);
+      const catText = `${catInfo.emoji} ${catInfo.label}`.toUpperCase();
+      ctx.fillStyle = catInfo.color;
+      const pillWidth = ctx.measureText(catText).width + 24;
+      ctx.beginPath();
+      ctx.roundRect(120, 715, pillWidth, 32, 16);
+      ctx.fill();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = "bold 13px 'Outfit', sans-serif";
+      ctx.fillText(catText, 132, 736);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      ctx.font = "italic 20px 'Outfit', sans-serif";
+      const descText = `"${successSpot.description || 'No description provided.'}"`;
+      
+      const words = descText.split(' ');
+      let line = '';
+      let lineY = 790;
+      for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + ' ';
+        let metrics = ctx.measureText(testLine);
+        if (metrics.width > 520 && n > 0) {
+          ctx.fillText(line, 120, lineY);
+          line = words[n] + ' ';
+          lineY += 28;
+        } else {
+          line = testLine;
+        }
+      }
+      ctx.fillText(line, 120, lineY);
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.beginPath();
+      ctx.roundRect(590, 715, 80, 80, 8);
+      ctx.fill();
+
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(600, 725, 20, 20);
+      ctx.fillRect(640, 725, 20, 20);
+      ctx.fillRect(600, 765, 20, 20);
+      ctx.fillRect(625, 745, 10, 10);
+
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.font = "500 12px 'Outfit', sans-serif";
+      ctx.fillText('SCAN TO EXPLORE', 560, 815);
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `spota_${successSpot.title.toLowerCase().replace(/\s+/g, '_')}_card.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    };
+
+    if (successSpot.image_url) {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = successSpot.image_url;
+      img.onload = () => {
+        ctx.save();
+        const rx = 80, ry = 150, rw = 640, rh = 440, rr = 24;
+        ctx.beginPath();
+        ctx.moveTo(rx + rr, ry);
+        ctx.arcTo(rx + rw, ry, rx + rw, ry + rh, rr);
+        ctx.arcTo(rx + rw, ry + rh, rx, ry + rh, rr);
+        ctx.arcTo(rx, ry + rh, rx, ry, rr);
+        ctx.arcTo(rx, ry, rx + rw, ry, rr);
+        ctx.closePath();
+        ctx.clip();
+        ctx.drawImage(img, rx, ry, rw, rh);
+        ctx.restore();
+        drawDetails();
+      };
+      img.onerror = () => {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+        ctx.fillRect(80, 150, 640, 440);
+        drawDetails();
+      };
+    } else {
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.fillRect(80, 150, 640, 440);
+      drawDetails();
     }
   };
 
@@ -721,16 +890,29 @@ export default function AddGemView() {
         <div className="form-group">
           <label>Category</label>
           <div className="category-chips">
-            {['cafe', 'viewpoint', 'street-art', 'event'].map((cat) => (
-              <button 
-                type="button" 
-                key={cat}
-                className={`cat-chip ${formData.category === cat ? 'active' : ''}`}
-                onClick={() => setFormData({ ...formData, category: cat })}
-              >
-                {cat.charAt(0).toUpperCase() + cat.slice(1).replace('-', ' ')}
-              </button>
-            ))}
+            {categories.map((cat) => {
+              const isActive = formData.category === cat.id;
+              return (
+                <button 
+                  type="button" 
+                  key={cat.id}
+                  className={`cat-chip ${isActive ? 'active' : ''}`}
+                  onClick={() => setFormData({ ...formData, category: cat.id })}
+                  style={{
+                    borderColor: isActive ? cat.color : 'var(--color-border)',
+                    backgroundColor: isActive ? `${cat.color}26` : 'var(--color-bg-secondary)',
+                    color: isActive ? cat.color : 'var(--color-text-secondary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontWeight: isActive ? 600 : 500
+                  }}
+                >
+                  <span>{cat.emoji}</span>
+                  <span>{cat.label}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -779,6 +961,25 @@ export default function AddGemView() {
           )}
         </button>
       </form>
+
+      {successSpot && (
+        <div className="success-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="success-modal glass-panel animate-fade-in" style={{ padding: '24px', borderRadius: 'var(--radius-md)', maxWidth: '400px', width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ margin: 0, fontSize: 'var(--font-size-lg)' }}>💎 Gem Dropped Successfully!</h3>
+            <p style={{ margin: 0, fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
+              Your spot is live. Download your personalized share card to post on Instagram and WhatsApp stories.
+            </p>
+            <div className="success-modal-actions" style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+              <button className="submit-trip-btn" onClick={handleExportShareCard} style={{ margin: 0, backgroundColor: 'var(--color-accent)' }}>
+                Download Share Card
+              </button>
+              <button className="submit-trip-btn" onClick={() => navigate('/vibes')} style={{ margin: 0, backgroundColor: 'rgba(44, 53, 49, 0.08)', color: 'var(--color-text-primary)' }}>
+                Go to Vibes Feed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

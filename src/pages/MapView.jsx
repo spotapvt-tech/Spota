@@ -1,12 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, CircleMarker } from 'react-leaflet';
 import { supabase } from '../lib/supabaseClient';
-import { Search, Camera, Sparkles } from 'lucide-react';
+import { Search, Camera, Sparkles, Download, WifiOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { haversineDistance } from '../lib/utils';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import ARView from './ARView';
 import AIVibeMatcher from '../components/AIVibeMatcher';
+import OfflineModal from '../components/OfflineModal';
+import useOfflineSpots from '../hooks/useOfflineSpots';
+import { categories } from '../lib/categoryConfig';
 import 'leaflet/dist/leaflet.css';
 import './MapView.css';
 
@@ -44,6 +47,10 @@ export default function MapView() {
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [showAR, setShowAR] = useState(false);
   const [showAiMatcher, setShowAiMatcher] = useState(false);
+  const [showOfflineModal, setShowOfflineModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const { isOffline, offlineSpots, refreshCache } = useOfflineSpots();
 
   // Fetch spots on mount
   useEffect(() => {
@@ -62,7 +69,9 @@ export default function MapView() {
       }
     }
     
-    fetchSpots();
+    if (!isOffline) {
+      fetchSpots();
+    }
 
     // Center on user's browser location if available
     if ('geolocation' in navigator) {
@@ -75,7 +84,14 @@ export default function MapView() {
         (err) => console.log('Geolocation centered bypassed:', err)
       );
     }
-  }, []);
+  }, [isOffline]);
+
+  // Center map on last offline spot if offline mode becomes active
+  useEffect(() => {
+    if (isOffline && offlineSpots.length > 0) {
+      setCenter([offlineSpots[offlineSpots.length - 1].latitude, offlineSpots[offlineSpots.length - 1].longitude]);
+    }
+  }, [isOffline, offlineSpots]);
 
   // Listen to realtime or local updates to update likes and shares instantly on map markers
   useEffect(() => {
@@ -131,8 +147,10 @@ export default function MapView() {
     return coords;
   };
 
-  // Filter map pins based on search query and range distance
-  const filteredSpots = spots.filter((spot) => {
+  const displaySpots = isOffline ? offlineSpots : spots;
+
+  // Filter map pins based on search query, range distance, and selected category
+  const filteredSpots = displaySpots.filter((spot) => {
     // Only show approved spots, or pending spots owned by the current user
     const isOwner = user && spot.user_id === user.id;
     if (spot.status !== 'approved' && !isOwner) return false;
@@ -146,7 +164,12 @@ export default function MapView() {
       }
     }
 
-    // 2. Search query filter
+    // 2. Category filter
+    if (selectedCategory !== 'all') {
+      if (spot.category !== selectedCategory) return false;
+    }
+
+    // 3. Search query filter
     const query = searchQuery.toLowerCase().trim();
     if (!query) return true;
     const cleanQuery = query.replace(/#/g, '');
@@ -161,6 +184,14 @@ export default function MapView() {
 
   return (
     <div className="map-container-wrapper">
+      {/* Offline Status Banner */}
+      {isOffline && (
+        <div className="offline-banner animate-fade-in">
+          <WifiOff size={14} />
+          <span>Offline Mode — Caching Active</span>
+        </div>
+      )}
+
       {/* AR Mode Trigger Button */}
       <button 
         className="map-ar-trigger-btn glass-panel animate-fade-in" 
@@ -187,6 +218,17 @@ export default function MapView() {
       >
         <Camera size={22} />
       </button>
+
+      {/* Offline Download Trigger Button */}
+      {!isOffline && (
+        <button 
+          className="map-download-trigger-btn glass-panel animate-fade-in" 
+          onClick={() => setShowOfflineModal(true)}
+          title="Download Map Area Offline"
+        >
+          <Download size={22} />
+        </button>
+      )}
 
       {/* Floating Explore Nearby AR CTA */}
       <button 
@@ -231,6 +273,31 @@ export default function MapView() {
               }}
             >
               {rangeVal === 'All' ? 'All' : `${rangeVal} km`}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category Filter Chips Overlay */}
+      <div className="map-category-overlay">
+        <div className="category-chips">
+          <button
+            className={`category-chip ${selectedCategory === 'all' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('all')}
+          >
+            💎 All
+          </button>
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              className={`category-chip ${selectedCategory === cat.id ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat.id)}
+              style={{
+                '--cat-color': cat.color
+              }}
+            >
+              <span>{cat.emoji}</span>
+              <span>{cat.label}</span>
             </button>
           ))}
         </div>
@@ -346,13 +413,24 @@ export default function MapView() {
 
       {showAR && (
         <ARView 
-          spots={spots} 
+          spots={displaySpots} 
           userLocation={userLocation} 
           onClose={() => setShowAR(false)} 
           onSelectSpot={(spot) => {
             setShowAR(false);
             setSelectedSpot(spot);
           }}
+        />
+      )}
+
+      {showOfflineModal && (
+        <OfflineModal 
+          center={center} 
+          spots={spots} 
+          onClose={() => setShowOfflineModal(false)} 
+          onSuccess={(zoneName, count) => {
+            refreshCache();
+          }} 
         />
       )}
     </div>

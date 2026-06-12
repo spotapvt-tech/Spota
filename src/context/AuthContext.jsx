@@ -4,8 +4,22 @@ import { supabase } from '../lib/supabaseClient';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedGuest = localStorage.getItem('spota_guest_user');
+      return savedGuest ? JSON.parse(savedGuest) : null;
+    } catch (e) {
+      console.warn('LocalStorage blocked or unavailable on initial mount:', e);
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(() => {
+    try {
+      return !localStorage.getItem('spota_guest_user');
+    } catch (e) {
+      return true;
+    }
+  });
 
   // Helper to fetch custom profile from the profiles table
   const fetchUserProfile = async (authUser) => {
@@ -45,9 +59,13 @@ export function AuthProvider({ children }) {
           setUser(enrichedUser);
         } else {
           // Fallback to local guest user if stored
-          const savedGuest = localStorage.getItem('spota_guest_user');
-          if (savedGuest) {
-            setUser(JSON.parse(savedGuest));
+          try {
+            const savedGuest = localStorage.getItem('spota_guest_user');
+            if (savedGuest) {
+              setUser(JSON.parse(savedGuest));
+            }
+          } catch (e) {
+            console.warn('LocalStorage read failed during session load:', e);
           }
         }
       } catch (err) {
@@ -58,9 +76,13 @@ export function AuthProvider({ children }) {
     }).catch(err => {
       console.error('Error fetching auth session on load:', err);
       // Fail-safe fallback to guest session if offline
-      const savedGuest = localStorage.getItem('spota_guest_user');
-      if (savedGuest) {
-        setUser(JSON.parse(savedGuest));
+      try {
+        const savedGuest = localStorage.getItem('spota_guest_user');
+        if (savedGuest) {
+          setUser(JSON.parse(savedGuest));
+        }
+      } catch (e) {
+        console.warn('LocalStorage fallback failed on auth catch:', e);
       }
       setLoading(false);
     });
@@ -71,11 +93,20 @@ export function AuthProvider({ children }) {
           const enrichedUser = await fetchUserProfile(session.user);
           setUser(enrichedUser);
           // Clear guest session if real user logs in
-          localStorage.removeItem('spota_guest_user');
+          try {
+            localStorage.removeItem('spota_guest_user');
+          } catch (e) {
+            console.warn('LocalStorage clear failed:', e);
+          }
         } else {
           // Keep guest session if it exists, otherwise null
-          const savedGuest = localStorage.getItem('spota_guest_user');
-          setUser(savedGuest ? JSON.parse(savedGuest) : null);
+          try {
+            const savedGuest = localStorage.getItem('spota_guest_user');
+            setUser(savedGuest ? JSON.parse(savedGuest) : null);
+          } catch (e) {
+            console.warn('LocalStorage read failed during auth state change:', e);
+            setUser(null);
+          }
         }
       } catch (err) {
         console.error('Error handling auth state change:', err);
