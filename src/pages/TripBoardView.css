@@ -1,6 +1,5 @@
 .trip-board-container {
-  height: 100vh;
-  height: 100dvh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -521,3 +520,44 @@
     to { transform: translateY(0); }
   }
 }
+
+/* Agency Partnership Custom UI Elements */
+
+.trip-board-header.co-branded {
+  box-shadow: 0 4px 20px rgba(142, 68, 173, 0.08);
+}
+
+.verified-agency-badge {
+  text-shadow: 0 0 1px rgba(142, 68, 173, 0.1);
+  animation: pulseBadge 2.5s infinite ease-in-out;
+}
+
+@keyframes pulseBadge {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.itinerary-day-group {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-sm);
+  padding: 6px;
+}
+
+.schedule-time-badge {
+  letter-spacing: 0.5px;
+}
+
+.row-booking-btn {
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.row-booking-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.trip-spot-item.has-booking {
+  border-left: 3px solid #8e44ad !important;
+}
+

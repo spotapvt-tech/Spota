@@ -1,12 +1,10 @@
-.chat-container {
+.chat-view-container {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 80px); /* minus BottomNav height */
-  height: calc(100dvh - 80px);
-  padding: 20px;
+  height: 100%;
+  position: relative;
   background-color: var(--color-bg-primary);
   overflow: hidden;
-  position: relative;
 }
 
 .chat-header {

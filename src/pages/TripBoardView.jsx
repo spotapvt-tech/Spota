@@ -49,76 +49,200 @@ export default function TripBoardView() {
   const [showRecapModal, setShowRecapModal] = useState(false);
   const [selectedSpot, setSelectedSpot] = useState(null); // For details modal
   const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]); // Default
+  const [agencyBrand, setAgencyBrand] = useState(null);
 
   // Fetch all collaborative trip board details
   const fetchTripData = useCallback(async () => {
     try {
       // 1. Fetch trip details
-      const { data: tripData, error: tripError } = await supabase
-        .from('trips')
-        .select('*')
-        .eq('id', tripId)
-        .single();
+      let tripData = null;
+      try {
+        const { data, error } = await supabase
+          .from('trips')
+          .select('*')
+          .eq('id', tripId)
+          .single();
 
-      if (tripError) throw tripError;
+        if (!error && data) {
+          tripData = data;
+        }
+      } catch (err) {
+        console.warn('DB error fetching trip details');
+      }
+
+      // Fallback check in local storage
+      if (!tripData) {
+        const localTripStr = localStorage.getItem(`spota_trip_${tripId}`);
+        if (localTripStr) {
+          tripData = JSON.parse(localTripStr);
+        }
+      }
+
+      if (!tripData) {
+        throw new Error('Trip board not found');
+      }
       setTrip(tripData);
 
+      // Fetch Agency branding if associated with agency
+      let isAgencyOwner = false;
+      if (tripData.agency_id) {
+        let agencyProfile = null;
+        try {
+          const { data, error } = await supabase
+            .from('agency_profiles')
+            .select('*')
+            .eq('id', tripData.agency_id)
+            .maybeSingle();
+          if (!error && data) {
+            agencyProfile = data;
+          }
+        } catch (err) {
+          console.warn('DB error fetching trip agency brand');
+        }
+
+        // Fallback check in local storage
+        if (!agencyProfile) {
+          const localKeys = Object.keys(localStorage);
+          for (const key of localKeys) {
+            if (key.startsWith('spota_agency_')) {
+              const val = JSON.parse(localStorage.getItem(key));
+              if (val && val.id === tripData.agency_id) {
+                agencyProfile = val;
+                break;
+              }
+            }
+          }
+        }
+        setAgencyBrand(agencyProfile);
+
+        if (agencyProfile && agencyProfile.profile_id === user.id) {
+          isAgencyOwner = true;
+        }
+      } else {
+        setAgencyBrand(null);
+      }
+
       // 2. Fetch trip members
-      const { data: membersData, error: membersError } = await supabase
-        .from('trip_members')
-        .select(`
-          user_id,
-          role,
-          profiles:user_id (
-            username,
-            avatar_url
-          )
-        `)
-        .eq('trip_id', tripId);
+      let membersList = [];
+      try {
+        const { data, error } = await supabase
+          .from('trip_members')
+          .select(`
+            user_id,
+            role,
+            profiles:user_id (
+              username,
+              avatar_url
+            )
+          `)
+          .eq('trip_id', tripId);
 
-      if (membersError) throw membersError;
-      setMembers(membersData || []);
+        if (!error && data) {
+          membersList = data;
+        }
+      } catch (membersErr) {
+        console.warn('DB error fetching members');
+      }
 
-      // Verify active user is a member
-      const isMember = membersData.some(m => m.user_id === user.id);
+      // Local storage fallback for members
+      const localTripMembersKey = `spota_trip_members_${tripId}`;
+      const localMembers = localStorage.getItem(localTripMembersKey);
+      if (membersList.length === 0 && localMembers) {
+        membersList = JSON.parse(localMembers);
+      }
+      setMembers(membersList);
+
+      // Verify active user is a member or the agency owner of the board
+      const isMember = membersList.some(m => m.user_id === user.id) || isAgencyOwner;
       if (!isMember) {
         alert('You are not a member of this trip board.');
         navigate('/trips');
         return;
       }
 
-      // 3. Fetch trip spots
-      const { data: tripSpotsData, error: tripSpotsError } = await supabase
-        .from('trip_spots')
-        .select(`
-          trip_id,
-          spot_id,
-          added_by,
-          visited,
-          added_at,
-          spots:spot_id (
-            id,
-            title,
-            description,
-            latitude,
-            longitude,
-            image_url,
-            category
-          )
-        `)
-        .eq('trip_id', tripId);
+      // 3. Fetch trip spots with itinerary and booking info
+      let tripSpotsData = [];
+      let tripSpotsError = null;
+      try {
+        const { data, error } = await supabase
+          .from('trip_spots')
+          .select(`
+            trip_id,
+            spot_id,
+            added_by,
+            visited,
+            added_at,
+            itinerary_day,
+            schedule_time,
+            booking_cta_label,
+            booking_cta_url,
+            spots:spot_id (
+              id,
+              title,
+              description,
+              latitude,
+              longitude,
+              image_url,
+              category
+            )
+          `)
+          .eq('trip_id', tripId);
+        
+        if (error) throw error;
+        tripSpotsData = data;
+      } catch (err) {
+        console.warn('DB select with itinerary fields failed, using basic select query');
+        try {
+          const { data, error } = await supabase
+            .from('trip_spots')
+            .select(`
+              trip_id,
+              spot_id,
+              added_by,
+              visited,
+              added_at,
+              spots:spot_id (
+                id,
+                title,
+                description,
+                latitude,
+                longitude,
+                image_url,
+                category
+              )
+            `)
+            .eq('trip_id', tripId);
+          if (error) throw error;
+          tripSpotsData = data;
+        } catch (innerErr) {
+          tripSpotsError = innerErr;
+        }
+      }
 
       if (tripSpotsError) throw tripSpotsError;
       
-      const validTripSpots = (tripSpotsData || []).filter(item => item.spots !== null);
+      // Merge with local storage itinerary details (sandbox fallback)
+      const localSpotsKey = `spota_trip_spots_${tripId}`;
+      const localSpots = JSON.parse(localStorage.getItem(localSpotsKey) || '[]');
+      
+      const validTripSpots = (tripSpotsData || [])
+        .filter(item => item.spots !== null)
+        .map(dbItem => {
+          const localItem = localSpots.find(ls => (ls.id === dbItem.spot_id || ls.spot_id === dbItem.spot_id));
+          return {
+            ...dbItem,
+            itinerary_day: dbItem.itinerary_day !== undefined && dbItem.itinerary_day !== null ? dbItem.itinerary_day : (localItem?.itinerary_day || 1),
+            schedule_time: dbItem.schedule_time !== undefined && dbItem.schedule_time !== null ? dbItem.schedule_time : (localItem?.schedule_time || ''),
+            booking_cta_label: dbItem.booking_cta_label !== undefined && dbItem.booking_cta_label !== null ? dbItem.booking_cta_label : (localItem?.booking_cta_label || 'Book Spot'),
+            booking_cta_url: dbItem.booking_cta_url !== undefined && dbItem.booking_cta_url !== null ? dbItem.booking_cta_url : (localItem?.booking_cta_url || '')
+          };
+        });
       setTripSpots(validTripSpots);
 
       if (validTripSpots.length > 0) {
         // Center on the last added spot
         const lastSpot = validTripSpots[validTripSpots.length - 1].spots;
         setMapCenter([lastSpot.latitude, lastSpot.longitude]);
-      } else if (tripData.destination) {
-        // Fallback geocoding mock or leave default center
       }
 
       // 4. Fetch spot votes
@@ -275,6 +399,176 @@ export default function TripBoardView() {
     return votes.some(v => v.spot_id === spotId && v.user_id === user.id);
   };
 
+  const handleBookingClick = async (e, ts) => {
+    e.stopPropagation();
+    if (!ts.booking_cta_url) return;
+
+    try {
+      await supabase
+        .from('agency_leads')
+        .insert({
+          agency_id: trip.agency_id,
+          visitor_id: user.id,
+          spot_id: ts.spot_id,
+          source_platform: 'trip_board'
+        });
+    } catch (err) {
+      console.warn('Lead tracking insertion failed, logging click in local storage:', err);
+    }
+
+    // Save lead locally as well for analytics dashboard metrics fallbacks
+    const localLeadsKey = `spota_agency_leads_${trip.agency_id}`;
+    const localLeads = JSON.parse(localStorage.getItem(localLeadsKey) || '[]');
+    const newLead = {
+      id: `lead_${Math.random().toString(36).substr(2, 9)}`,
+      clicked_at: new Date().toISOString(),
+      source_platform: 'trip_board',
+      spot_name: ts.spots?.title || 'Unknown Spot',
+      visitor_name: user.user_metadata?.username || 'Guest Explorer',
+      commission: 3.50
+    };
+    localStorage.setItem(localLeadsKey, JSON.stringify([newLead, ...localLeads]));
+
+    // Open booking link
+    window.open(ts.booking_cta_url, '_blank');
+  };
+
+  const renderSpotItemRow = (ts) => {
+    const spot = ts.spots;
+    if (!spot) return null;
+    const votesCount = getSpotVotesCount(spot.id);
+    const isVoted = userHasVoted(spot.id);
+
+    return (
+      <div key={spot.id} className={`trip-spot-item ${ts.visited ? 'visited' : ''} ${ts.booking_cta_url ? 'has-booking' : ''}`}>
+        <div className="item-main" onClick={() => setMapCenter([spot.latitude, spot.longitude])}>
+          {spot.image_url ? (
+            <img src={spot.image_url} alt={spot.title} className="item-thumbnail" />
+          ) : (
+            <div className="item-thumbnail placeholder">💎</div>
+          )}
+          <div className="item-info">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+              <h4 style={{ margin: 0 }}>{spot.title}</h4>
+              {ts.schedule_time && (
+                <span className="schedule-time-badge" style={{ fontSize: '10px', background: 'rgba(108,140,116,0.12)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
+                  🕒 {ts.schedule_time}
+                </span>
+              )}
+            </div>
+            <span className="item-cat">{spot.category}</span>
+          </div>
+        </div>
+
+        <div className="item-actions" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          {ts.booking_cta_url && (
+            <button 
+              className="row-booking-btn" 
+              onClick={(e) => handleBookingClick(e, ts)}
+              style={{
+                background: '#8e44ad',
+                color: '#fff',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '6px 10px',
+                fontSize: '11px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              🎟️ {ts.booking_cta_label || 'Book'}
+            </button>
+          )}
+
+          <button 
+            className={`vote-btn ${isVoted ? 'active' : ''}`}
+            onClick={() => handleToggleVote(spot.id)}
+            title="Upvote Destination"
+          >
+            <ThumbsUp size={16} />
+            <span>{votesCount}</span>
+          </button>
+
+          <button 
+            className="visited-toggle-btn"
+            onClick={() => handleToggleVisited(spot.id, ts.visited)}
+            title={ts.visited ? 'Mark Unvisited' : 'Mark Visited'}
+          >
+            {ts.visited ? <CheckSquare size={18} color="var(--color-accent)" /> : <Square size={18} />}
+          </button>
+
+          <button 
+            className="remove-btn"
+            onClick={() => handleRemoveSpotFromTrip(spot.id)}
+            title="Remove Spot"
+          >
+            ×
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderSpotsList = () => {
+    if (tripSpots.length === 0) {
+      return (
+        <div className="empty-spots">
+          <Info size={24} />
+          <p>No locations added yet.</p>
+          <span>Click "Add Spot" above to pin items from the map database onto your group board!</span>
+        </div>
+      );
+    }
+
+    if (agencyBrand) {
+      // Group spots by day
+      const spotsByDay = {};
+      tripSpots.forEach(ts => {
+        const day = ts.itinerary_day || 1;
+        if (!spotsByDay[day]) spotsByDay[day] = [];
+        spotsByDay[day].push(ts);
+      });
+
+      const sortedDays = Object.keys(spotsByDay).sort((a, b) => parseInt(a) - parseInt(b));
+
+      return sortedDays.map(dayNum => (
+        <div key={dayNum} className="itinerary-day-group" style={{ marginBottom: '16px' }}>
+          <div className="itinerary-day-separator" style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            margin: '12px 0 8px 0', 
+            fontSize: '11px', 
+            fontWeight: 700, 
+            color: '#8e44ad',
+            letterSpacing: '1px'
+          }}>
+            <span style={{ background: 'rgba(142,68,173,0.1)', padding: '4px 10px', borderRadius: '4px' }}>
+              DAY {dayNum}
+            </span>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(142,68,173,0.15)', marginLeft: '8px' }}></div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {spotsByDay[dayNum]
+              .sort((a, b) => (a.schedule_time || '').localeCompare(b.schedule_time || ''))
+              .map(ts => renderSpotItemRow(ts))}
+          </div>
+        </div>
+      ));
+    }
+
+    // Default voting-based sorting list
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {tripSpots
+          .sort((a, b) => getSpotVotesCount(b.spot_id) - getSpotVotesCount(a.spot_id))
+          .map(ts => renderSpotItemRow(ts))}
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div className="trip-board-container loading-state">
@@ -288,12 +582,19 @@ export default function TripBoardView() {
   return (
     <div className="trip-board-container animate-fade-in">
       {/* Top Banner Toolbar */}
-      <div className="trip-board-header glass-panel">
+      <div className={`trip-board-header glass-panel ${agencyBrand ? 'co-branded' : ''}`} style={agencyBrand ? { borderTop: '4px solid #8e44ad' } : {}}>
         <button className="back-btn" onClick={() => navigate('/trips')}>
           <ArrowLeft size={20} />
         </button>
         <div className="header-info">
-          <h2>{trip.name}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h2>{trip.name}</h2>
+            {agencyBrand && (
+              <span className="verified-agency-badge" style={{ backgroundColor: 'rgba(142, 68, 173, 0.12)', color: '#8e44ad', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '99px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                👑 {agencyBrand.company_name} Partner
+              </span>
+            )}
+          </div>
           <span className="destination-tag">{trip.destination || 'Flexible Route'}</span>
         </div>
         <div className="header-actions" style={{ display: 'flex', gap: '8px' }}>
@@ -330,7 +631,7 @@ export default function TripBoardView() {
               const votesCount = getSpotVotesCount(spot.id);
               const customPin = L.divIcon({
                 className: 'custom-trip-marker',
-                html: `<div class="trip-gem-pin ${ts.visited ? 'visited' : ''}">
+                html: `<div class="trip-gem-pin ${ts.visited ? 'visited' : ''}" style="${agencyBrand ? 'border-color: #8e44ad;' : ''}">
                   <span class="pin-votes">${votesCount > 0 ? `👍 ${votesCount}` : '💎'}</span>
                 </div>`,
                 iconSize: [36, 36],
@@ -409,64 +710,7 @@ export default function TripBoardView() {
           </div>
 
           <div className="trip-spots-list">
-            {tripSpots.length === 0 ? (
-              <div className="empty-spots">
-                <Info size={24} />
-                <p>No locations added yet.</p>
-                <span>Click "Add Spot" above to pin items from the map database onto your group board!</span>
-              </div>
-            ) : (
-              tripSpots
-                .sort((a, b) => getSpotVotesCount(b.spot_id) - getSpotVotesCount(a.spot_id)) // Sort by upvotes count
-                .map((ts) => {
-                  const spot = ts.spots;
-                  const votesCount = getSpotVotesCount(spot.id);
-                  const isVoted = userHasVoted(spot.id);
-
-                  return (
-                    <div key={spot.id} className={`trip-spot-item ${ts.visited ? 'visited' : ''}`}>
-                      <div className="item-main" onClick={() => setMapCenter([spot.latitude, spot.longitude])}>
-                        {spot.image_url ? (
-                          <img src={spot.image_url} alt={spot.title} className="item-thumbnail" />
-                        ) : (
-                          <div className="item-thumbnail placeholder">💎</div>
-                        )}
-                        <div className="item-info">
-                          <h4>{spot.title}</h4>
-                          <span className="item-cat">{spot.category}</span>
-                        </div>
-                      </div>
-
-                      <div className="item-actions">
-                        <button 
-                          className={`vote-btn ${isVoted ? 'active' : ''}`}
-                          onClick={() => handleToggleVote(spot.id)}
-                          title="Upvote Destination"
-                        >
-                          <ThumbsUp size={16} />
-                          <span>{votesCount}</span>
-                        </button>
-
-                        <button 
-                          className="visited-toggle-btn"
-                          onClick={() => handleToggleVisited(spot.id, ts.visited)}
-                          title={ts.visited ? 'Mark Unvisited' : 'Mark Visited'}
-                        >
-                          {ts.visited ? <CheckSquare size={18} color="var(--color-accent)" /> : <Square size={18} />}
-                        </button>
-
-                        <button 
-                          className="remove-btn"
-                          onClick={() => handleRemoveSpotFromTrip(spot.id)}
-                          title="Remove Spot"
-                        >
-                          ×
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })
-            )}
+            {renderSpotsList()}
           </div>
         </div>
       </div>
@@ -515,7 +759,11 @@ export default function TripBoardView() {
 
       {showRecapModal && (
         <TripRecapModal 
-          trip={trip} 
+          trip={{
+            ...trip,
+            agency_name: agencyBrand ? agencyBrand.company_name : null,
+            logo_url: agencyBrand ? agencyBrand.logo_url : null
+          }} 
           tripSpots={tripSpots} 
           members={members} 
           votes={votes} 

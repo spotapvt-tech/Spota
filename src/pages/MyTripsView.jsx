@@ -20,6 +20,95 @@ export default function MyTripsView() {
   const [joinCode, setJoinCode] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const [viewMode, setViewMode] = useState('my-boards');
+  const [packages, setPackages] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const categories = ['All', 'Trek', 'Adventure', 'Campsite', 'Sightseeing'];
+
+  // Fetch public marketplace trip packages
+  const fetchPackages = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('trips')
+        .select(`
+          id,
+          name,
+          destination,
+          start_date,
+          end_date,
+          package_price,
+          package_description,
+          agency_id
+        `)
+        .eq('is_public_package', true);
+      
+      if (error) throw error;
+
+      // Hydrate agency details (since the nested select might fail without remote relations setup)
+      const hydratedData = [];
+      for (const t of (data || [])) {
+        let agencyProfile = null;
+        try {
+          const { data: agencyData } = await supabase
+            .from('agency_profiles')
+            .select('company_name, logo_url')
+            .eq('id', t.agency_id)
+            .maybeSingle();
+          if (agencyData) agencyProfile = agencyData;
+        } catch (e) {}
+
+        if (!agencyProfile && t.agency_id) {
+          const localKeys = Object.keys(localStorage);
+          for (const key of localKeys) {
+            if (key.startsWith('spota_agency_')) {
+              const val = JSON.parse(localStorage.getItem(key));
+              if (val && val.id === t.agency_id) {
+                agencyProfile = { company_name: val.company_name, logo_url: val.logo_url };
+                break;
+              }
+            }
+          }
+        }
+
+        hydratedData.push({
+          ...t,
+          agency_profiles: agencyProfile
+        });
+      }
+      setPackages(hydratedData);
+    } catch (err) {
+      console.warn('DB error fetching packages, using local storage cache fallback');
+    }
+
+    // Fallback assembly
+    setPackages(prev => {
+      if (prev.length > 0) return prev;
+      const allPackages = [];
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('spota_agency_trips_')) {
+          const trips = JSON.parse(localStorage.getItem(key) || '[]');
+          trips.forEach(t => {
+            if (t.is_public_package) {
+              const creatorId = t.creator_id;
+              let companyName = 'Verified Tour Operator';
+              const agencyProfileStr = localStorage.getItem(`spota_agency_${creatorId}`);
+              if (agencyProfileStr) {
+                companyName = JSON.parse(agencyProfileStr).company_name;
+              }
+              allPackages.push({
+                ...t,
+                package_price: parseFloat(t.package_price) || 199.00,
+                agency_profiles: { company_name: companyName }
+              });
+            }
+          });
+        }
+      });
+      return allPackages;
+    });
+  }, []);
+
   // Fetch user's trips
   const fetchTrips = useCallback(async () => {
     if (!user || user.isGuest) {
@@ -27,6 +116,7 @@ export default function MyTripsView() {
       return;
     }
     setLoading(true);
+    let tripsList = [];
     try {
       const { data, error } = await supabase
         .from('trip_members')
@@ -46,17 +136,44 @@ export default function MyTripsView() {
         .eq('user_id', user.id);
 
       if (error) throw error;
-      setTripsData(data || []);
+      tripsList = data || [];
     } catch (err) {
-      console.error('Error fetching trips:', err);
-    } finally {
-      setLoading(false);
+      console.warn('Error fetching trips from database, using LocalStorage fallback');
     }
+
+    // LocalStorage fallback check
+    if (tripsList.length === 0) {
+      const localTrips = [];
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (key.startsWith('spota_trip_members_')) {
+          const membersArray = JSON.parse(localStorage.getItem(key) || '[]');
+          const myMember = membersArray.find(m => m.user_id === user.id);
+          if (myMember) {
+            const tripId = key.replace('spota_trip_members_', '');
+            const tripDetailStr = localStorage.getItem(`spota_trip_${tripId}`);
+            if (tripDetailStr) {
+              const tripDetail = JSON.parse(tripDetailStr);
+              localTrips.push({
+                trip_id: tripId,
+                role: myMember.role || 'member',
+                trips: tripDetail
+              });
+            }
+          }
+        }
+      });
+      tripsList = localTrips;
+    }
+
+    setTripsData(tripsList);
+    setLoading(false);
   }, [user]);
 
   useEffect(() => {
     fetchTrips();
-  }, [fetchTrips]);
+    fetchPackages();
+  }, [fetchTrips, fetchPackages]);
 
   const handleCreateTrip = async (e) => {
     e.preventDefault();
@@ -97,6 +214,12 @@ export default function MyTripsView() {
         });
 
       if (memberError) throw memberError;
+
+      // Save details locally for sandbox fallback
+      localStorage.setItem(`spota_trip_${tripData.id}`, JSON.stringify(tripData));
+      localStorage.setItem(`spota_trip_members_${tripData.id}`, JSON.stringify([
+        { user_id: user.id, role: 'creator', profiles: { username: user.username || user.email || 'Creator' } }
+      ]));
 
       alert(`Trip "${createForm.name}" created successfully! Invite Code: ${inviteCode}`);
       setCreateForm({ name: '', destination: '', startDate: '', endDate: '' });
@@ -145,6 +268,17 @@ export default function MyTripsView() {
       // Handle duplicate membership code gracefully
       if (memberError && memberError.code !== '23505') {
         throw memberError;
+      }
+
+      // Cache details locally for fallback
+      localStorage.setItem(`spota_trip_${tripData.id}`, JSON.stringify(tripData));
+      const localMembersKey = `spota_trip_members_${tripData.id}`;
+      const existingMembers = JSON.parse(localStorage.getItem(localMembersKey) || '[]');
+      if (!existingMembers.some(m => m.user_id === user.id)) {
+        localStorage.setItem(localMembersKey, JSON.stringify([
+          ...existingMembers,
+          { user_id: user.id, role: 'member', profiles: { username: user.username || user.email || 'Member' } }
+        ]));
       }
 
       alert(`Successfully joined "${tripData.name}"!`);
@@ -199,6 +333,12 @@ export default function MyTripsView() {
     return `${sDate} - ${eDate}`;
   };
 
+  const filteredPackages = packages.filter(pkg => {
+    if (selectedCategory === 'All') return true;
+    const text = `${pkg.name} ${pkg.package_description || ''} ${pkg.destination || ''}`.toLowerCase();
+    return text.includes(selectedCategory.toLowerCase());
+  });
+
   if (user?.isGuest) {
     return (
       <div className="trips-container guest-state animate-fade-in">
@@ -232,59 +372,161 @@ export default function MyTripsView() {
         </div>
       </div>
 
+      {/* Tab Switcher */}
+      <div className="trips-mode-selector">
+        <button 
+          className={`tab-btn ${viewMode === 'my-boards' ? 'active' : ''}`}
+          onClick={() => setViewMode('my-boards')}
+        >
+          My Group Boards
+        </button>
+        <button 
+          className={`tab-btn ${viewMode === 'discover' ? 'active' : ''}`}
+          onClick={() => {
+            setViewMode('discover');
+            fetchPackages();
+          }}
+        >
+          Discover Packages
+        </button>
+      </div>
+
+      {viewMode === 'discover' && (
+        <div className="category-scroll-chips">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={`chip-btn ${selectedCategory === cat ? 'active' : ''}`}
+              onClick={() => setSelectedCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="trips-content">
         {loading ? (
           <p className="loading-text">Loading trip boards...</p>
-        ) : tripsData.length === 0 ? (
-          <div className="empty-trips-state glass-panel">
-            <Compass size={40} className="empty-icon" />
-            <h4>No trip boards yet</h4>
-            <p>Create a trip board or join an existing one using an invite code from friends to start pinning spots together!</p>
-          </div>
+        ) : viewMode === 'my-boards' ? (
+          tripsData.length === 0 ? (
+            <div className="empty-trips-state glass-panel">
+              <Compass size={40} className="empty-icon" />
+              <h4>No trip boards yet</h4>
+              <p>Create a trip board or join an existing one using an invite code from friends to start pinning spots together!</p>
+            </div>
+          ) : (
+            <div className="trips-grid">
+              {tripsData.map(({ role, trips: trip }) => {
+                if (!trip) return null;
+                return (
+                  <div 
+                    key={trip.id} 
+                    className="trip-card glass-panel animate-fade-in"
+                    onClick={() => navigate(`/trips/${trip.id}`)}
+                  >
+                    <div className="trip-card-header">
+                      <h3>{trip.name}</h3>
+                      <button 
+                        className="trip-delete-btn" 
+                        onClick={(e) => handleDeleteTrip(e, trip.id, role, trip.name)}
+                        title={role === 'creator' ? 'Delete Trip' : 'Leave Trip'}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                    
+                    {trip.destination && (
+                      <div className="trip-info-row">
+                        <MapPin size={14} />
+                        <span>{trip.destination}</span>
+                      </div>
+                    )}
+
+                    <div className="trip-info-row">
+                      <Calendar size={14} />
+                      <span>{formatDateRange(trip.start_date, trip.end_date)}</span>
+                    </div>
+
+                    <div className="trip-card-footer">
+                      <span className="role-tag">{role === 'creator' ? '👑 Creator' : '👤 Member'}</span>
+                      <span className="go-btn">
+                        <span>Enter Board</span>
+                        <ArrowRight size={14} />
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )
         ) : (
-          <div className="trips-grid">
-            {tripsData.map(({ role, trips: trip }) => {
-              if (!trip) return null;
-              return (
+          filteredPackages.length === 0 ? (
+            <div className="empty-trips-state glass-panel">
+              <Compass size={40} className="empty-icon" />
+              <h4>No Marketplace Packages yet</h4>
+              <p>Agencies have not published any travel packages yet. Check back soon for curated tours!</p>
+            </div>
+          ) : (
+            <div className="trips-grid">
+              {filteredPackages.map((pkg) => (
                 <div 
-                  key={trip.id} 
+                  key={pkg.id} 
                   className="trip-card glass-panel animate-fade-in"
-                  onClick={() => navigate(`/trips/${trip.id}`)}
+                  onClick={() => navigate(`/trips/preview/${pkg.id}`)}
+                  style={{ cursor: 'pointer', borderLeft: '4px solid #8e44ad' }}
                 >
-                  <div className="trip-card-header">
-                    <h3>{trip.name}</h3>
-                    <button 
-                      className="trip-delete-btn" 
-                      onClick={(e) => handleDeleteTrip(e, trip.id, role, trip.name)}
-                      title={role === 'creator' ? 'Delete Trip' : 'Leave Trip'}
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                  <div className="trip-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800 }}>{pkg.name}</h3>
+                    <span className="package-price-badge" style={{ 
+                      backgroundColor: 'rgba(142,68,173,0.12)', 
+                      color: '#8e44ad', 
+                      fontSize: '13px', 
+                      fontWeight: 800, 
+                      padding: '4px 10px', 
+                      borderRadius: '8px',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      ${pkg.package_price}
+                    </span>
                   </div>
                   
-                  {trip.destination && (
-                    <div className="trip-info-row">
+                  {pkg.destination && (
+                    <div className="trip-info-row" style={{ marginTop: '8px' }}>
                       <MapPin size={14} />
-                      <span>{trip.destination}</span>
+                      <span>{pkg.destination}</span>
                     </div>
                   )}
 
-                  <div className="trip-info-row">
-                    <Calendar size={14} />
-                    <span>{formatDateRange(trip.start_date, trip.end_date)}</span>
-                  </div>
+                  {pkg.package_description && (
+                    <p style={{ 
+                      fontSize: '12px', 
+                      color: 'var(--color-text-secondary)', 
+                      margin: '10px 0', 
+                      display: '-webkit-box', 
+                      WebkitLineClamp: 2, 
+                      WebkitBoxOrient: 'vertical', 
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      lineHeight: '1.4'
+                    }}>
+                      {pkg.package_description}
+                    </p>
+                  )}
 
-                  <div className="trip-card-footer">
-                    <span className="role-tag">{role === 'creator' ? '👑 Creator' : '👤 Member'}</span>
-                    <span className="go-btn">
-                      <span>Enter Board</span>
+                  <div className="trip-card-footer" style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
+                    <span className="role-tag" style={{ color: '#8e44ad', fontWeight: 600, fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      👑 {pkg.agency_profiles?.company_name || 'Verified Agency'}
+                    </span>
+                    <span className="go-btn" style={{ color: '#8e44ad' }}>
+                      <span>Preview & Book</span>
                       <ArrowRight size={14} />
                     </span>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )
         )}
       </div>
 

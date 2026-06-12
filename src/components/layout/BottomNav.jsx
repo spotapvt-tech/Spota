@@ -1,8 +1,18 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { Map, PlusCircle, User, MessageSquare, Compass, Film } from 'lucide-react';
 import './BottomNav.css';
 
 export default function BottomNav() {
+  const location = useLocation();
+
+  // Hide BottomNav on active trip boards and package preview screens
+  const isTripBoard = location.pathname.match(/\/trips\/[^/]+$/);
+  const isPreviewPage = location.pathname.includes('/trips/preview/');
+
+  if (isTripBoard || isPreviewPage) {
+    return null;
+  }
+
   return (
     <nav className="bottom-nav glass-panel">
       <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} end>

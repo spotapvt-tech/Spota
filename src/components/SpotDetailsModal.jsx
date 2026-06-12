@@ -872,6 +872,43 @@ export default function SpotDetailsModal({ spot, onClose }) {
           </div>
 
           <div className="action-buttons" style={{ flexWrap: 'wrap', gap: '8px' }}>
+            {spot.booking_cta_url && (
+              <button 
+                className="action-btn booking-cta-btn" 
+                onClick={async (e) => {
+                  e.stopPropagation();
+                  try {
+                    await supabase
+                      .from('agency_leads')
+                      .insert({
+                        agency_id: spot.agency_id || 'unknown',
+                        visitor_id: user && !user.isGuest ? user.id : null,
+                        spot_id: spot.id,
+                        source_platform: 'spot_details'
+                      });
+                  } catch (err) {
+                    console.warn('Lead tracking insertion failed');
+                  }
+                  if (spot.agency_id) {
+                    const localLeadsKey = `spota_agency_leads_${spot.agency_id}`;
+                    const localLeads = JSON.parse(localStorage.getItem(localLeadsKey) || '[]');
+                    const newLead = {
+                      id: `lead_${Math.random().toString(36).substr(2, 9)}`,
+                      clicked_at: new Date().toISOString(),
+                      source_platform: 'spot_details',
+                      spot_name: spot.title,
+                      visitor_name: user?.user_metadata?.username || 'Guest Explorer',
+                      commission: 3.50
+                    };
+                    localStorage.setItem(localLeadsKey, JSON.stringify([newLead, ...localLeads]));
+                  }
+                  window.open(spot.booking_cta_url, '_blank');
+                }}
+                style={{ backgroundColor: '#8e44ad', color: '#fff', border: 'none' }}
+              >
+                <span>🎟️ {spot.booking_cta_label || 'Book Experience'}</span>
+              </button>
+            )}
             <button className={`action-btn ${isSaved ? 'active' : ''}`} onClick={toggleSave}>
               <Heart size={20} fill={isSaved ? "var(--color-live)" : "none"} color={isSaved ? "var(--color-live)" : "currentColor"} />
               <span>{isSaved ? 'Saved' : 'Save'}</span>

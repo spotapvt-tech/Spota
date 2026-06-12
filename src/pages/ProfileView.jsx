@@ -21,6 +21,8 @@ export default function ProfileView() {
   const [activeTrek, setActiveTrek] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSpot, setSelectedSpot] = useState(null);
+  const [agency, setAgency] = useState(null);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   // Fetch spots and profiles from Supabase
   const fetchData = useCallback(async () => {
@@ -57,6 +59,33 @@ export default function ProfileView() {
             created_at: new Date().toISOString(),
             isGuest: false,
           });
+        }
+      }
+
+      // Fetch Agency Profile Info
+      try {
+        const { data: agencyData } = await supabase
+          .from('agency_profiles')
+          .select('*')
+          .eq('profile_id', targetUserId)
+          .maybeSingle();
+        if (agencyData) {
+          setAgency(agencyData);
+        } else {
+          const localAgency = localStorage.getItem(`spota_agency_${targetUserId}`);
+          if (localAgency) {
+            setAgency(JSON.parse(localAgency));
+          } else {
+            setAgency(null);
+          }
+        }
+      } catch (err) {
+        // Fallback for local storage check or direct mock if tables don't exist yet
+        const localAgency = localStorage.getItem(`spota_agency_${targetUserId}`);
+        if (localAgency) {
+          setAgency(JSON.parse(localAgency));
+        } else {
+          setAgency(null);
         }
       }
 
@@ -185,7 +214,7 @@ export default function ProfileView() {
     <div className="profile-container animate-fade-in">
       <div className="profile-card glass-panel">
         {isOwnProfile ? (
-          <button className="logout-btn-top" onClick={signOut} title="Sign Out">
+          <button className="logout-btn-top" onClick={() => setShowLogoutConfirm(true)} title="Sign Out">
             <LogOut size={20} />
           </button>
         ) : (
@@ -201,7 +230,12 @@ export default function ProfileView() {
         <div className="profile-info">
           <div className="username-row">
             <h2>{username}</h2>
-            {isVerified && (
+            {agency && (
+              <span className="verified-badge agency" title={`Verified Agency: ${agency.company_name}`} style={{ color: '#8e44ad' }}>
+                <CheckCircle size={18} fill="currentColor" color="var(--color-bg-primary)" />
+              </span>
+            )}
+            {isVerified && !agency && (
               <span className="verified-badge" title="Verified Contributor">
                 <CheckCircle size={18} fill="currentColor" color="var(--color-bg-primary)" />
               </span>
@@ -220,8 +254,8 @@ export default function ProfileView() {
           </div>
           <div className="score-stat">
             <span className="score-num" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Award size={18} color={isVerified ? 'var(--color-accent)' : 'var(--color-text-secondary)'} />
-              {isVerified ? 'Verified' : 'Explorer'}
+              <Award size={18} color={agency ? '#8e44ad' : isVerified ? 'var(--color-accent)' : 'var(--color-text-secondary)'} />
+              {agency ? 'Agency Partner' : isVerified ? 'Verified' : 'Explorer'}
             </span>
             <span className="score-label">Contributor Rank</span>
           </div>
@@ -230,14 +264,24 @@ export default function ProfileView() {
         {isOwnProfile && currentUser && (
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', marginTop: '16px' }}>
             {!currentUser.isGuest && (
-              <button 
-                className="submit-auth-btn" 
-                style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(108, 140, 116, 0.12)', color: 'var(--color-accent)', border: 'none' }} 
-                onClick={() => navigate('/profile/analytics')}
-              >
-                <TrendingUp size={16} />
-                Creator Analytics
-              </button>
+              <>
+                <button 
+                  className="submit-auth-btn" 
+                  style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(142, 68, 173, 0.12)', color: '#8e44ad', border: 'none' }} 
+                  onClick={() => navigate('/agency-dashboard')}
+                >
+                  <Award size={16} />
+                  {agency ? 'Agency Portal' : 'List Your Agency'}
+                </button>
+                <button 
+                  className="submit-auth-btn" 
+                  style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(108, 140, 116, 0.12)', color: 'var(--color-accent)', border: 'none' }} 
+                  onClick={() => navigate('/profile/analytics')}
+                >
+                  <TrendingUp size={16} />
+                  Creator Analytics
+                </button>
+              </>
             )}
             <button 
               className="submit-auth-btn" 
@@ -385,6 +429,38 @@ export default function ProfileView() {
 
       {selectedSpot && (
         <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
+      )}
+
+      {showLogoutConfirm && (
+        <div className="logout-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+          <div className="logout-confirm-modal glass-panel animate-fade-in" style={{ padding: '24px', borderRadius: 'var(--radius-md)', maxWidth: '360px', width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <h3 style={{ margin: 0, fontSize: 'var(--font-size-lg)', color: 'var(--color-text-primary)' }}>🚪 Log Out?</h3>
+            <p style={{ margin: 0, fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
+              Are you sure you want to log out of Spota? You will need to log back in to drop and save gems.
+            </p>
+            <div className="logout-modal-actions" style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
+              <button 
+                type="button" 
+                onClick={() => setShowLogoutConfirm(false)} 
+                className="submit-trip-btn" 
+                style={{ flex: 1, margin: 0, backgroundColor: 'rgba(44, 53, 49, 0.08)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                onClick={() => {
+                  setShowLogoutConfirm(false);
+                  signOut();
+                }} 
+                className="submit-trip-btn" 
+                style={{ flex: 1, margin: 0, backgroundColor: 'var(--color-live)', color: 'white' }}
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

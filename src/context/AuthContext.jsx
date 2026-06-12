@@ -25,11 +25,19 @@ export function AuthProvider({ children }) {
   const fetchUserProfile = async (authUser) => {
     if (!authUser || authUser.isGuest) return authUser;
     try {
-      const { data, error } = await supabase
+      const queryPromise = supabase
         .from('profiles')
         .select('*')
         .eq('id', authUser.id)
         .single();
+
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Profile query timeout')), 2500)
+      );
+
+      const result = await Promise.race([queryPromise, timeoutPromise]);
+      const data = result?.data;
+      const error = result?.error;
       
       if (!error && data) {
         return { 
@@ -44,35 +52,42 @@ export function AuthProvider({ children }) {
         };
       }
     } catch (e) {
-      console.warn('Profiles table not queryable, falling back to auth metadata:', e);
+      console.warn('Profiles table check bypassed or timed out, using cached metadata:', e);
     }
     return authUser;
   };
 
   // Handle Supabase Auth state changes
   useEffect(() => {
-    // Check active session on load with robust error handling
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      try {
-        if (session?.user) {
+    const handleUserSession = async (session) => {
+      if (session?.user) {
+        // 1. Set user state immediately to the cached auth session user (optimistic load)
+        setUser(session.user);
+        setLoading(false);
+
+        // 2. Fetch the enriched profile data in the background
+        try {
           const enrichedUser = await fetchUserProfile(session.user);
           setUser(enrichedUser);
-        } else {
-          // Fallback to local guest user if stored
-          try {
-            const savedGuest = localStorage.getItem('spota_guest_user');
-            if (savedGuest) {
-              setUser(JSON.parse(savedGuest));
-            }
-          } catch (e) {
-            console.warn('LocalStorage read failed during session load:', e);
-          }
+        } catch (e) {
+          console.warn('Background profile enrichment failed:', e);
         }
-      } catch (err) {
-        console.error('Error loading user session:', err);
-      } finally {
+      } else {
+        // Fallback to local guest user if stored
+        try {
+          const savedGuest = localStorage.getItem('spota_guest_user');
+          setUser(savedGuest ? JSON.parse(savedGuest) : null);
+        } catch (e) {
+          console.warn('LocalStorage fallback failed during session load:', e);
+          setUser(null);
+        }
         setLoading(false);
       }
+    };
+
+    // Check active session on load with robust error handling
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      handleUserSession(session);
     }).catch(err => {
       console.error('Error fetching auth session on load:', err);
       // Fail-safe fallback to guest session if offline
@@ -88,30 +103,14 @@ export function AuthProvider({ children }) {
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      try {
-        if (session?.user) {
-          const enrichedUser = await fetchUserProfile(session.user);
-          setUser(enrichedUser);
-          // Clear guest session if real user logs in
-          try {
-            localStorage.removeItem('spota_guest_user');
-          } catch (e) {
-            console.warn('LocalStorage clear failed:', e);
-          }
-        } else {
-          // Keep guest session if it exists, otherwise null
-          try {
-            const savedGuest = localStorage.getItem('spota_guest_user');
-            setUser(savedGuest ? JSON.parse(savedGuest) : null);
-          } catch (e) {
-            console.warn('LocalStorage read failed during auth state change:', e);
-            setUser(null);
-          }
+      handleUserSession(session);
+      if (session?.user) {
+        // Clear guest session if real user logs in
+        try {
+          localStorage.removeItem('spota_guest_user');
+        } catch (e) {
+          console.warn('LocalStorage clear failed:', e);
         }
-      } catch (err) {
-        console.error('Error handling auth state change:', err);
-      } finally {
-        setLoading(false);
       }
     });
 

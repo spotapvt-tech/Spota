@@ -202,7 +202,6 @@ export default function SpotVibeCard({ spot, isActive }) {
           src={spot.video_url}
           loop
           muted
-          defaultMuted
           playsInline
           autoPlay
           className="vibe-card-video"

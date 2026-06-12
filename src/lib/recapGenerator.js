@@ -220,11 +220,20 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes })
   ctx.textAlign = 'left';
   ctx.fillStyle = '#FFFFFF';
   ctx.font = "bold 28px 'Outfit', sans-serif";
-  ctx.fillText('PLAN YOUR NEXT GEM WITH FRIENDS', 140, 1650);
-
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-  ctx.font = "500 18px 'Outfit', sans-serif";
-  ctx.fillText('DOWNLOAD SPOTA ON IOS & ANDROID', 140, 1690);
+  if (trip.agency_name) {
+    ctx.fillText(`PLANNED BY ${trip.agency_name.toUpperCase()}`, 140, 1640);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = "500 18px 'Outfit', sans-serif";
+    ctx.fillText('CURATED COLLABORATIVELY ON SPOTA', 140, 1685);
+    ctx.fillStyle = '#8e44ad';
+    ctx.font = "bold 16px 'Outfit', sans-serif";
+    ctx.fillText('💎 SPOTA VERIFIED PARTNER', 140, 1725);
+  } else {
+    ctx.fillText('PLAN YOUR NEXT GEM WITH FRIENDS', 140, 1650);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.font = "500 18px 'Outfit', sans-serif";
+    ctx.fillText('DOWNLOAD SPOTA ON IOS & ANDROID', 140, 1690);
+  }
 
   // Mock QR code grid at bottom right of footer card
   const qrX = 800;

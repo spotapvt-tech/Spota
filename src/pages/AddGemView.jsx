@@ -299,7 +299,9 @@ export default function AddGemView() {
 
       if (photo && photo.base64String) {
         setIsSubmitting(true);
-        setCameraBase64(photo.base64String); // Keep raw base64 string for direct fallback
+        // Clean the base64 string to prevent any unexpected whitespace characters from breaking atob()
+        const cleanedBase64 = photo.base64String.replace(/[\s\r\n]+/g, '');
+        setCameraBase64(cleanedBase64); // Keep raw base64 string for direct fallback
         if (imageUrl && imageUrl.startsWith('blob:')) {
           URL.revokeObjectURL(imageUrl);
         }
@@ -307,7 +309,7 @@ export default function AddGemView() {
         // Step 3: Convert base64 → Blob (avoids unreliable fetch(webPath) on Android)
         const format = photo.format || 'jpeg';
         const mimeType = `image/${format === 'jpg' ? 'jpeg' : format}`;
-        const byteCharacters = atob(photo.base64String);
+        const byteCharacters = atob(cleanedBase64);
         const byteArray = new Uint8Array(byteCharacters.length);
         for (let i = 0; i < byteCharacters.length; i++) {
           byteArray[i] = byteCharacters.charCodeAt(i);
@@ -326,10 +328,14 @@ export default function AddGemView() {
           blob.name = fileName;
         }
 
-        const compressed = await compressImage(blob);
-        setImageFile(compressed);
-        const previewUrl = URL.createObjectURL(compressed);
-        setImageUrl(previewUrl);
+        // Since the Capacitor Camera plugin already resized the image to 800x800 and 
+        // compressed it to 60% quality, we do NOT run compressImage again.
+        // This avoids canvas bugs and hangs in mobile webviews.
+        setImageFile(blob);
+        
+        // Show preview instantly using direct base64 data URL
+        const dataUrl = `data:${mimeType};base64,${cleanedBase64}`;
+        setImageUrl(dataUrl);
       }
     } catch (err) {
       console.error('Failed to take native photo:', err);
@@ -442,40 +448,29 @@ export default function AddGemView() {
       .filter(tag => tag.length > 0);
 
     try {
-      // 1. Fast pre-flight check for Supabase Storage bucket configuration
-      let storageAvailable = false;
-      try {
-        const { error: bucketError } = await supabase.storage.getBucket('spot-images');
-        if (!bucketError || bucketError.message !== 'Bucket not found') {
-          storageAvailable = true;
-        }
-      } catch (e) {
-        console.warn('Pre-flight storage bucket check failed:', e);
-      }
-
       if (imageFile) {
-        const fileExt = imageFile.name ? imageFile.name.split('.').pop() : 'jpg';
+        const fileExt = (imageFile && imageFile.name) ? imageFile.name.split('.').pop() : 'jpg';
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `spot-images/${fileName}`;
 
         let uploadError = null;
-        if (storageAvailable) {
-          try {
-            const uploadPromise = supabase.storage
-              .from('spot-images')
-              .upload(filePath, imageFile);
+        try {
+          const uploadPromise = supabase.storage
+            .from('spot-images')
+            .upload(filePath, imageFile);
 
-            const timeoutPromise = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Storage upload timeout')), 5000)
-            );
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Storage upload timeout')), 5000)
+          );
 
-            const result = await Promise.race([uploadPromise, timeoutPromise]);
+          const result = await Promise.race([uploadPromise, timeoutPromise]);
+          if (result && result.error) {
             uploadError = result.error;
-          } catch (storageErr) {
-            uploadError = storageErr;
+          } else if (!result || !result.data) {
+            uploadError = new Error('Empty upload response');
           }
-        } else {
-          uploadError = new Error('Supabase spot-images bucket not found or unconfigured');
+        } catch (storageErr) {
+          uploadError = storageErr;
         }
 
         if (!uploadError) {
@@ -490,9 +485,9 @@ export default function AddGemView() {
           console.warn('Storage upload failed or timed out, attempting base64 fallback:', uploadError);
           if (cameraBase64) {
             // Direct native base64 fallback (extremely reliable and bypasses FileReader)
-            const format = imageFile.name ? imageFile.name.split('.').pop() : 'jpeg';
+            const format = fileExt || 'jpeg';
             finalImageUrl = `data:image/${format === 'jpg' ? 'jpeg' : format};base64,${cameraBase64}`;
-          } else if (imageFile.size < 1.5 * 1024 * 1024) {
+          } else if (imageFile && imageFile.size < 1.5 * 1024 * 1024) {
             // Standard web FileReader fallback
             const base64Promise = fileToBase64(imageFile);
             const base64Timeout = new Promise((_, reject) =>
@@ -509,28 +504,28 @@ export default function AddGemView() {
 
       let finalVideoUrl = '';
       if (videoFile) {
-        const fileExt = videoFile.name ? videoFile.name.split('.').pop() : 'mp4';
+        const fileExt = (videoFile && videoFile.name) ? videoFile.name.split('.').pop() : 'mp4';
         const fileName = `${Date.now()}.${fileExt}`;
         const filePath = `spot-videos/${fileName}`;
 
         let uploadError = null;
-        if (storageAvailable) {
-          try {
-            const uploadPromise = supabase.storage
-              .from('spot-videos')
-              .upload(filePath, videoFile);
+        try {
+          const uploadPromise = supabase.storage
+            .from('spot-videos')
+            .upload(filePath, videoFile);
 
-            const timeoutPromise = new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Storage video upload timeout')), 8000)
-            );
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Storage video upload timeout')), 8000)
+          );
 
-            const result = await Promise.race([uploadPromise, timeoutPromise]);
+          const result = await Promise.race([uploadPromise, timeoutPromise]);
+          if (result && result.error) {
             uploadError = result.error;
-          } catch (storageErr) {
-            uploadError = storageErr;
+          } else if (!result || !result.data) {
+            uploadError = new Error('Empty upload response');
           }
-        } else {
-          uploadError = new Error('Supabase spot-videos bucket not found or unconfigured');
+        } catch (storageErr) {
+          uploadError = storageErr;
         }
 
         if (!uploadError) {
