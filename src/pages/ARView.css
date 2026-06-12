@@ -124,7 +124,7 @@
 .ar-spot-marker {
   position: absolute;
   pointer-events: auto; /* enable click events on the actual floating labels */
-  transition: left 0.1s linear, top 0.1s linear; /* Smooth tracking updates */
+  transition: left 0.04s ease-out, top 0.04s ease-out, opacity 0.2s ease, transform 0.2s ease-out; /* Snappy tracking updates */
 }
 
 .ar-marker-card {

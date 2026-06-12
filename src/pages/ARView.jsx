@@ -25,6 +25,9 @@ export default function ARView({ spots, userLocation, onClose, onSelectSpot }) {
   const startDragX = useRef(0);
   const videoRef = useRef(null);
 
+  const targetHeading = useRef(0);
+  const currentHeadingSmooth = useRef(0);
+
   // Field of View in degrees
   const FOV = 60;
 
@@ -53,28 +56,45 @@ export default function ARView({ spots, userLocation, onClose, onSelectSpot }) {
     };
   }, []);
 
-  // 2. Track Orientation Sensor
+  // 2. Track Orientation Sensor and LERP heading smoothly
   useEffect(() => {
     const handleOrientation = (e) => {
-      // Use absolute compass heading if available (alpha/webkitCompassHeading)
-      let currentHeading = e.alpha;
+      let currentVal = e.alpha;
       if (e.webkitCompassHeading) {
-        currentHeading = e.webkitCompassHeading;
+        currentVal = e.webkitCompassHeading;
       }
-      if (currentHeading !== null && currentHeading !== undefined) {
-        // webkitCompassHeading is already aligned to magnetic north. 
-        // Standard alpha is normally counter-clockwise, compass heading is clockwise.
-        setHeading(360 - currentHeading);
+      if (currentVal !== null && currentVal !== undefined) {
+        // webkitCompassHeading is aligned to magnetic north.
+        // Standard alpha is counter-clockwise, compass heading is clockwise.
+        targetHeading.current = (360 - currentVal + 360) % 360;
       }
     };
 
     window.addEventListener('deviceorientation', handleOrientation, true);
-    // iOS absolute event
     window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+
+    // Run animation frame loop to smoothly transition heading to target (lerp)
+    let animFrame;
+    const lerpAngle = (current, target, step) => {
+      let diff = target - current;
+      while (diff < -180) diff += 360;
+      while (diff > 180) diff -= 360;
+      return (current + diff * step + 360) % 360;
+    };
+
+    const updateSmoothHeading = () => {
+      const nextHeading = lerpAngle(currentHeadingSmooth.current, targetHeading.current, 0.15);
+      currentHeadingSmooth.current = nextHeading;
+      setHeading(nextHeading);
+      animFrame = requestAnimationFrame(updateSmoothHeading);
+    };
+
+    animFrame = requestAnimationFrame(updateSmoothHeading);
 
     return () => {
       window.removeEventListener('deviceorientation', handleOrientation);
       window.removeEventListener('deviceorientationabsolute', handleOrientation);
+      cancelAnimationFrame(animFrame);
     };
   }, []);
 
@@ -129,7 +149,7 @@ export default function ARView({ spots, userLocation, onClose, onSelectSpot }) {
         distance,
         bearing,
         relativeAngle: diff,
-        visible: Math.abs(diff) < FOV / 2
+        visible: Math.abs(diff) < (FOV / 2) + 5
       };
     })
     .filter((spot) => spot.visible);
@@ -187,6 +207,15 @@ export default function ARView({ spots, userLocation, onClose, onSelectSpot }) {
           const scale = Math.max(0.6, Math.min(1.2, 1 / (spot.distance + 0.1)));
           const yOffset = 150 + spot.distance * 80; // Distance shifts spot lower
 
+          // Smoothly fade out spots near the screen edge (within the +5 degree extra buffer)
+          const boundary = FOV / 2;
+          const fadeStart = boundary - 5;
+          const absAngle = Math.abs(spot.relativeAngle);
+          let opacity = 1;
+          if (absAngle > fadeStart) {
+            opacity = Math.max(0, 1 - (absAngle - fadeStart) / (boundary + 5 - fadeStart));
+          }
+
           return (
             <div
               key={spot.id}
@@ -196,7 +225,8 @@ export default function ARView({ spots, userLocation, onClose, onSelectSpot }) {
                 left: `${xPercent}%`,
                 top: `${Math.min(yOffset, window.innerHeight - 200)}px`,
                 transform: `translate(-50%, -50%) scale(${scale})`,
-                zIndex: Math.round(100 - spot.distance * 10)
+                zIndex: Math.round(100 - spot.distance * 10),
+                opacity: opacity
               }}
             >
               <div className="ar-marker-card glass-panel">

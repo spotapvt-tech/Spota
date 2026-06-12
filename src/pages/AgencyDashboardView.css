@@ -716,3 +716,207 @@
   max-width: 420px;
   margin: 0 0 20px 0;
 }
+
+.dates-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+/* Responsive design for mobile screens */
+@media (max-width: 768px) {
+  .agency-paywall-container,
+  .agency-dashboard-container {
+    padding: 16px 12px 100px 12px;
+  }
+
+  .paywall-header {
+    padding: 24px 16px;
+    margin-bottom: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .paywall-back {
+    position: static;
+    margin-bottom: 16px;
+    align-self: flex-start;
+  }
+
+  .paywall-header h1 {
+    font-size: 24px;
+  }
+
+  .paywall-header p {
+    font-size: 14px;
+  }
+
+  .plans-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .plan-card {
+    padding: 24px 20px;
+    border-radius: 16px;
+  }
+
+  .checkout-modal-backdrop,
+  .trips-modal-backdrop {
+    padding: 12px;
+  }
+
+  .checkout-modal,
+  .trips-modal {
+    padding: 20px 16px;
+    border-radius: 16px;
+    max-height: 95vh;
+  }
+
+  .form-group-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .dates-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .agency-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .agency-header > div {
+    width: 100%;
+  }
+
+  .agency-add-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px;
+  }
+
+  .analytics-dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .metric-card {
+    padding: 12px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+
+  .metric-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .metric-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .metric-title {
+    font-size: 9px;
+  }
+
+  .metric-val {
+    font-size: 16px;
+  }
+
+  .agency-tabs {
+    overflow-x: auto;
+    white-space: nowrap;
+    display: flex;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+    margin-bottom: 16px;
+  }
+
+  .agency-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .agency-tabs .tab-btn {
+    flex: 0 0 auto;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .dashboard-trips-table {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .table-caption-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .table-caption-bar h3 {
+    font-size: 16px;
+  }
+
+  .com-banner {
+    font-size: 11px;
+  }
+
+  .agency-table th,
+  .agency-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .itinerary-config-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .config-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .zen-select {
+    width: 100%;
+  }
+
+  .itinerary-spots-editor {
+    padding: 16px 12px;
+    border-radius: 16px;
+  }
+
+  .spot-editor-card {
+    padding: 14px;
+    border-radius: 12px;
+  }
+
+  .editor-row {
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .row-action-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}

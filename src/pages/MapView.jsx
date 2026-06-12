@@ -3,7 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, CircleMarker } 
 import { supabase } from '../lib/supabaseClient';
 import { Search, Camera, Sparkles, Download, WifiOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { haversineDistance } from '../lib/utils';
+import { haversineDistance, adjustOverlappingCoordinates } from '../lib/utils';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import ARView from './ARView';
 import AIVibeMatcher from '../components/AIVibeMatcher';
@@ -147,7 +147,7 @@ export default function MapView() {
     return coords;
   };
 
-  const displaySpots = isOffline ? offlineSpots : spots;
+  const displaySpots = adjustOverlappingCoordinates(isOffline ? offlineSpots : spots);
 
   // Filter map pins based on search query, range distance, and selected category
   const filteredSpots = displaySpots.filter((spot) => {
