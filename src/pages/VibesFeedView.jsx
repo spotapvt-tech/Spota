@@ -22,7 +22,8 @@ export default function VibesFeedView() {
       const { data, error } = await supabase
         .from('spots')
         .select('*')
-        .eq('status', 'approved')
+        .neq('status', 'deleted')
+        .neq('status', 'flagged')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

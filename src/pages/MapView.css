@@ -67,10 +67,35 @@
   position: absolute;
   top: 90px;
   left: 20px;
-  right: 20px;
+  right: 124px;
   z-index: 100;
   display: flex;
   align-items: center;
+}
+
+.map-ar-trigger-btn {
+  position: absolute;
+  top: 90px;
+  right: 20px;
+  z-index: 100;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-primary);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.map-ar-trigger-btn:hover {
+  transform: scale(1.1);
+  color: var(--color-accent-hover);
+  background-color: rgba(108, 140, 116, 0.08);
 }
 
 .map-search-input {
@@ -365,11 +390,11 @@
 /* Offline Download Trigger Button */
 .map-download-trigger-btn {
   position: absolute;
-  top: 20px;
-  right: 76px; /* Next to AR button (which is at right: 20px) */
-  z-index: 10;
-  width: 46px;
-  height: 46px;
+  top: 90px;
+  right: 72px; /* Next to AR button (which is at right: 20px) */
+  z-index: 100;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid var(--color-border);
   background: var(--color-bg-primary);

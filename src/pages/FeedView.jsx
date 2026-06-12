@@ -95,9 +95,8 @@ export default function FeedView() {
   // Filter and search logic
   const filteredSpots = spots
     .filter((spot) => {
-      // Only show approved spots, or pending spots owned by the current user
-      const isOwner = user && spot.user_id === user.id;
-      if (spot.status !== 'approved' && !isOwner) return false;
+      // Show all spots except deleted or flagged ones
+      if (spot.status === 'deleted' || spot.status === 'flagged') return false;
 
       // 1. Search Query Filter
       const query = searchQuery.toLowerCase().trim();

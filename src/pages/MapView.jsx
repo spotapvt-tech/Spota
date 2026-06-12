@@ -151,9 +151,8 @@ export default function MapView() {
 
   // Filter map pins based on search query, range distance, and selected category
   const filteredSpots = displaySpots.filter((spot) => {
-    // Only show approved spots, or pending spots owned by the current user
-    const isOwner = user && spot.user_id === user.id;
-    if (spot.status !== 'approved' && !isOwner) return false;
+    // Show all spots except deleted or flagged ones
+    if (spot.status === 'deleted' || spot.status === 'flagged') return false;
 
     // 1. Range proximity filter
     if (selectedRange !== 'All') {
@@ -197,24 +196,6 @@ export default function MapView() {
         className="map-ar-trigger-btn glass-panel animate-fade-in" 
         onClick={() => setShowAR(true)}
         title="Open AR Finder"
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: '20px',
-          zIndex: 10,
-          width: '46px',
-          height: '46px',
-          borderRadius: '50%',
-          border: '1px solid var(--color-border)',
-          background: 'var(--color-bg-primary)',
-          color: 'var(--color-accent)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          transition: 'all 0.2s ease'
-        }}
       >
         <Camera size={22} />
       </button>

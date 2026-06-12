@@ -15,7 +15,8 @@ export default function DailyVibeDropModal({ onClose, onOpenSpot }) {
         const { data, error } = await supabase
           .from('spots')
           .select('*')
-          .eq('status', 'approved');
+          .neq('status', 'deleted')
+          .neq('status', 'flagged');
 
         if (error) throw error;
         if (data && data.length > 0) {

@@ -258,7 +258,8 @@ export default function TripBoardView() {
       const { data: allSpots, error: allSpotsError } = await supabase
         .from('spots')
         .select('id, title, category, description, latitude, longitude, image_url')
-        .eq('status', 'approved');
+        .neq('status', 'deleted')
+        .neq('status', 'flagged');
 
       if (allSpotsError) throw allSpotsError;
 

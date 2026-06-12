@@ -205,17 +205,24 @@ export default function AddGemView() {
                   resolve(file);
                   return;
                 }
-                const compressedFile = blob;
+                let compressedFile;
                 const baseName = file.name ? file.name.replace(/\.[^/.]+$/, "") : `image-${Date.now()}`;
+                const fileName = baseName + ".jpg";
                 try {
-                  Object.defineProperty(compressedFile, 'name', {
-                    value: baseName + ".jpg",
-                    writable: true,
-                    configurable: true,
-                    enumerable: true
-                  });
-                } catch {
-                  compressedFile.name = baseName + ".jpg";
+                  compressedFile = new File([blob], fileName, { type: 'image/jpeg' });
+                } catch (err) {
+                  console.warn('File constructor failed, falling back to Blob', err);
+                  compressedFile = blob;
+                  try {
+                    Object.defineProperty(compressedFile, 'name', {
+                      value: fileName,
+                      writable: true,
+                      configurable: true,
+                      enumerable: true
+                    });
+                  } catch {
+                    compressedFile.name = fileName;
+                  }
                 }
                 resolve(compressedFile);
               } catch (e) {

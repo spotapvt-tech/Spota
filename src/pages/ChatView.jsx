@@ -209,7 +209,7 @@ export default function ChatView() {
   }
 
   return (
-    <div className="chat-container">
+    <div className="chat-view-container">
       <div className="chat-header">
         <h2>Chats</h2>
         <div className="chat-search-bar">
