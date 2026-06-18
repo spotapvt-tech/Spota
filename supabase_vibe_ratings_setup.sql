@@ -1,7 +1,7 @@
 -- 1. Create vibe_ratings table
 create table if not exists public.vibe_ratings (
-  id uuid default gen_random_uuid() primary key,
-  spot_id uuid references public.spots(id) on delete cascade not null,
+  id serial primary key,
+  spot_id integer references public.spots(id) on delete cascade not null,
   user_id uuid references public.profiles(id) on delete cascade, -- Nullable to allow guests
   cozy int check (cozy >= 1 and cozy <= 5) not null,
   insta_worthy int check (insta_worthy >= 1 and insta_worthy <= 5) not null,

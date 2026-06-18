@@ -3,7 +3,7 @@ alter table public.spots add column if not exists video_url text;
 
 -- 2. Create playlists table
 create table if not exists public.playlists (
-  id uuid default gen_random_uuid() primary key,
+  id serial primary key,
   name text not null,
   description text,
   creator_id uuid references public.profiles(id) on delete cascade not null,
@@ -14,8 +14,8 @@ create table if not exists public.playlists (
 
 -- 3. Create playlist_spots table
 create table if not exists public.playlist_spots (
-  playlist_id uuid references public.playlists(id) on delete cascade not null,
-  spot_id uuid references public.spots(id) on delete cascade not null,
+  playlist_id integer references public.playlists(id) on delete cascade not null,
+  spot_id integer references public.spots(id) on delete cascade not null,
   added_at timestamp with time zone default timezone('utc'::text, now()) not null,
   primary key (playlist_id, spot_id)
 );

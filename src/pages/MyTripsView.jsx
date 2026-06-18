@@ -175,6 +175,17 @@ export default function MyTripsView() {
     fetchPackages();
   }, [fetchTrips, fetchPackages]);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const joinParam = params.get('join');
+    if (joinParam) {
+      setJoinCode(joinParam.toUpperCase());
+      setShowJoinModal(true);
+      // Clean up URL query param so it doesn't trigger again on refresh/back
+      navigate('/trips', { replace: true });
+    }
+  }, [navigate]);
+
   const handleCreateTrip = async (e) => {
     e.preventDefault();
     if (!user || user.isGuest) return;

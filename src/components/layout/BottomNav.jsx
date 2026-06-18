@@ -57,7 +57,7 @@ export default function BottomNav() {
         )}
       </NavLink>
       
-      <NavLink to="/profile" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+      <NavLink to="/profile" state={{ userId: null }} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
         {({ isActive }) => (
           <>
             <User size={24} strokeWidth={isActive ? 2.5 : 2} />

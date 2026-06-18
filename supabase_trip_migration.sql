@@ -1,6 +1,6 @@
 -- 1. Create Trips Table
 create table if not exists public.trips (
-  id uuid primary key default gen_random_uuid(),
+  id serial primary key,
   name text not null,
   destination text,
   start_date date,
@@ -15,7 +15,7 @@ create index if not exists trips_invite_code_idx on public.trips(invite_code);
 
 -- 2. Create Trip Members Table
 create table if not exists public.trip_members (
-  trip_id uuid references public.trips(id) on delete cascade not null,
+  trip_id integer references public.trips(id) on delete cascade not null,
   user_id uuid references public.profiles(id) on delete cascade not null,
   role text default 'member' check (role in ('creator', 'member', 'viewer')),
   joined_at timestamp with time zone default timezone('utc'::text, now()) not null,
@@ -27,8 +27,8 @@ create index if not exists trip_members_user_idx on public.trip_members(user_id)
 
 -- 3. Create Trip Spots Table
 create table if not exists public.trip_spots (
-  trip_id uuid references public.trips(id) on delete cascade not null,
-  spot_id uuid references public.spots(id) on delete cascade not null,
+  trip_id integer references public.trips(id) on delete cascade not null,
+  spot_id integer references public.spots(id) on delete cascade not null,
   added_by uuid references public.profiles(id) on delete set null,
   added_at timestamp with time zone default timezone('utc'::text, now()) not null,
   visited boolean default false not null,
@@ -37,8 +37,8 @@ create table if not exists public.trip_spots (
 
 -- 4. Create Trip Spot Votes Table
 create table if not exists public.trip_spot_votes (
-  trip_id uuid not null,
-  spot_id uuid not null,
+  trip_id integer not null,
+  spot_id integer not null,
   user_id uuid references public.profiles(id) on delete cascade not null,
   primary key (trip_id, spot_id, user_id),
   foreign key (trip_id, spot_id) references public.trip_spots(trip_id, spot_id) on delete cascade
@@ -46,8 +46,8 @@ create table if not exists public.trip_spot_votes (
 
 -- 5. Create Spot Views Table
 create table if not exists public.spot_views (
-  id uuid primary key default gen_random_uuid(),
-  spot_id uuid references public.spots(id) on delete cascade not null,
+  id serial primary key,
+  spot_id integer references public.spots(id) on delete cascade not null,
   viewer_id uuid references public.profiles(id) on delete set null,
   viewed_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
@@ -63,7 +63,7 @@ alter table public.spot_views enable row level security;
 
 -- 6. Helper function to check trip membership without RLS recursion
 -- 'security definer' runs this function with database owner privileges, bypassing RLS checks on trip_members
-create or replace function public.check_is_trip_member(t_id uuid, u_id uuid)
+create or replace function public.check_is_trip_member(t_id integer, u_id uuid)
 returns boolean as $$
 begin
   return exists (

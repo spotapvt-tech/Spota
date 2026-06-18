@@ -6,8 +6,8 @@ drop table if exists public.comments;
 
 -- 3. Create comments table supporting both registered and guest users
 create table public.comments (
-  id uuid default gen_random_uuid() primary key,
-  spot_id uuid references public.spots(id) on delete cascade not null,
+  id serial primary key,
+  spot_id integer references public.spots(id) on delete cascade not null,
   user_id uuid references public.profiles(id) on delete cascade, -- Nullable to support guests
   guest_name text, -- Nickname for guest commenters
   content text not null,

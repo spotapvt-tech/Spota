@@ -53,11 +53,16 @@ export default function ProfileView() {
             avatar_url: profile.avatar_url,
           });
         } else {
+          // Check if collaborator details are passed via state fallback
+          const stateCollaborator = location.state?.collaborator;
+          const collabUsername = stateCollaborator?.profiles?.username || stateCollaborator?.username || 'Explorer';
+          const collabAvatar = stateCollaborator?.profiles?.avatar_url || stateCollaborator?.avatar_url || null;
           setProfileUser({
             id: targetUserId,
-            username: 'Explorer',
+            username: collabUsername,
             created_at: new Date().toISOString(),
             isGuest: false,
+            avatar_url: collabAvatar,
           });
         }
       }
@@ -224,7 +229,11 @@ export default function ProfileView() {
         )}
 
         <div className="avatar-large">
-          {initials}
+          {profileUser?.avatar_url ? (
+            <img src={profileUser.avatar_url} alt={username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            initials
+          )}
         </div>
 
         <div className="profile-info">

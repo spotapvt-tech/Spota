@@ -11,8 +11,8 @@ alter table public.trips
 
 -- 2. Create Package Bookings Table to track client ticket sales
 create table if not exists public.package_bookings (
-  id uuid primary key default gen_random_uuid(),
-  trip_id uuid references public.trips(id) on delete cascade not null, -- The master package template
+  id serial primary key,
+  trip_id integer references public.trips(id) on delete cascade not null, -- The master package template
   user_id uuid references public.profiles(id) on delete cascade not null, -- The purchaser client
   amount_paid numeric not null,
   travelers_count integer default 1 not null,

@@ -3,7 +3,7 @@
 
 -- 1. Create Agency Profiles Table
 create table if not exists public.agency_profiles (
-  id uuid primary key default gen_random_uuid(),
+  id serial primary key,
   profile_id uuid references public.profiles(id) on delete cascade unique not null,
   company_name text not null,
   website_url text,
@@ -19,9 +19,9 @@ create index if not exists agency_profiles_profile_idx on public.agency_profiles
 
 -- 2. Alter Trips Table to support Agency Branding & Template links
 alter table public.trips 
-  add column if not exists agency_id uuid references public.agency_profiles(id) on delete set null,
+  add column if not exists agency_id integer references public.agency_profiles(id) on delete set null,
   add column if not exists is_cobranded boolean default false,
-  add column if not exists itinerary_template_id uuid;
+  add column if not exists itinerary_template_id integer;
 
 create index if not exists trips_agency_idx on public.trips(agency_id);
 
@@ -34,10 +34,10 @@ alter table public.trip_spots
 
 -- 4. Create Agency Leads Table to track click metrics and attribute conversions
 create table if not exists public.agency_leads (
-  id uuid primary key default gen_random_uuid(),
-  agency_id uuid references public.agency_profiles(id) on delete cascade not null,
+  id serial primary key,
+  agency_id integer references public.agency_profiles(id) on delete cascade not null,
   visitor_id uuid references public.profiles(id) on delete set null,
-  spot_id uuid references public.spots(id) on delete set null,
+  spot_id integer references public.spots(id) on delete set null,
   source_platform text default 'trip_board', -- e.g. 'trip_board', 'spot_details', 'instagram_recap'
   clicked_at timestamp with time zone default timezone('utc'::text, now()) not null
 );

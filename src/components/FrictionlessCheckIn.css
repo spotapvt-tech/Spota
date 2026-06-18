@@ -1,0 +1,54 @@
+.frictionless-checkin-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0;
+  width: 100%;
+}
+
+.frictionless-checkin-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  color: #ffffff;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 25px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.frictionless-checkin-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+}
+
+.frictionless-checkin-btn:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: 0 2px 10px rgba(255, 107, 107, 0.4);
+}
+
+.frictionless-checkin-btn.checked-in {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+  cursor: default;
+  transform: scale(0.98);
+}
+
+.frictionless-checkin-btn .btn-icon {
+  font-size: 16px;
+  transition: transform 0.3s ease;
+}
+
+.frictionless-checkin-btn:hover:not(:disabled) .btn-icon {
+  transform: rotate(15deg) scale(1.1);
+}
+
+.frictionless-checkin-btn:disabled {
+  opacity: 0.9;
+}

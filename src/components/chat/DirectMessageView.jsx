@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { useAuth } from '../../context/AuthContext';
 import { ArrowLeft, Send, Loader2 } from 'lucide-react';
@@ -6,6 +7,7 @@ import './DirectMessageView.css';
 
 export default function DirectMessageView({ chat, partner, onClose }) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [inputText, setInputText] = useState('');
@@ -148,7 +150,11 @@ export default function DirectMessageView({ chat, partner, onClose }) {
         <button className="dm-back-btn" onClick={onClose}>
           <ArrowLeft size={20} />
         </button>
-        <div className="dm-user-profile">
+        <div 
+          className="dm-user-profile" 
+          style={{ cursor: 'pointer' }} 
+          onClick={() => navigate('/profile', { state: { userId: partner.id, collaborator: partner } })}
+        >
           {partner?.avatar_url ? (
             <img src={partner.avatar_url} alt={partner.username} className="dm-header-avatar" />
           ) : (

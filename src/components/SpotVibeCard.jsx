@@ -187,7 +187,7 @@ export default function SpotVibeCard({ spot, isActive }) {
   const viewCreatorProfile = (e) => {
     e.stopPropagation();
     if (!spot.user_id) return;
-    navigate('/profile', { state: { userId: spot.user_id } });
+    navigate('/profile', { state: { userId: spot.user_id, collaborator: creatorProfile } });
   };
 
   // Calculate total reactions for counters

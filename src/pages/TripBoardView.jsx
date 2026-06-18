@@ -697,7 +697,8 @@ export default function TripBoardView() {
                     key={idx} 
                     className="member-avatar-circle" 
                     title={`${username} (${m.role})`}
-                    style={{ zIndex: 10 - idx }}
+                    style={{ zIndex: 10 - idx, cursor: 'pointer' }}
+                    onClick={() => navigate('/profile', { state: { userId: m.user_id, collaborator: m } })}
                   >
                     {m.profiles?.avatar_url ? (
                       <img src={m.profiles.avatar_url} alt={username} />

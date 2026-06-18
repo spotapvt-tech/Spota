@@ -237,8 +237,7 @@ export default function AgencyDashboardView() {
     // Simulate payment loading
     setTimeout(async () => {
       try {
-        const mockAgencyProfile = {
-          id: generateUUID(),
+        const insertProfile = {
           profile_id: user.id,
           company_name: checkoutForm.companyName.trim(),
           website_url: checkoutForm.websiteUrl.trim() || null,
@@ -249,26 +248,35 @@ export default function AgencyDashboardView() {
           created_at: new Date().toISOString()
         };
 
+        let finalAgencyProfile = { ...insertProfile };
+
         // Attempt Supabase insert
         try {
-          const { error } = await supabase
+          const { data, error } = await supabase
             .from('agency_profiles')
-            .insert(mockAgencyProfile);
+            .insert(insertProfile)
+            .select()
+            .single();
           
           if (error) throw error;
+          if (data) {
+            finalAgencyProfile = data;
+          }
         } catch (dbErr) {
           console.warn('Direct database insert failed, caching agency details locally:', dbErr);
+          // Fallback to client-generated UUID for offline LocalStorage simulation
+          finalAgencyProfile.id = generateUUID();
         }
 
         // Store locally
-        localStorage.setItem(`spota_agency_${user.id}`, JSON.stringify(mockAgencyProfile));
-        setAgency(mockAgencyProfile);
+        localStorage.setItem(`spota_agency_${user.id}`, JSON.stringify(finalAgencyProfile));
+        setAgency(finalAgencyProfile);
         setShowCheckoutModal(false);
         setCheckoutForm({ companyName: '', websiteUrl: '', logoUrl: '', cardNumber: '', expiry: '', cvv: '' });
         
         // Dispatch event so profile updates badges
         window.dispatchEvent(new Event('spota_saves_updated'));
-        alert(`Congratulations! "${mockAgencyProfile.company_name}" has been registered successfully. Plan: ${selectedPlan.name}`);
+        alert(`Congratulations! "${finalAgencyProfile.company_name}" has been registered successfully. Plan: ${selectedPlan.name}`);
         
         fetchAgencyData();
       } catch (err) {
@@ -292,8 +300,7 @@ export default function AgencyDashboardView() {
 
     try {
       const inviteCode = Math.random().toString(36).substring(2, 10).toUpperCase();
-      const mockTrip = {
-        id: generateUUID(),
+      const insertTrip = {
         name: tripForm.name.trim(),
         destination: tripForm.destination.trim() || null,
         start_date: tripForm.startDate || null,
@@ -310,55 +317,49 @@ export default function AgencyDashboardView() {
         created_at: new Date().toISOString()
       };
 
+      let finalTrip = { ...insertTrip };
+
       // 1. Write to Supabase trips
       try {
-        const { error } = await supabase
+        const { data: dbTrip, error: tripError } = await supabase
           .from('trips')
-          .insert({
-            id: mockTrip.id,
-            name: mockTrip.name,
-            destination: mockTrip.destination,
-            start_date: mockTrip.start_date,
-            end_date: mockTrip.end_date,
-            invite_code: mockTrip.invite_code,
-            creator_id: mockTrip.creator_id,
-            agency_id: mockTrip.agency_id,
-            is_cobranded: mockTrip.is_cobranded,
-            is_public_package: mockTrip.is_public_package,
-            package_price: mockTrip.package_price,
-            package_description: mockTrip.package_description,
-            slots_total: mockTrip.slots_total,
-            slots_booked: mockTrip.slots_booked
-          });
+          .insert(insertTrip)
+          .select()
+          .single();
 
-        if (error) throw error;
+        if (tripError) throw tripError;
+        if (dbTrip) {
+          finalTrip = dbTrip;
+        }
 
         // Add creator as member
         await supabase
           .from('trip_members')
           .insert({
-            trip_id: mockTrip.id,
+            trip_id: finalTrip.id,
             user_id: user.id,
             role: 'creator'
           });
       } catch (dbErr) {
         console.warn('DB trip creation failed, executing local simulation fallback:', dbErr);
+        // Fallback to client-generated UUID for offline simulation
+        finalTrip.id = generateUUID();
       }
 
       // Local storage list save
       const localTripsKey = `spota_agency_trips_${agency.id}`;
       const existingLocalTrips = JSON.parse(localStorage.getItem(localTripsKey) || '[]');
-      const updatedLocalTrips = [mockTrip, ...existingLocalTrips];
+      const updatedLocalTrips = [finalTrip, ...existingLocalTrips];
       localStorage.setItem(localTripsKey, JSON.stringify(updatedLocalTrips));
 
       // Mock memberships if offline/mock
-      const localTripMembersKey = `spota_trip_members_${mockTrip.id}`;
+      const localTripMembersKey = `spota_trip_members_${finalTrip.id}`;
       localStorage.setItem(localTripMembersKey, JSON.stringify([
         { user_id: user.id, role: 'creator', profiles: { username: agency.company_name } }
       ]));
 
       alert(tripForm.isPublicPackage 
-        ? `Trip Package "${mockTrip.name}" is now live in the Marketplace catalog!`
+        ? `Trip Package "${finalTrip.name}" is now live in the Marketplace catalog!`
         : `Client Trip Board created! Give invite code to clients: ${inviteCode}`
       );
       setTripForm({ name: '', destination: '', startDate: '', endDate: '', isPublicPackage: false, packagePrice: '199', packageDescription: '' });

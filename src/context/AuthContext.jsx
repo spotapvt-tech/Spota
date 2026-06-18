@@ -51,6 +51,37 @@ export function AuthProvider({ children }) {
           }
         };
       }
+
+      // Self-heal: If profile table has no record for this user, insert it
+      if (error && error.code === 'PGRST116') {
+        const defaultUsername = authUser.user_metadata?.username || 
+                                (authUser.email ? authUser.email.split('@')[0] : null) || 
+                                `explorer_${authUser.id.substring(0, 8)}`;
+        
+        const { data: newProfile, error: insertError } = await supabase
+          .from('profiles')
+          .insert({
+            id: authUser.id,
+            username: defaultUsername,
+            avatar_url: authUser.user_metadata?.avatar_url || null,
+            reputation: 0,
+            is_verified: false
+          })
+          .select()
+          .single();
+
+        if (!insertError && newProfile) {
+          return {
+            ...authUser,
+            user_metadata: {
+              ...authUser.user_metadata,
+              username: newProfile.username,
+              reputation: newProfile.reputation,
+              is_verified: newProfile.is_verified
+            }
+          };
+        }
+      }
     } catch (e) {
       console.warn('Profiles table check bypassed or timed out, using cached metadata:', e);
     }

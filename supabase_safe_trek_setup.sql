@@ -5,7 +5,7 @@
 
 -- 1. Create Safe Treks Table
 CREATE TABLE IF NOT EXISTS public.safe_treks (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  id serial PRIMARY KEY,
   user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
   destination_name TEXT NOT NULL,
   destination_lat DOUBLE PRECISION,

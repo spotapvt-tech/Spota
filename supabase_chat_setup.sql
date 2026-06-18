@@ -1,6 +1,6 @@
 -- 1. Create chats table representing conversations between two users
 create table if not exists public.chats (
-  id uuid default gen_random_uuid() primary key,
+  id serial primary key,
   user1_id uuid references public.profiles(id) on delete cascade not null,
   user2_id uuid references public.profiles(id) on delete cascade not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
@@ -13,8 +13,8 @@ create table if not exists public.chats (
 
 -- 2. Create chat_messages table
 create table if not exists public.chat_messages (
-  id uuid default gen_random_uuid() primary key,
-  chat_id uuid references public.chats(id) on delete cascade not null,
+  id serial primary key,
+  chat_id integer references public.chats(id) on delete cascade not null,
   sender_id uuid references public.profiles(id) on delete cascade not null,
   content text not null,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
