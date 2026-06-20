@@ -138,14 +138,20 @@ export default function VibesFeedView() {
         className="vibes-slider"
         style={{ transform: `translateY(-${activeIndex * 100}%)` }}
       >
-        {spots.map((spot, idx) => (
-          <div key={spot.id} className="vibe-slide-item">
-            <SpotVibeCard 
-              spot={spot} 
-              isActive={idx === activeIndex} 
-            />
-          </div>
-        ))}
+        {spots.map((spot, idx) => {
+          const isNear = Math.abs(idx - activeIndex) <= 1;
+          if (!isNear) {
+            return <div key={spot.id} className="vibe-slide-item empty"></div>;
+          }
+          return (
+            <div key={spot.id} className="vibe-slide-item">
+              <SpotVibeCard 
+                spot={spot} 
+                isActive={idx === activeIndex} 
+              />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

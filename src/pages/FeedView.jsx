@@ -16,6 +16,12 @@ export default function FeedView() {
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
   const [showAiMatcher, setShowAiMatcher] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(15);
+
+  // Reset pagination when filter or search changes
+  useEffect(() => {
+    setVisibleCount(15);
+  }, [searchQuery, activeFilter]);
 
   // Fetch user location for distance calculations
   useEffect(() => {
@@ -191,7 +197,7 @@ export default function FeedView() {
             No spots found matching your search.
           </p>
         ) : (
-          filteredSpots.map((spot) => {
+          filteredSpots.slice(0, visibleCount).map((spot) => {
             const popularity = getPopularity(spot);
             const isTrending = popularity >= 5;
             
@@ -231,7 +237,7 @@ export default function FeedView() {
                     </span>
                   )}
                   {spot.image_url ? (
-                    <img src={spot.image_url} alt={spot.title} />
+                    <img src={spot.image_url} alt={spot.title} loading="lazy" />
                   ) : (
                     <div className="spot-image-placeholder"></div>
                   )}
@@ -266,6 +272,29 @@ export default function FeedView() {
               </div>
             );
           })
+        )}
+        {visibleCount < filteredSpots.length && (
+          <div className="load-more-container" style={{ display: 'flex', justifyContent: 'center', margin: '24px 0 12px 0' }}>
+            <button 
+              className="load-more-btn"
+              onClick={() => setVisibleCount(prev => prev + 15)}
+              style={{
+                backgroundColor: 'var(--color-bg-secondary)',
+                color: 'var(--color-text)',
+                border: '1px solid var(--color-border)',
+                padding: '10px 24px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                outline: 'none',
+                boxShadow: 'var(--shadow-sm)'
+              }}
+            >
+              Load More Spots
+            </button>
+          </div>
         )}
       </div>
 
