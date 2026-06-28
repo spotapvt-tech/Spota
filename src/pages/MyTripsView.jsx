@@ -55,7 +55,9 @@ export default function MyTripsView() {
             .eq('id', t.agency_id)
             .maybeSingle();
           if (agencyData) agencyProfile = agencyData;
-        } catch (e) {}
+        } catch (e) {
+          console.warn('Failed to load agency profile details:', e);
+        }
 
         if (!agencyProfile && t.agency_id) {
           const localKeys = Object.keys(localStorage);
@@ -77,7 +79,7 @@ export default function MyTripsView() {
       }
       setPackages(hydratedData);
     } catch (err) {
-      console.warn('DB error fetching packages, using local storage cache fallback');
+      console.warn('DB error fetching packages, using local storage cache fallback', err);
     }
 
     // Fallback assembly
@@ -138,7 +140,7 @@ export default function MyTripsView() {
       if (error) throw error;
       tripsList = data || [];
     } catch (err) {
-      console.warn('Error fetching trips from database, using LocalStorage fallback');
+      console.warn('Error fetching trips from database, using LocalStorage fallback', err);
     }
 
     // LocalStorage fallback check
@@ -171,16 +173,20 @@ export default function MyTripsView() {
   }, [user]);
 
   useEffect(() => {
-    fetchTrips();
-    fetchPackages();
+    setTimeout(() => {
+      fetchTrips();
+      fetchPackages();
+    }, 0);
   }, [fetchTrips, fetchPackages]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const joinParam = params.get('join');
     if (joinParam) {
-      setJoinCode(joinParam.toUpperCase());
-      setShowJoinModal(true);
+      setTimeout(() => {
+        setJoinCode(joinParam.toUpperCase());
+        setShowJoinModal(true);
+      }, 0);
       // Clean up URL query param so it doesn't trigger again on refresh/back
       navigate('/trips', { replace: true });
     }
@@ -256,32 +262,27 @@ export default function MyTripsView() {
 
     setSubmitting(true);
     try {
-      // 1. Fetch trip by invite code
-      const { data: tripData, error: tripError } = await supabase
-        .from('trips')
-        .select('id, name')
-        .eq('invite_code', code)
-        .single();
+      // Join via secure SECURITY DEFINER RPC function
+      const { data, error } = await supabase.rpc('join_trip_with_code', {
+        p_invite_code: code,
+        p_user_id: user.id
+      });
 
-      if (tripError || !tripData) {
-        throw new Error('Trip not found. Please verify the invite code.');
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error('Trip not found or join failed.');
       }
 
-      // 2. Insert membership
-      const { error: memberError } = await supabase
-        .from('trip_members')
-        .insert({
-          trip_id: tripData.id,
-          user_id: user.id,
-          role: 'member'
-        });
+      const tripData = {
+        id: data[0].trip_id,
+        name: data[0].trip_name,
+        destination: data[0].destination,
+        start_date: data[0].start_date,
+        end_date: data[0].end_date,
+        invite_code: data[0].invite_code
+      };
 
-      // Handle duplicate membership code gracefully
-      if (memberError && memberError.code !== '23505') {
-        throw memberError;
-      }
-
-      // Cache details locally for fallback
+      // Cache details locally for sandbox fallback
       localStorage.setItem(`spota_trip_${tripData.id}`, JSON.stringify(tripData));
       const localMembersKey = `spota_trip_members_${tripData.id}`;
       const existingMembers = JSON.parse(localStorage.getItem(localMembersKey) || '[]');
@@ -329,6 +330,12 @@ export default function MyTripsView() {
           .eq('user_id', user.id);
         if (error) throw error;
       }
+
+      // Evict local storage cache
+      localStorage.removeItem(`spota_trip_${tripId}`);
+      localStorage.removeItem(`spota_trip_members_${tripId}`);
+      localStorage.removeItem(`spota_trip_spots_${tripId}`);
+
       fetchTrips();
     } catch (err) {
       console.error('Error removing trip:', err);
@@ -416,9 +423,25 @@ export default function MyTripsView() {
         </div>
       )}
 
-      <div className="trips-content">
+      <div className="trips-content fade-in-slide-up" key={viewMode}>
         {loading ? (
-          <p className="loading-text">Loading trip boards...</p>
+          <div className="trips-grid">
+            <div className="trip-card glass-panel animate-pulse" style={{ minHeight: '160px', opacity: 0.6 }}>
+              <div style={{ height: '24px', width: '60%', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '4px' }} />
+              <div style={{ height: '16px', width: '40%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', marginTop: '12px' }} />
+              <div style={{ height: '16px', width: '50%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', marginTop: '8px' }} />
+            </div>
+            <div className="trip-card glass-panel animate-pulse" style={{ minHeight: '160px', opacity: 0.6 }}>
+              <div style={{ height: '24px', width: '75%', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '4px' }} />
+              <div style={{ height: '16px', width: '35%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', marginTop: '12px' }} />
+              <div style={{ height: '16px', width: '60%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', marginTop: '8px' }} />
+            </div>
+            <div className="trip-card glass-panel animate-pulse" style={{ minHeight: '160px', opacity: 0.6 }}>
+              <div style={{ height: '24px', width: '50%', backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: '4px' }} />
+              <div style={{ height: '16px', width: '45%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', marginTop: '12px' }} />
+              <div style={{ height: '16px', width: '40%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: '4px', marginTop: '8px' }} />
+            </div>
+          </div>
         ) : viewMode === 'my-boards' ? (
           tripsData.length === 0 ? (
             <div className="empty-trips-state glass-panel">

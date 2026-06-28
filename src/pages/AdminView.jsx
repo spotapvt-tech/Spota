@@ -120,12 +120,14 @@ export default function AdminView() {
       const { count: checkinsCount, error: errCheckins } = await supabase
         .from('spot_checkins')
         .select('*', { count: 'exact', head: true });
+      if (errCheckins) console.warn('Error fetching checkins count:', errCheckins);
 
       // 3. Fetch active treks count
       const { count: treksCount, error: errTreks } = await supabase
         .from('safe_treks')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'active');
+      if (errTreks) console.warn('Error fetching treks count:', errTreks);
 
       setAnalytics({
         downloads: downloadsCount || 142, // Seed baseline if empty
@@ -141,15 +143,21 @@ export default function AdminView() {
   }, []);
 
   useEffect(() => {
-    fetchSpots();
+    const timer = setTimeout(() => {
+      fetchSpots();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchSpots]);
 
   useEffect(() => {
-    if (activeTab === 'rules') {
-      fetchRules();
-    } else if (activeTab === 'analytics') {
-      fetchAnalytics();
-    }
+    const timer = setTimeout(() => {
+      if (activeTab === 'rules') {
+        fetchRules();
+      } else if (activeTab === 'analytics') {
+        fetchAnalytics();
+      }
+    }, 0);
+    return () => clearTimeout(timer);
   }, [activeTab, fetchRules, fetchAnalytics]);
 
   const handleApprove = async (id) => {

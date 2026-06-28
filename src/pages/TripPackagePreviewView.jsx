@@ -167,8 +167,10 @@ export default function TripPackagePreviewView() {
   }, []);
 
   // Fetch package details and its spots
-  const loadPackageDetails = useCallback(async () => {
-    setLoading(true);
+  const loadPackageDetails = useCallback(async (showLoading = false) => {
+    if (showLoading) {
+      setLoading(true);
+    }
     // Always seed mock details first to ensure mock fallback matches
     seedMockDataIfNeeded();
     
@@ -192,7 +194,9 @@ export default function TripPackagePreviewView() {
             .eq('id', tripData.agency_id)
             .single();
           if (agencyData) agencyProfile = agencyData;
-        } catch (err) {}
+        } catch (err) {
+          console.warn('DB error fetching agency profile:', err);
+        }
 
         if (!agencyProfile) {
           const localKeys = Object.keys(localStorage);
@@ -238,7 +242,9 @@ export default function TripPackagePreviewView() {
         if (!spotsError && spotsData) {
           fetchedSpots = spotsData.filter(s => s.spots !== null);
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn('DB error fetching spots:', err);
+      }
 
       setPackageData({
         ...tripData,
@@ -252,7 +258,7 @@ export default function TripPackagePreviewView() {
       }
 
     } catch (err) {
-      console.warn('DB package preview load failed, falling back to LocalStorage sandbox cache');
+      console.warn('DB package preview load failed, falling back to LocalStorage sandbox cache', err);
       
       // Sandbox cache fallback
       let localTrip = null;
@@ -321,7 +327,10 @@ export default function TripPackagePreviewView() {
   }, [packageId, seedMockDataIfNeeded]);
 
   useEffect(() => {
-    loadPackageDetails();
+    const timer = setTimeout(() => {
+      loadPackageDetails(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [loadPackageDetails]);
 
   // Handle travelers increment/decrement
@@ -375,24 +384,48 @@ export default function TripPackagePreviewView() {
       // 1. Simulate server verification delay
       await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // 2. Write booking to Supabase
-      let bookingWritten = false;
-      try {
-        const { error: bookingError } = await supabase
-          .from('package_bookings')
-          .insert({
-            trip_id: packageData.id,
-            user_id: user.id,
-            amount_paid: totalPaid,
-            travelers_count: travelersCount,
-            status: 'paid'
+      let finalTripId = newTripId;
+      let finalInviteCode = inviteCode;
+
+      const packageIdInt = parseInt(packageData.id, 10);
+      const isMockPackage = isNaN(packageIdInt);
+
+      if (!isMockPackage) {
+        try {
+          const { data, error } = await supabase.rpc('book_and_clone_itinerary', {
+            p_package_id: packageIdInt,
+            p_user_id: user.id,
+            p_travelers_count: travelersCount,
+            p_amount_paid: totalPaid,
+            p_payment_intent_id: 'pi_mock_' + Math.random().toString(36).substring(2, 9),
+            p_session_id: 'cs_mock_' + Math.random().toString(36).substring(2, 9)
           });
-        if (!bookingError) bookingWritten = true;
-      } catch (dbErr) {
-        console.warn('DB booking insert skipped or failed, relying on local sync fallback');
+
+          if (error) {
+            setPaymentError(`Booking failed: ${error.message}`);
+            setCheckoutStep('form');
+            return;
+          }
+          if (data && data.length > 0) {
+            finalTripId = data[0].new_trip_id;
+            finalInviteCode = data[0].new_invite_code;
+          } else {
+            setPaymentError('Failed to clone trip itinerary. Please try again.');
+            setCheckoutStep('form');
+            return;
+          }
+        } catch (dbErr) {
+          console.error('Database booking error:', dbErr);
+          if (navigator.onLine) {
+            setPaymentError(`Failed to complete database booking: ${dbErr.message || dbErr}`);
+            setCheckoutStep('form');
+            return;
+          }
+          console.warn('Network offline, relying on local sync fallback', dbErr);
+        }
       }
 
-      // 3. Sync to LocalStorage bookings ledger for agency views
+      // Sync to LocalStorage bookings ledger for agency views
       const localBookingsKey = `spota_agency_bookings_${agencyId}`;
       const existingBookings = JSON.parse(localStorage.getItem(localBookingsKey) || '[]');
       const localBookingRecord = {
@@ -406,64 +439,14 @@ export default function TripPackagePreviewView() {
       };
       localStorage.setItem(localBookingsKey, JSON.stringify([localBookingRecord, ...existingBookings]));
 
-      // 4. Create active copy of collaborative trip board in database
-      let liveClonedTrip = null;
-      try {
-        const { data: newTrip, error: tripError } = await supabase
-          .from('trips')
-          .insert({
-            name: `${packageData.name} - My Tour`,
-            destination: packageData.destination || null,
-            start_date: packageData.start_date || null,
-            end_date: packageData.end_date || null,
-            invite_code: inviteCode,
-            creator_id: user.id,
-            agency_id: agencyId,
-            is_cobranded: true,
-            is_public_package: false
-          })
-          .select()
-          .single();
-
-        if (!tripError && newTrip) {
-          liveClonedTrip = newTrip;
-          
-          // Join traveller as creator
-          await supabase
-            .from('trip_members')
-            .insert({
-              trip_id: newTrip.id,
-              user_id: user.id,
-              role: 'creator'
-            });
-
-          // Insert spots
-          if (spots.length > 0) {
-            const spotsToInsert = spots.map(s => ({
-              trip_id: newTrip.id,
-              spot_id: s.spot_id,
-              added_by: user.id,
-              visited: false,
-              itinerary_day: s.itinerary_day,
-              schedule_time: s.schedule_time,
-              booking_cta_label: s.booking_cta_label,
-              booking_cta_url: s.booking_cta_url
-            }));
-            await supabase.from('trip_spots').insert(spotsToInsert);
-          }
-        }
-      } catch (cloneDbErr) {
-        console.warn('DB cloning failed, writing mock cloned board to LocalStorage caches:', cloneDbErr);
-      }
-
       // 5. Local Storage sync fallback for active board
       const localClonedTrip = {
-        id: liveClonedTrip?.id || newTripId,
+        id: finalTripId,
         name: `${packageData.name} - My Tour`,
         destination: packageData.destination,
         start_date: packageData.start_date,
         end_date: packageData.end_date,
-        invite_code: inviteCode,
+        invite_code: finalInviteCode,
         creator_id: user.id,
         agency_id: agencyId,
         is_cobranded: true
@@ -630,7 +613,7 @@ export default function TripPackagePreviewView() {
                       <p>No itinerary locations mapped to this package yet.</p>
                     </div>
                   ) : (
-                    sortedDays.map((dayNum, idx) => (
+                    sortedDays.map((dayNum) => (
                       <div key={dayNum} className="timeline-day-block">
                         <div className="day-heading">
                           <span className="day-bubble">Day {dayNum}</span>
@@ -641,7 +624,7 @@ export default function TripPackagePreviewView() {
                         <div className="day-spots-list">
                           {groupedSpots[dayNum]
                             .sort((a, b) => (a.schedule_time || '').localeCompare(b.schedule_time || ''))
-                            .map((ts, sIdx) => (
+                            .map((ts) => (
                               <div 
                                 key={ts.spot_id} 
                                 className="timeline-spot-item glass-panel"
@@ -742,7 +725,7 @@ export default function TripPackagePreviewView() {
                   url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
                 />
 
-                {spots.map((ts, idx) => (
+                {spots.map((ts) => (
                   <Marker 
                     key={ts.spot_id} 
                     position={[parseFloat(ts.spots.latitude), parseFloat(ts.spots.longitude)]}

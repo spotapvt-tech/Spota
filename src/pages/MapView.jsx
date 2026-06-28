@@ -1,8 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, CircleMarker } from 'react-leaflet';
 import { supabase } from '../lib/supabaseClient';
 import { Search, Camera, Sparkles, Download, WifiOff } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 import { haversineDistance, adjustOverlappingCoordinates } from '../lib/utils';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import ARView from './ARView';
@@ -38,9 +37,8 @@ function MapCenter({ position }) {
 }
 
 export default function MapView() {
-  const { user } = useAuth();
   const [spots, setSpots] = useState([]);
-  const [center, setCenter] = useState([40.7128, -74.0060]); // Default NY
+  const [center, setCenter] = useState([28.6139, 77.2090]); // Default Delhi, India
   const [userLocation, setUserLocation] = useState(null);
   const [selectedRange, setSelectedRange] = useState('5'); // default 5 km, options: 'All', 1, 5, 10, 25
   const [searchQuery, setSearchQuery] = useState('');
@@ -89,7 +87,9 @@ export default function MapView() {
   // Center map on last offline spot if offline mode becomes active
   useEffect(() => {
     if (isOffline && offlineSpots.length > 0) {
-      setCenter([offlineSpots[offlineSpots.length - 1].latitude, offlineSpots[offlineSpots.length - 1].longitude]);
+      setTimeout(() => {
+        setCenter([offlineSpots[offlineSpots.length - 1].latitude, offlineSpots[offlineSpots.length - 1].longitude]);
+      }, 0);
     }
   }, [isOffline, offlineSpots]);
 
@@ -409,7 +409,7 @@ export default function MapView() {
           center={center} 
           spots={spots} 
           onClose={() => setShowOfflineModal(false)} 
-          onSuccess={(zoneName, count) => {
+          onSuccess={() => {
             refreshCache();
           }} 
         />

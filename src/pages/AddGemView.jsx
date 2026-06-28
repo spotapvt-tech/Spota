@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Camera, MapPin, UploadCloud, X, Video } from 'lucide-react';
+import { Camera, MapPin, UploadCloud, X, Video, Sparkles, Award, Bot, Search } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,7 @@ import './AddGemView.css';
 import { Capacitor } from '@capacitor/core';
 import { Camera as CapCamera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { categories, getCategoryById } from '../lib/categoryConfig';
+import { checkBadges } from '../lib/badgeEngine';
 
 // Fix for default Leaflet marker icons in React
 let DefaultIcon = L.icon({
@@ -32,6 +33,168 @@ function MapCenter({ position }) {
   }, [position, map]);
   return null;
 }
+
+// AI Vibe description suggestions mapping
+const AI_SUGGESTIONS_MAP = {
+  cafe: {
+    warm: "A super cozy, wood-paneled escape with warm lighting, rustic decor, and a calm workspace vibe. Perfect for sipping a slow pour-over and getting lost in a good book. ☕️📖",
+    bright: "A gorgeous, sun-drenched minimalist cafe with clean white walls and aesthetic indoor plants. High grid-worthiness and an amazing matcha latte selection! 🍵✨",
+    dark: "An intimate, low-lit coffee lounge with a moody jazz aesthetic. Perfect for quiet evening conversations or winding down with a smooth cold brew. ☕️🌙",
+    neutral: "A hidden gem cafe with an incredible espresso bar, cozy corners, and a super welcoming local community feel. ☕️🍃"
+  },
+  trail: {
+    green: "A lush, emerald canopy path winding deep into the quiet woods. Surrounded by ferns, birdsong, and the grounding scent of pine. A perfect forest bath. 🌲🚶‍♂️",
+    neutral: "A rugged, scenic hiking path offering a raw connection with the wilderness. Grounding, fresh, and beautiful at every twist. 🥾🍂"
+  },
+  waterfall: {
+    blue: "A hidden pool of cascading mountain water, shimmering in deep turquoise and blue shades. The air is crisp, misty, and carries a gentle roar. 💦🌀",
+    neutral: "A breathtaking waterfall hidden behind a wall of green foliage. The cool mist and steady rush of water make it a perfect place to recharge. 🌊⛰️"
+  },
+  campsite: {
+    dark: "A secluded pitch under a breathtaking starry night sky, far away from city glow. Absolute peace with nothing but the crackle of a campfire. ⛺️🔥✨",
+    green: "A peaceful forest camp site nestled in a quiet clearing. Waking up to fresh pine breeze and morning mist. 🌲🏕️",
+    neutral: "A dream wilderness camping spot surrounded by nature's sounds. Remote, peaceful, and perfect for stargazing. ⛺️🌌"
+  },
+  viewpoint: {
+    sunset: "An absolute front-row seat to golden hour. Warm pink and golden gradients spreading across the endless horizon. Breathtaking. 🌅🧡",
+    blue: "A high-altitude clearing offering vast, panoramic blue sky vistas over the mountain range. Floating above the clouds. ⛰️☁️",
+    neutral: "An incredible vantage point showing off panoramic vistas of the landscape. The perfect spot to pause and take in the scale of nature. 📍🏔️"
+  },
+  hostel: {
+    warm: "A warm, high-vibe boutique hostel with cozy common rooms, local art, and open social spaces. Woven rugs and fairy lights make it feel like home. 🎒✨",
+    neutral: "A vibrant social hub filled with friendly explorers, map walls, and positive travel energy. 🎒🗺️"
+  },
+  homestay: {
+    warm: "A charming, family-run cottage homestay surrounded by apple orchards. Warm hospitality, home-cooked food, and a traditional fireplace. 🏡🔥",
+    neutral: "A peaceful retreat offering local hospitality, stunning garden views, and a slow, relaxing mountain lifestyle. 🏡🌸"
+  },
+  default: "A magical hidden gem tucked away from the main trails. Incredible atmosphere, positive vibes, and a must-visit for any traveller looking for a unique spot! 💎✨"
+};
+
+// Quick Vibe Presets for one-click rating setup
+const VIBE_PRESETS = {
+  work_cafe: {
+    label: 'Work Cafe',
+    emoji: '💻',
+    ratings: { cozy: 4, insta_worthy: 3, lively: 2, zen: 4, workspace: 5 }
+  },
+  social_hub: {
+    label: 'Social Hub',
+    emoji: '🤝',
+    ratings: { cozy: 3, insta_worthy: 4, lively: 5, zen: 2, workspace: 2 }
+  },
+  insta_spot: {
+    label: 'Insta Spot',
+    emoji: '📸',
+    ratings: { cozy: 3, insta_worthy: 5, lively: 4, zen: 2, workspace: 2 }
+  },
+  zen_escape: {
+    label: 'Zen Escape',
+    emoji: '🧘',
+    ratings: { cozy: 5, insta_worthy: 4, lively: 1, zen: 5, workspace: 3 }
+  }
+};
+
+// Category-specific tag suggestions
+const RECOMMENDED_TAGS_MAP = {
+  cafe: ['matcha', 'wifi', 'workspace', 'brunch', 'aesthetic', 'cozy', 'vinyl', 'pastries'],
+  viewpoint: ['sunset', 'sunrise', 'citylights', 'panorama', 'goldenhour', 'scenic', 'peaceful'],
+  'street-art': ['murals', 'graffiti', 'indie', 'neon', 'aesthetic', 'colorful', 'hiddenalley', 'insta_worthy'],
+  event: ['livemusic', 'popupshop', 'vibes', 'social', 'nightlife', 'indie', 'market', 'festival'],
+  trail: ['trek', 'hiking', 'forestbath', 'nature', 'summit', 'scenic', 'adventure'],
+  campsite: ['stargazing', 'campfire', 'secluded', 'wilderness', 'outdoor', 'hammock', 'peaceful'],
+  waterfall: ['misty', 'refreshing', 'hike', 'nature', 'swimming', 'hidden', 'photogenic'],
+  mountain: ['summit', 'snow', 'climbing', 'views', 'cold', 'alpine', 'adventure'],
+  beach: ['sunset', 'sandy', 'waves', 'surfing', 'sunbathing', 'bonfire', 'coastal'],
+  lake: ['paddleboarding', 'kayaking', 'peaceful', 'reflection', 'swimming', 'cabinvibes'],
+  forest: ['pine', 'greenery', 'foraging', 'birds', 'shade', 'mystical', 'quiet'],
+  cave: ['underground', 'exploring', 'stalactites', 'cool_air', 'dark', 'adventure'],
+  default: ['aesthetic', 'hiddengem', 'localspot', 'peaceful', 'photogenic']
+};
+
+// Client-side image analyzer helper (analyzes image colors and brightness offscreen)
+const analyzeImageColor = (imageSrc) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 10;
+        canvas.height = 10;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve({ brightness: 'neutral', dominant: 'neutral' });
+          return;
+        }
+        ctx.drawImage(img, 0, 0, 10, 10);
+        const imgData = ctx.getImageData(0, 0, 10, 10).data;
+        
+        let totalR = 0, totalG = 0, totalB = 0;
+        let pixelCount = 0;
+        for (let i = 0; i < imgData.length; i += 4) {
+          totalR += imgData[i];
+          totalG += imgData[i+1];
+          totalB += imgData[i+2];
+          pixelCount++;
+        }
+        
+        const avgR = totalR / pixelCount;
+        const avgG = totalG / pixelCount;
+        const avgB = totalB / pixelCount;
+        const brightness = (avgR * 299 + avgG * 587 + avgB * 114) / 1000;
+        
+        let dominant = 'neutral';
+        if (avgG > avgR + 10 && avgG > avgB + 10) {
+          dominant = 'green';
+        } else if (avgB > avgR + 10 && avgB > avgG + 10) {
+          dominant = 'blue';
+        } else if (avgR > avgG + 10 && avgR > avgB + 10) {
+          if (avgR > 170 && avgG < 140) {
+            dominant = 'sunset';
+          } else {
+            dominant = 'warm';
+          }
+        }
+        
+        let brightnessType = 'neutral';
+        if (brightness < 70) {
+          brightnessType = 'dark';
+        } else if (brightness > 190) {
+          brightnessType = 'bright';
+        }
+        
+        resolve({ brightness: brightnessType, dominant });
+      } catch (err) {
+        console.warn('Canvas image analysis failed:', err);
+        resolve({ brightness: 'neutral', dominant: 'neutral' });
+      }
+    };
+    img.onerror = () => {
+      resolve({ brightness: 'neutral', dominant: 'neutral' });
+    };
+    img.src = imageSrc;
+  });
+};
+
+const getSuggestedDescription = (category, profile) => {
+  if (!profile) return AI_SUGGESTIONS_MAP.default;
+  const cat = category || 'default';
+  const dominant = profile.dominant || 'neutral';
+  const brightness = profile.brightness || 'neutral';
+  
+  let desc = null;
+  if (AI_SUGGESTIONS_MAP[cat]) {
+    if (AI_SUGGESTIONS_MAP[cat][dominant]) {
+      desc = AI_SUGGESTIONS_MAP[cat][dominant];
+    } else if (AI_SUGGESTIONS_MAP[cat][brightness]) {
+      desc = AI_SUGGESTIONS_MAP[cat][brightness];
+    } else if (AI_SUGGESTIONS_MAP[cat].neutral) {
+      desc = AI_SUGGESTIONS_MAP[cat].neutral;
+    }
+  }
+  return desc || AI_SUGGESTIONS_MAP.default;
+};
 
 // Marker component that handles click-to-place and dragging
 function LocationMarker({ position, setPosition }) {
@@ -79,26 +242,297 @@ export default function AddGemView() {
   // Default map center: New York or user location on load
   const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]);
 
+  // Autocomplete Geocoding & Dropdown state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchError, setSearchError] = useState('');
+  const searchContainerRef = useRef(null);
+  const isTypingRef = useRef(false);
+
   const [formData, setFormData] = useState({
     title: '',
     category: 'cafe',
     vibe: ''
   });
 
+  const [activeTab, setActiveTab] = useState('form'); // 'form' | 'preview'
+  const [badgeMilestone, setBadgeMilestone] = useState(null);
+  const [pioneerAlert, setPioneerAlert] = useState(false);
+  const [vibeRatings, setVibeRatings] = useState({
+    cozy: 3,
+    insta_worthy: 3,
+    lively: 3,
+    zen: 3,
+    workspace: 3
+  });
+  const [aiSuggestion, setAiSuggestion] = useState('');
+  const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
+  const [imageColorProfile, setImageColorProfile] = useState(null);
+
+  const vibeLabels = {
+    cozy: ['Cold / Drafty 🥶', 'Chilly 🌬️', 'Decent', 'Comfy 😊', 'Super Warm & Snuggly 🧸'],
+    insta_worthy: ['Basic / Bland 🥱', 'Average', 'Nice Angle 📐', 'Aesthetic ✨', 'Visual Masterpiece 📸'],
+    lively: ['Ghost Town 🤫', 'Quiet / Chill', 'Social / Cool 🤝', 'Buzzing', 'Electric Energy 🔥'],
+    zen: ['Loud / Chaotic 📢', 'Noisy', 'Relaxed', 'Peaceful 🍃', 'Dead Silent Sanctuary 🧘'],
+    workspace: ['No Power/Wifi 🔌', 'Hard Seats', 'Decent Coffee ☕', 'Great Desk 💻', 'Nomad Heaven 🎒']
+  };
+
+  // Trigger client-side AI image analysis when image changes
+  useEffect(() => {
+    if (!imageUrl) {
+      return;
+    }
+
+    // Defer to prevent blocking the UI thread during previews
+    const timer = setTimeout(async () => {
+      setIsAiAnalyzing(true);
+      try {
+        const profile = await analyzeImageColor(imageUrl);
+        setImageColorProfile(profile);
+        // Calculate description suggestion asynchronously in timeout to avoid sync setState warnings
+        const suggestion = getSuggestedDescription(formData.category, profile);
+        setAiSuggestion(suggestion);
+      } catch (err) {
+        console.warn('AI Image Analysis error:', err);
+      } finally {
+        setIsAiAnalyzing(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageUrl]);
+
+  // Pioneer check hook
+  useEffect(() => {
+    const checkPioneerZone = async () => {
+      if (!location) return;
+      try {
+        const { getCachedZones } = await import('../lib/offlineCache');
+        const zones = await getCachedZones();
+        if (zones && zones.length > 0) {
+          const isInside = zones.some(zone => {
+            let zLat, zLng;
+            if (Array.isArray(zone.center)) {
+              zLat = zone.center[0];
+              zLng = zone.center[1];
+            } else if (zone.center && typeof zone.center === 'object') {
+              zLat = zone.center.lat;
+              zLng = zone.center.lng;
+            } else {
+              return false;
+            }
+            const R = 6371; // km
+            const dLat = ((location.lat - zLat) * Math.PI) / 180;
+            const dLon = ((location.lng - zLng) * Math.PI) / 180;
+            const a =
+              Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+              Math.cos((zLat * Math.PI) / 180) *
+                Math.cos((location.lat * Math.PI) / 180) *
+                Math.sin(dLon / 2) *
+                Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const dist = R * c;
+            return dist <= (zone.radius || 10);
+          });
+          setPioneerAlert(isInside);
+        } else {
+          setPioneerAlert(false);
+        }
+      } catch (err) {
+        console.warn('Error checking offline zones for Pioneer badge:', err);
+      }
+    };
+    checkPioneerZone();
+  }, [location]);
+
   // Try to find user location on mount to center the map
   useEffect(() => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
-          setLocation(coords);
-          setMapCenter([coords.lat, coords.lng]);
-        },
-        (error) => console.log('Geolocation on mount bypassed:', error),
-        { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
+          (position) => {
+            const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+            setLocation(coords);
+            setMapCenter([coords.lat, coords.lng]);
+          },
+          (error) => console.log('Geolocation on mount bypassed:', error),
+          { enableHighAccuracy: false, timeout: 6000, maximumAge: 60000 }
       );
     }
   }, []);
+
+  // Geocoding Autocomplete effect with debouncing & AbortController cancellation
+  useEffect(() => {
+    if (!isTypingRef.current || searchQuery.trim().length < 3) {
+      setSearchError('');
+      return;
+    }
+
+    const abortController = new AbortController();
+
+    const delayDebounceFn = setTimeout(async () => {
+      setIsSearching(true);
+      setSearchError('');
+
+      // Offline resilience check
+      if (!navigator.onLine) {
+        setSearchError('Offline: Search is unavailable. Use manual map pin-drop instead! 📍');
+        setSearchResults([]);
+        setShowDropdown(true);
+        setIsSearching(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchQuery)}&limit=5`,
+          {
+            signal: abortController.signal,
+            headers: {
+              'User-Agent': 'SpotaApp/1.0'
+            }
+          }
+        );
+        if (response.ok) {
+          const data = await response.json();
+          if (!abortController.signal.aborted) {
+            setSearchResults(data);
+            if (data.length === 0) {
+              setSearchError('No matching places found. Try another query or drop a pin manually! 🗺️');
+            }
+            setShowDropdown(true);
+          }
+        } else {
+          if (!abortController.signal.aborted) {
+            setSearchError('Search failed. Please try again or drop a pin manually.');
+          }
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          return; // Ignore abort errors
+        }
+        console.error('Error fetching autocomplete geocoding:', err);
+        if (!abortController.signal.aborted) {
+          setSearchError('Error connecting to search service. Drop a pin manually instead! 📍');
+          setSearchResults([]);
+          setShowDropdown(true);
+        }
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsSearching(false);
+        }
+      }
+    }, 450);
+
+    return () => {
+      clearTimeout(delayDebounceFn);
+      abortController.abort();
+    };
+  }, [searchQuery]);
+
+  // Click outside to close geocoding dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleSelectResult = (item) => {
+    isTypingRef.current = false;
+    const lat = parseFloat(item.lat);
+    const lng = parseFloat(item.lon);
+    
+    // Validate coordinates to prevent map rendering crashes
+    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+      console.warn('Invalid geocoding coordinates received:', item);
+      setSearchError('Invalid coordinates received for this location.');
+      return;
+    }
+    
+    const coords = { lat, lng };
+    
+    setLocation(coords);
+    setMapCenter([lat, lng]);
+    setAddress(item.display_name || '');
+    
+    // Auto-fill title with the first segment of the name
+    if (item.display_name) {
+      const parts = item.display_name.split(',');
+      const placeName = parts[0].trim();
+      setFormData(prev => ({ ...prev, title: placeName }));
+    }
+    
+    setShowDropdown(false);
+    setSearchQuery(item.display_name);
+    setSearchResults([]);
+    setSearchError('');
+  };
+
+  const handleCategoryChange = (catId) => {
+    setFormData(prev => ({ ...prev, category: catId }));
+    
+    // Update badge milestone dynamically
+    const outdoorCategories = ['trail', 'campsite', 'waterfall', 'mountain', 'beach', 'lake', 'forest', 'cave'];
+    if (outdoorCategories.includes(catId)) {
+      const localCreated = JSON.parse(localStorage.getItem('spota_created_spots') || '[]');
+      const categoryCount = localCreated.filter(s => outdoorCategories.includes(s.category)).length;
+      if (categoryCount < 5) {
+        setBadgeMilestone({
+          badge: 'Trail Blazer',
+          text: `🌲 Adventure Milestone: You have dropped ${categoryCount} outdoor spots. Dropping this will bring you ${categoryCount + 1} of 5 to the Trail Blazer Badge (+10 Reputation Points)!`
+        });
+      } else {
+        setBadgeMilestone(null);
+      }
+    } else {
+      setBadgeMilestone(null);
+    }
+
+    // Recalculate description suggestion dynamically
+    if (imageColorProfile) {
+      const suggestion = getSuggestedDescription(catId, imageColorProfile);
+      setAiSuggestion(suggestion);
+    }
+  };
+
+  const handleApplyVibePreset = (presetRatings) => {
+    setVibeRatings(presetRatings);
+  };
+
+  const isPresetActive = (presetRatings) => {
+    return Object.keys(presetRatings).every(key => vibeRatings[key] === presetRatings[key]);
+  };
+
+  const handleToggleTag = (tag) => {
+    const currentTags = tagsText
+      .split(',')
+      .map(t => t.replace(/#/g, '').trim().toLowerCase())
+      .filter(Boolean);
+    
+    let updatedTags;
+    if (currentTags.includes(tag.toLowerCase())) {
+      updatedTags = currentTags.filter(t => t !== tag.toLowerCase());
+    } else {
+      updatedTags = [...currentTags, tag.toLowerCase()];
+    }
+    setTagsText(updatedTags.join(', '));
+  };
+
+  const isTagActive = (tag) => {
+    return tagsText
+      .split(',')
+      .map(t => t.replace(/#/g, '').trim().toLowerCase())
+      .filter(Boolean)
+      .includes(tag.toLowerCase());
+  };
 
   const fileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -382,6 +816,8 @@ export default function AddGemView() {
     setImageFile(null);
     setImageUrl('');
     setCameraBase64(null); // Reset native camera base64 reference
+    setImageColorProfile(null);
+    setAiSuggestion('');
   };
 
   const handleVideoChange = (e) => {
@@ -442,8 +878,19 @@ export default function AddGemView() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!imageUrl || !location || !formData.title) {
-      alert('Please provide an image, location, and title for your gem!');
+    
+    if (!imageUrl) {
+      alert('Please select or capture a photo for your gem! 📸');
+      return;
+    }
+    
+    if (!location) {
+      alert('Please drop a pin on the map to set your gem\'s location! 📍');
+      return;
+    }
+    
+    if (!formData.title || !formData.title.trim()) {
+      alert('Please provide a title for your gem! 🏷️');
       return;
     }
 
@@ -467,7 +914,7 @@ export default function AddGemView() {
             .upload(filePath, imageFile);
 
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Storage upload timeout')), 5000)
+            setTimeout(() => reject(new Error('Storage upload timeout')), 30000)
           );
 
           const result = await Promise.race([uploadPromise, timeoutPromise]);
@@ -522,7 +969,7 @@ export default function AddGemView() {
             .upload(filePath, videoFile);
 
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Storage video upload timeout')), 8000)
+            setTimeout(() => reject(new Error('Storage video upload timeout')), 60000)
           );
 
           const result = await Promise.race([uploadPromise, timeoutPromise]);
@@ -544,14 +991,14 @@ export default function AddGemView() {
             finalVideoUrl = publicUrlData.publicUrl;
           }
         } else {
-          console.warn('Storage video upload failed, utilizing community vibe video template:', uploadError);
-          finalVideoUrl = 'https://www.w3schools.com/html/mov_bbb.mp4';
+          console.warn('Storage video upload failed, falling back to photo:', uploadError);
+          finalVideoUrl = '';
         }
       }
 
       let currentStatus = 'approved';
 
-      const { error } = await supabase
+      const { data: insertedData, error } = await supabase
         .from('spots')
         .insert([
           {
@@ -567,9 +1014,40 @@ export default function AddGemView() {
             tags: parsedTags,
             address: address
           }
-        ]);
+        ])
+        .select();
 
       if (error) throw error;
+
+      if (insertedData && insertedData[0]) {
+        // Insert initial vibe ratings
+        try {
+          await supabase
+            .from('vibe_ratings')
+            .insert([
+              {
+                spot_id: insertedData[0].id,
+                user_id: user && !user.isGuest ? user.id : null,
+                cozy: vibeRatings.cozy,
+                insta_worthy: vibeRatings.insta_worthy,
+                lively: vibeRatings.lively,
+                zen: vibeRatings.zen,
+                workspace: vibeRatings.workspace
+              }
+            ]);
+        } catch (ratingErr) {
+          console.warn('DB error inserting initial vibe ratings, offline fallback active:', ratingErr);
+        }
+
+        const localCreated = JSON.parse(localStorage.getItem('spota_created_spots') || '[]');
+        localCreated.push({
+          id: insertedData[0].id,
+          category: insertedData[0].category,
+          latitude: insertedData[0].latitude,
+          longitude: insertedData[0].longitude
+        });
+        localStorage.setItem('spota_created_spots', JSON.stringify(localCreated));
+      }
 
       const newSpot = {
         title: formData.title,
@@ -578,6 +1056,13 @@ export default function AddGemView() {
         image_url: finalImageUrl
       };
       setSuccessSpot(newSpot);
+
+      // Trigger badge check after a short delay
+      setTimeout(() => {
+        if (user) {
+          checkBadges(user);
+        }
+      }, 600);
     } catch (err) {
       console.error('Error dropping gem:', err);
       alert(`Error dropping gem: ${err.message}`);
@@ -729,240 +1214,534 @@ export default function AddGemView() {
     }
   };
 
-  return (
-    <div className="add-gem-container glass-panel">
-      <div className="add-gem-header">
-        <h2>Drop a Gem</h2>
-        <p>Share a cool spot with the community.</p>
-      </div>
+  const catInfo = getCategoryById(formData.category);
+  const tagList = tagsText.split(',').map(t => t.replace(/#/g, '').trim().toLowerCase()).filter(Boolean);
 
-      <form className="add-gem-form" onSubmit={handleSubmit}>
-        {/* Image Upload Section */}
-        <div className="form-group">
-          <label>Photo</label>
-          {!imageUrl ? (
-            <div className="photo-source-selector">
-              <button type="button" className="photo-source-card" onClick={triggerCameraUpload}>
-                <div className="icon-container">
-                  <Camera size={22} />
-                </div>
-                <span>Take Photo</span>
-              </button>
-              <button type="button" className="photo-source-card" onClick={triggerGalleryUpload}>
-                <div className="icon-container">
-                  <UploadCloud size={22} />
-                </div>
-                <span>Local Storage</span>
-              </button>
-              {/* Hidden file inputs for Web/Mobile Web */}
-              <input 
-                type="file" 
-                accept="image/*" 
-                capture="environment" 
-                ref={cameraInputRef} 
-                onChange={handleImageChange} 
-                style={{ display: 'none' }} 
-              />
-              <input 
-                type="file" 
-                accept="image/*" 
-                ref={galleryInputRef} 
-                onChange={handleImageChange} 
-                style={{ display: 'none' }} 
-              />
-            </div>
-          ) : (
-            <div className="image-preview-wrapper">
-              <img src={imageUrl} alt="Preview" className="image-preview" />
-              <div className="preview-badge">Selected Photo</div>
-              <button type="button" className="remove-image-btn" onClick={removeImage} aria-label="Remove image">
-                <X size={18} />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Video Vibe Upload Section */}
-        <div className="form-group">
-          <label>Video Vibe (Optional 15s Clip)</label>
-          {!videoUrl ? (
-            <div className="photo-source-selector video-source-selector">
-              <button type="button" className="photo-source-card" onClick={triggerVideoUpload}>
-                <div className="icon-container">
-                  <Video size={22} />
-                </div>
-                <span>Record / Upload Video</span>
-              </button>
-              <input 
-                type="file" 
-                accept="video/*" 
-                ref={videoInputRef} 
-                onChange={handleVideoChange} 
-                style={{ display: 'none' }} 
-              />
-            </div>
-          ) : (
-            <div className="image-preview-wrapper video-preview-wrapper">
-              <video src={videoUrl} controls className="image-preview" />
-              <div className="preview-badge">Vibe Clip</div>
-              <button type="button" className="remove-image-btn" onClick={removeVideo} aria-label="Remove video">
-                <X size={18} />
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Location Section */}
-        <div className="form-group">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <label>Location</label>
-            <button 
-              type="button" 
-              className={`get-location-btn ${isLocating ? 'locating' : ''}`}
-              onClick={handleGetLocation}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--color-accent)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                fontSize: '12px',
-                fontWeight: 600,
-                padding: '4px 8px',
-                borderRadius: 'var(--radius-sm)'
-              }}
-            >
-              <MapPin size={14} />
-              {isLocating ? 'Pinpointing...' : 'Use My Current Location'}
-            </button>
+  const renderLiveCardPreview = () => {
+    return (
+      <div className="live-share-card-container">
+        <div className="live-share-card-inner">
+          <div className="live-card-badge">💎 S P O T A  ·  PREVIEW</div>
+          
+          <div className="live-card-image-box">
+            {imageUrl ? (
+              <img src={imageUrl} alt="Card preview" className="live-card-img" />
+            ) : (
+              <div className="live-card-placeholder">
+                <span>Snaps preview will show here 📸</span>
+              </div>
+            )}
+            <span className="live-card-category-badge" style={{ backgroundColor: catInfo.color }}>
+              {catInfo.emoji} {catInfo.label.toUpperCase()}
+            </span>
           </div>
 
-          <div className="add-gem-map-wrapper" style={{ height: '220px', width: '100%', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--color-border)', position: 'relative', zIndex: 1 }}>
-            <MapContainer 
-              center={location ? [location.lat, location.lng] : mapCenter} 
-              zoom={14} 
-              scrollWheelZoom={true}
-              style={{ height: '100%', width: '100%' }}
-            >
-              <MapCenter position={location ? [location.lat, location.lng] : mapCenter} />
-              <TileLayer
-                attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
-                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-              />
-              <LocationMarker position={location} setPosition={setLocation} />
-            </MapContainer>
+          <div className="live-card-info-box">
+            <h4 className="live-card-title">{formData.title || 'Secret Spot'}</h4>
+            <div className="live-card-coords">
+              📍 {location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : '0.0000, 0.0000'}
+            </div>
+            <p className="live-card-description">
+              "{formData.vibe || 'Describe the atmosphere to write the vibe check...'}"
+            </p>
+          </div>
+
+          {/* Vibe Grid in Preview Card */}
+          <div className="live-card-vibe-grid">
+            {Object.entries(vibeRatings).map(([key, val]) => (
+              <div key={key} className="live-card-vibe-row">
+                <span className="live-card-vibe-name">{key.replace('_', ' ')}</span>
+                <div className="live-card-vibe-dots">
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <span
+                      key={num}
+                      className="live-card-vibe-dot"
+                      style={{
+                        backgroundColor: num <= val ? catInfo.color : 'rgba(255, 255, 255, 0.12)'
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="live-card-tags-row">
+            {tagList.map((tag, idx) => (
+              <span key={idx} className="live-card-tag-pill">#{tag}</span>
+            ))}
           </div>
           
-          {location && (
-            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '4px', display: 'block' }}>
-              📍 Pin dropped at {location.lat.toFixed(5)}, {location.lng.toFixed(5)}. Click map or drag pin to adjust.
-            </span>
-          )}
-        </div>
-
-        {/* Address */}
-        <div className="form-group">
-          <label>Address</label>
-          <textarea 
-            placeholder={isReverseGeocoding ? "Fetching address..." : "Address will load automatically when location is chosen"} 
-            className="zen-textarea"
-            rows={2}
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            disabled={isReverseGeocoding}
-          />
-        </div>
-
-        {/* Title */}
-        <div className="form-group">
-          <label>Name of the spot</label>
-          <input 
-            type="text" 
-            placeholder="e.g. Secret Matcha Cafe" 
-            className="zen-input"
-            value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            required
-          />
-        </div>
-
-        {/* Category */}
-        <div className="form-group">
-          <label>Category</label>
-          <div className="category-chips">
-            {categories.map((cat) => {
-              const isActive = formData.category === cat.id;
-              return (
-                <button 
-                  type="button" 
-                  key={cat.id}
-                  className={`cat-chip ${isActive ? 'active' : ''}`}
-                  onClick={() => setFormData({ ...formData, category: cat.id })}
-                  style={{
-                    borderColor: isActive ? cat.color : 'var(--color-border)',
-                    backgroundColor: isActive ? `${cat.color}26` : 'var(--color-bg-secondary)',
-                    color: isActive ? cat.color : 'var(--color-text-secondary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    fontWeight: isActive ? 600 : 500
-                  }}
-                >
-                  <span>{cat.emoji}</span>
-                  <span>{cat.label}</span>
-                </button>
-              );
-            })}
+          <div className="live-card-footer">
+            <span>DISCOVER GEMS WITH FRIENDS</span>
+            <div className="live-card-qr-mock">
+              <div className="qr-dot" />
+              <div className="qr-dot" />
+              <div className="qr-dot" />
+            </div>
           </div>
         </div>
+      </div>
+    );
+  };
 
-        {/* Vibe description */}
-        <div className="form-group">
-          <label>The Vibe (Optional)</label>
-          <textarea 
-            placeholder="What makes this place special?" 
-            className="zen-textarea"
-            rows={3}
-            value={formData.vibe}
-            onChange={(e) => setFormData({ ...formData, vibe: e.target.value })}
-          />
-        </div>
+  return (
+    <div className="add-gem-outer-wrapper">
+      {/* Mobile view tabs */}
+      <div className="form-preview-tabs-mobile">
+        <button 
+          type="button" 
+          className={`tab-select-btn ${activeTab === 'form' ? 'active' : ''}`}
+          onClick={() => setActiveTab('form')}
+        >
+          ✍️ Edit Info
+        </button>
+        <button 
+          type="button" 
+          className={`tab-select-btn ${activeTab === 'preview' ? 'active' : ''}`}
+          onClick={() => setActiveTab('preview')}
+        >
+          ✨ Share Preview
+        </button>
+      </div>
 
-        {/* Vibe Tags */}
-        <div className="form-group">
-          <label>Vibe Tags (comma-separated)</label>
-          <input 
-            type="text" 
-            placeholder="e.g. cozy, neon, matcha, sunset" 
-            className="zen-input"
-            value={tagsText}
-            onChange={(e) => setTagsText(e.target.value)}
-          />
-          {tagsText.trim() && (
-            <div className="tag-preview-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' }}>
-              {tagsText.split(',').map((t, idx) => {
-                const cleaned = t.replace(/#/g, '').trim();
-                return cleaned ? (
-                  <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '4px 10px', borderRadius: 'var(--radius-full)', fontSize: '11px', fontWeight: 600 }}>
-                    #{cleaned}
-                  </span>
-                ) : null;
-              })}
+      <div className={`add-gem-split-layout active-tab-${activeTab}`}>
+        {/* Panel 1: Input Form */}
+        <div className="add-gem-form-panel glass-panel">
+          <div className="add-gem-header">
+            <h2>Drop a Gem 💎</h2>
+            <p>Tell the community where the vibe is at.</p>
+          </div>
+
+          {pioneerAlert && (
+            <div className="milestone-alert-banner pioneer animate-fade-in">
+              <Sparkles size={16} />
+              <span><strong>Pioneer Spot!</strong> Dropping a gem in this cache zone will trigger double Reputation Points!</span>
             </div>
           )}
+          {badgeMilestone && (
+            <div className="milestone-alert-banner milestone animate-fade-in">
+              <Award size={16} />
+              <span>{badgeMilestone.text}</span>
+            </div>
+          )}
+
+          <form className="add-gem-form" onSubmit={handleSubmit}>
+            {/* Image Upload Section */}
+            <div className="form-group">
+              <label>Snaps or it didn't happen 📸</label>
+              {!imageUrl ? (
+                <div className="photo-source-selector">
+                  <button type="button" className="photo-source-card" onClick={triggerCameraUpload}>
+                    <div className="icon-container">
+                      <Camera size={22} />
+                    </div>
+                    <span>Take Photo</span>
+                  </button>
+                  <button type="button" className="photo-source-card" onClick={triggerGalleryUpload}>
+                    <div className="icon-container">
+                      <UploadCloud size={22} />
+                    </div>
+                    <span>Local Storage</span>
+                  </button>
+                  {/* Hidden file inputs for Web/Mobile Web */}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    capture="environment" 
+                    ref={cameraInputRef} 
+                    onChange={handleImageChange} 
+                    style={{ display: 'none' }} 
+                  />
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    ref={galleryInputRef} 
+                    onChange={handleImageChange} 
+                    style={{ display: 'none' }} 
+                  />
+                </div>
+              ) : (
+                <div className="image-preview-wrapper">
+                  <img src={imageUrl} alt="Preview" className="image-preview" />
+                  <div className="preview-badge">Selected Photo</div>
+                  <button type="button" className="remove-image-btn" onClick={removeImage} aria-label="Remove image">
+                    <X size={18} />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Video Vibe Upload Section */}
+            <div className="form-group">
+              <label>Upload a Video Vibe 🎥 (Optional 15s Clip)</label>
+              {!videoUrl ? (
+                <div className="photo-source-selector video-source-selector">
+                  <button type="button" className="photo-source-card" onClick={triggerVideoUpload}>
+                    <div className="icon-container">
+                      <Video size={22} />
+                    </div>
+                    <span>Record / Upload Video</span>
+                  </button>
+                  <input 
+                    type="file" 
+                    accept="video/*" 
+                    ref={videoInputRef} 
+                    onChange={handleVideoChange} 
+                    style={{ display: 'none' }} 
+                  />
+                </div>
+              ) : (
+                <div className="image-preview-wrapper video-preview-wrapper">
+                  <video src={videoUrl} controls className="image-preview" />
+                  <div className="preview-badge">Vibe Clip</div>
+                  <button type="button" className="remove-image-btn" onClick={removeVideo} aria-label="Remove video">
+                    <X size={18} />
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Location Section */}
+            <div className="form-group">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label>Pin the Coordinates 📍</label>
+                <button 
+                  type="button" 
+                  className={`get-location-btn ${isLocating ? 'locating' : ''}`}
+                  onClick={handleGetLocation}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--color-accent)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    padding: '4px 8px',
+                    borderRadius: 'var(--radius-sm)'
+                  }}
+                >
+                  <MapPin size={14} />
+                  {isLocating ? 'Pinpointing...' : 'Use My Current Location'}
+                </button>
+              </div>
+
+              {/* Location Search Bar with Autocomplete Dropdown */}
+              <div className="location-search-container" ref={searchContainerRef}>
+                <div className="search-input-wrapper">
+                  <Search size={16} className="search-icon" />
+                  <input
+                    type="text"
+                    placeholder="Search locations or addresses..."
+                    className="zen-input search-input"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      isTypingRef.current = true;
+                      setSearchQuery(val);
+                      if (val.trim().length < 3) {
+                        setSearchResults([]);
+                        setSearchError('');
+                      } else {
+                        setShowDropdown(true);
+                      }
+                    }}
+                    onFocus={() => setShowDropdown(true)}
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      className="clear-search-btn"
+                      onClick={() => {
+                        isTypingRef.current = false;
+                        setSearchQuery('');
+                        setSearchResults([]);
+                        setSearchError('');
+                        setShowDropdown(false);
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
+
+                {showDropdown && (searchResults.length > 0 || isSearching || searchError) && (
+                  <div className="search-results-dropdown glass-panel">
+                    {isSearching ? (
+                      <div className="search-loading">Searching places... 🗺️</div>
+                    ) : searchError ? (
+                      <div className="search-loading" style={{ color: 'var(--color-accent-hover, #e07a5f)', padding: '12px 16px', fontSize: '13px' }}>{searchError}</div>
+                    ) : (
+                      searchResults.map((item, index) => {
+                        const parts = item.display_name.split(',');
+                        const mainText = parts[0];
+                        const secondaryText = parts.slice(1).join(',').trim();
+                        return (
+                          <div
+                            key={item.place_id || index}
+                            className="search-result-item"
+                            onClick={() => handleSelectResult(item)}
+                          >
+                            <MapPin size={14} className="result-icon" />
+                            <div className="result-details">
+                              <span className="result-title">{mainText}</span>
+                              {secondaryText && <span className="result-address">{secondaryText}</span>}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="add-gem-map-wrapper" style={{ height: '220px', width: '100%', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--color-border)', position: 'relative', zIndex: 1 }}>
+                <MapContainer 
+                  center={location ? [location.lat, location.lng] : mapCenter} 
+                  zoom={14} 
+                  scrollWheelZoom={true}
+                  style={{ height: '100%', width: '100%' }}
+                >
+                  <MapCenter position={location ? [location.lat, location.lng] : mapCenter} />
+                  <TileLayer
+                    attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
+                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                  />
+                  <LocationMarker position={location} setPosition={setLocation} />
+                </MapContainer>
+              </div>
+              
+              {location && (
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', textAlign: 'center', marginTop: '4px', display: 'block' }}>
+                  📍 Pin dropped at {location.lat.toFixed(5)}, {location.lng.toFixed(5)}. Click map or drag pin to adjust.
+                </span>
+              )}
+            </div>
+
+            {/* Address */}
+            <div className="form-group">
+              <label>Address</label>
+              <textarea 
+                placeholder={isReverseGeocoding ? "Fetching address..." : "Address will load automatically when location is chosen"} 
+                className="zen-textarea"
+                rows={2}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                disabled={isReverseGeocoding}
+              />
+            </div>
+
+            {/* Title */}
+            <div className="form-group">
+              <label>Give it a Name 🏷️</label>
+              <input 
+                type="text" 
+                placeholder="e.g. Secret Matcha Sanctuary" 
+                className="zen-input"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              />
+            </div>
+
+            {/* Category */}
+            <div className="form-group">
+              <label>What's the Vibe Category? 💫</label>
+              <div className="category-chips">
+                {categories.map((cat) => {
+                  const isActive = formData.category === cat.id;
+                  return (
+                    <button 
+                      type="button" 
+                      key={cat.id}
+                      className={`cat-chip ${isActive ? 'active' : ''}`}
+                      onClick={() => handleCategoryChange(cat.id)}
+                      style={{
+                        borderColor: isActive ? cat.color : 'var(--color-border)',
+                        backgroundColor: isActive ? `${cat.color}26` : 'var(--color-bg-secondary)',
+                        color: isActive ? cat.color : 'var(--color-text-secondary)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        fontWeight: isActive ? 600 : 500
+                      }}
+                    >
+                      <span>{cat.emoji}</span>
+                      <span>{cat.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Vibe Ratings Sliders */}
+            <div className="form-group">
+              <label>Rate the Atmosphere 📊</label>
+              
+              {/* Quick Vibe Presets */}
+              <div className="vibe-presets-container">
+                <div className="vibe-presets-list">
+                  {Object.entries(VIBE_PRESETS).map(([key, preset]) => {
+                    const active = isPresetActive(preset.ratings);
+                    return (
+                      <button
+                        type="button"
+                        key={key}
+                        className={`preset-chip ${active ? 'active' : ''}`}
+                        onClick={() => handleApplyVibePreset(preset.ratings)}
+                      >
+                        <span className="preset-emoji">{preset.emoji}</span>
+                        <span className="preset-name">{preset.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="vibe-sliders-grid">
+                {Object.keys(vibeRatings).map((key) => (
+                  <div key={key} className="vibe-slider-row">
+                    <div className="vibe-slider-header">
+                      <span className="vibe-slider-name">
+                        {key.replace('_', ' ')}
+                      </span>
+                      <span className="vibe-slider-label">
+                        {vibeLabels[key][vibeRatings[key] - 1]}
+                      </span>
+                    </div>
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="5" 
+                      value={vibeRatings[key]} 
+                      onChange={(e) => setVibeRatings({ ...vibeRatings, [key]: parseInt(e.target.value) })}
+                      className="vibe-slider-input"
+                      style={{ '--accent-color': catInfo.color }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Vibe description */}
+            <div className="form-group">
+              <label>Write the Vibe Check ✍️</label>
+              
+              {isAiAnalyzing && (
+                <div className="ai-suggestion-bubble analyzing animate-fade-in">
+                  <Sparkles size={14} className="spin-icon" />
+                  <span>Vibe checking photo elements... 🤖✨</span>
+                </div>
+              )}
+              
+              {!isAiAnalyzing && aiSuggestion && (
+                <div 
+                  className="ai-suggestion-bubble animate-fade-in" 
+                  onClick={() => {
+                    setFormData(prev => ({ ...prev, vibe: aiSuggestion }));
+                    setAiSuggestion(''); // Clear suggestion once applied
+                  }}
+                  title="Click to apply this vibe check review suggestion"
+                >
+                  <Bot size={14} className="pulse-icon" />
+                  <span><strong>AI Vibe Suggestion:</strong> "{aiSuggestion}" <span className="apply-link">(Tap to apply)</span></span>
+                </div>
+              )}
+
+              <textarea 
+                placeholder="What makes this place magical? Write a short, aesthetic review..." 
+                className="zen-textarea"
+                rows={3}
+                value={formData.vibe}
+                onChange={(e) => setFormData({ ...formData, vibe: e.target.value })}
+              />
+            </div>
+
+            {/* Vibe Tags */}
+            <div className="form-group">
+              <label>Aesthetic Tags 🏷️ (comma-separated)</label>
+              <input 
+                type="text" 
+                placeholder="e.g. cozy, neon, matcha, sunset" 
+                className="zen-input"
+                value={tagsText}
+                onChange={(e) => setTagsText(e.target.value)}
+              />
+              
+              {/* Tap-to-add tag suggestions */}
+              <div className="suggested-tags-wrapper">
+                <span className="suggested-tags-label">Tap to add:</span>
+                <div className="suggested-tags-list">
+                  {(RECOMMENDED_TAGS_MAP[formData.category] || RECOMMENDED_TAGS_MAP.default).map((tag) => {
+                    const active = isTagActive(tag);
+                    return (
+                      <button
+                        type="button"
+                        key={tag}
+                        className={`suggested-tag-chip ${active ? 'active' : ''}`}
+                        onClick={() => handleToggleTag(tag)}
+                        style={{
+                          '--tag-color': catInfo.color
+                        }}
+                      >
+                        #{tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {tagsText.trim() && (
+                <div className="tag-preview-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' }}>
+                  {tagsText.split(',').map((t, idx) => {
+                    const cleaned = t.replace(/#/g, '').trim();
+                    return cleaned ? (
+                      <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '4px 10px', borderRadius: 'var(--radius-full)', fontSize: '11px', fontWeight: 600 }}>
+                        #{cleaned}
+                      </span>
+                    ) : null;
+                  })}
+                </div>
+              )}
+            </div>
+
+            <button type="submit" className="submit-gem-btn" disabled={isSubmitting}>
+              {isSubmitting ? 'Dropping...' : (
+                <>
+                  <UploadCloud size={20} />
+                  Drop the Gem 💎
+                </>
+              )}
+            </button>
+            <div className="mobile-scroll-spacer" />
+          </form>
         </div>
 
-        <button type="submit" className="submit-gem-btn" disabled={isSubmitting}>
-          {isSubmitting ? 'Dropping...' : (
-            <>
-              <UploadCloud size={20} />
-              Drop Gem
-            </>
-          )}
-        </button>
-      </form>
+        {/* Panel 2: Live Preview Card (visible side-by-side on desktop) */}
+        <div className="add-gem-preview-panel glass-panel">
+          <div className="add-gem-header">
+            <h2>Share Card Preview ✨</h2>
+            <p>This is what your friends will see on Instagram Stories.</p>
+          </div>
+          {renderLiveCardPreview()}
+          <button 
+            type="button" 
+            className="submit-gem-btn preview-submit-btn" 
+            onClick={handleSubmit} 
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Dropping...' : (
+              <>
+                <UploadCloud size={20} />
+                Drop the Gem 💎
+              </>
+            )}
+          </button>
+          <div className="mobile-scroll-spacer" />
+        </div>
+      </div>
 
       {successSpot && (
         <div className="success-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>

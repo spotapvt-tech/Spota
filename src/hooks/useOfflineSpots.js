@@ -36,7 +36,14 @@ export default function useOfflineSpots() {
 
     // Initial load if starting offline
     if (!navigator.onLine) {
-      loadCachedSpots();
+      const timer = setTimeout(() => {
+        loadCachedSpots();
+      }, 0);
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      };
     }
 
     return () => {

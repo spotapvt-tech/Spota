@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
-  MapPin, Compass, Eye, Share2, Heart, Wifi, WifiOff, Download, 
-  Sparkles, Layers, Lock, Users, Smartphone, MessageSquare, 
-  PlusCircle, Send, Zap, X, AlertCircle, Play, Pause, Trophy
+  MapPin, Compass, Share2, Wifi, WifiOff, Download, 
+  Sparkles, Users, Smartphone, MessageSquare, 
+  Send, Zap, X, AlertCircle, Play, Pause, Trophy
 } from 'lucide-react';
 import AuthView from './AuthView';
 import './LandingView.css';
@@ -87,7 +87,6 @@ export default function LandingView() {
   
   // 1. Map simulator states
   const [selectedGem, setSelectedGem] = useState(mockSpots[0]);
-  const [proximityRadius, setProximityRadius] = useState(25); // km
   const [localReactions, setLocalReactions] = useState({});
 
   // 2. AR simulator states
@@ -125,76 +124,6 @@ export default function LandingView() {
   // --- Zen Ambient Music states ---
   const [isPlayingMusic, setIsPlayingMusic] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
-
-  // Handle XP increments and level calculations
-  const addXp = (amount, questText = '') => {
-    setXp(prev => {
-      const nextXp = prev + amount;
-      
-      // Calculate levels: Level 1 (0-99 XP), Level 2 (100-199 XP), Level 3 (200+ XP)
-      let nextLevel = 1;
-      let name = 'Novice Explorer';
-      if (nextXp >= 200) {
-        nextLevel = 3;
-        name = 'Zen Master';
-      } else if (nextXp >= 100) {
-        nextLevel = 2;
-        name = 'Vibe Hunter';
-      }
-
-      if (nextLevel > level) {
-        setLevel(nextLevel);
-        setLevelName(name);
-        // Trigger fullscreen level up celebration
-        setLevelUpToast(name);
-        setTimeout(() => setLevelUpToast(null), 3500);
-        
-        // Burst particles in the center of the viewport
-        setTimeout(() => {
-          triggerCanvasBurst(window.innerWidth / 2, window.innerHeight / 2 - 100);
-        }, 100);
-      }
-
-      return nextXp;
-    });
-  };
-
-  // Quest Completer function
-  const completeQuest = (id) => {
-    setQuests(prev => prev.map(q => {
-      if (q.id === id && !q.done) {
-        // Award quest rewards
-        addXp(q.reward, q.text);
-        
-        // Spawn floating indicator for quest completion
-        const questBox = document.querySelector('.l-quest-hud');
-        let x = window.innerWidth / 2;
-        let y = window.innerHeight / 2;
-        if (questBox) {
-          const rect = questBox.getBoundingClientRect();
-          x = rect.left + rect.width / 2;
-          y = rect.top + 20;
-        }
-        spawnFloatingTextAt(x, y, `Quest Complete! +${q.reward} XP 🏆`);
-        
-        // Trigger small particle burst on Quest HUD
-        triggerCanvasBurst(x, y);
-
-        return { ...q, done: true };
-      }
-      return q;
-    }));
-  };
-
-  // RPG style click floating text generator
-  const handleXpClick = (e, text, extraXp = 0) => {
-    const x = e.clientX;
-    const y = e.clientY;
-    spawnFloatingTextAt(x, y, text);
-    if (extraXp > 0) {
-      addXp(extraXp);
-    }
-  };
 
   const spawnFloatingTextAt = (x, y, text) => {
     const id = Date.now() + Math.random();
@@ -267,26 +196,265 @@ export default function LandingView() {
     renderLoop();
   };
 
+  // Handle XP increments and level calculations
+  const addXp = useCallback((amount) => {
+    setXp(prev => {
+      const nextXp = prev + amount;
+      
+      // Calculate levels: Level 1 (0-99 XP), Level 2 (100-199 XP), Level 3 (200+ XP)
+      let nextLevel = 1;
+      let name = 'Novice Explorer';
+      if (nextXp >= 200) {
+        nextLevel = 3;
+        name = 'Zen Master';
+      } else if (nextXp >= 100) {
+        nextLevel = 2;
+        name = 'Vibe Hunter';
+      }
+
+      if (nextLevel > level) {
+        setLevel(nextLevel);
+        setLevelName(name);
+        // Trigger fullscreen level up celebration
+        setLevelUpToast(name);
+        setTimeout(() => setLevelUpToast(null), 3500);
+        
+        // Burst particles in the center of the viewport
+        setTimeout(() => {
+          triggerCanvasBurst(window.innerWidth / 2, window.innerHeight / 2 - 100);
+        }, 100);
+      }
+
+      return nextXp;
+    });
+  }, [level]);
+
+  // Quest Completer function
+  const completeQuest = useCallback((id) => {
+    setQuests(prev => prev.map(q => {
+      if (q.id === id && !q.done) {
+        // Award quest rewards
+        addXp(q.reward);
+        
+        // Spawn floating indicator for quest completion
+        const questBox = document.querySelector('.l-quest-hud');
+        let x = window.innerWidth / 2;
+        let y = window.innerHeight / 2;
+        if (questBox) {
+          const rect = questBox.getBoundingClientRect();
+          x = rect.left + rect.width / 2;
+          y = rect.top + 20;
+        }
+        spawnFloatingTextAt(x, y, `Quest Complete! +${q.reward} XP 🏆`);
+        
+        // Trigger small particle burst on Quest HUD
+        triggerCanvasBurst(x, y);
+
+        return { ...q, done: true };
+      }
+      return q;
+    }));
+  }, [addXp]);
+
+  // RPG style click floating text generator
+  const handleXpClick = (e, text, extraXp = 0) => {
+    const x = e.clientX;
+    const y = e.clientY;
+    spawnFloatingTextAt(x, y, text);
+    if (extraXp > 0) {
+      addXp(extraXp);
+    }
+  };
+
+  // Handle sharing gem card as retro aesthetic ticket
+  const handleDownloadShareCard = (gem) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = 600;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, 0, 800);
+    grad.addColorStop(0, '#121917');
+    grad.addColorStop(1, '#232D29');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 600, 800);
+
+    // Decorative grid
+    ctx.strokeStyle = 'rgba(108, 140, 116, 0.1)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 600; i += 40) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, 800);
+      ctx.stroke();
+    }
+    for (let j = 0; j < 800; j += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, j);
+      ctx.lineTo(600, j);
+      ctx.stroke();
+    }
+
+    // Glow in center
+    const glow = ctx.createRadialGradient(300, 400, 50, 300, 400, 300);
+    glow.addColorStop(0, 'rgba(108, 140, 116, 0.15)');
+    glow.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(300, 400, 300, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Border
+    ctx.strokeStyle = '#6C8C74';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(20, 20, 560, 760);
+    ctx.strokeStyle = 'rgba(108, 140, 116, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(25, 25, 550, 750);
+
+    // Header Title
+    ctx.fillStyle = '#6C8C74';
+    ctx.font = 'bold 14px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('SPOTA TRAVEL PASS // EXCLUSIVE ENTRY', 300, 60);
+
+    // Ticket Line
+    ctx.strokeStyle = 'rgba(108, 140, 116, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(40, 80);
+    ctx.lineTo(560, 80);
+    ctx.stroke();
+
+    // Spot Title
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 32px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(gem.title.toUpperCase(), 300, 150);
+
+    // Category Badge
+    const badgeColor = gem.color || '#6C8C74';
+    ctx.fillStyle = badgeColor;
+    const badgeText = gem.category.toUpperCase();
+    ctx.font = 'bold 12px monospace';
+    const textWidth = ctx.measureText(badgeText).width;
+    const badgeW = textWidth + 24;
+    const badgeH = 26;
+    const badgeX = 300 - badgeW / 2;
+    const badgeY = 180;
+    
+    ctx.beginPath();
+    ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 6);
+    ctx.fill();
+    
+    ctx.fillStyle = '#121917';
+    ctx.fillText(badgeText, 300, badgeY + 17);
+
+    // Address
+    ctx.fillStyle = '#9FA3A0';
+    ctx.font = '14px monospace';
+    ctx.fillText(gem.address, 300, 240);
+
+    // Description Box
+    ctx.fillStyle = 'rgba(108, 140, 116, 0.1)';
+    ctx.beginPath();
+    ctx.roundRect(50, 280, 500, 180, 8);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(108, 140, 116, 0.2)';
+    ctx.strokeRect(50, 280, 500, 180);
+
+    ctx.fillStyle = '#E5E7E6';
+    ctx.font = 'italic 16px serif';
+    const words = gem.description.split(' ');
+    let line = '';
+    let lineY = 325;
+    for (let n = 0; n < words.length; n++) {
+      let testLine = line + words[n] + ' ';
+      let testWidth = ctx.measureText(testLine).width;
+      if (testWidth > 460 && n > 0) {
+        ctx.fillText(line, 300, lineY);
+        line = words[n] + ' ';
+        lineY += 28;
+      } else {
+        line = testLine;
+      }
+    }
+    ctx.fillText(line, 300, lineY);
+
+    // Vibe Check Scores
+    ctx.fillStyle = '#6C8C74';
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText('--- ATMOSPHERIC VECTOR VALUES ---', 300, 510);
+
+    let vibeX = 90;
+    const vibeWidth = 140;
+    gem.vibes.forEach((v, index) => {
+      ctx.fillStyle = 'rgba(108, 140, 116, 0.15)';
+      ctx.beginPath();
+      ctx.roundRect(vibeX + (index * vibeWidth), 530, 120, 70, 6);
+      ctx.fill();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '20px Arial';
+      ctx.fillText(v.icon, vibeX + (index * vibeWidth) + 60, 560);
+
+      ctx.fillStyle = '#6C8C74';
+      ctx.font = 'bold 10px monospace';
+      ctx.fillText(v.name.toUpperCase(), vibeX + (index * vibeWidth) + 60, 585);
+    });
+
+    // Barcode Simulation
+    ctx.fillStyle = '#FFFFFF';
+    for (let i = 0; i < 40; i++) {
+      const w = Math.random() > 0.4 ? 4 : 2;
+      ctx.fillRect(180 + (i * 6), 640, w, 40);
+    }
+
+    // Footer Text
+    ctx.fillStyle = '#9FA3A0';
+    ctx.font = '9px monospace';
+    ctx.fillText('GENERATE YOUR TICKETS ON SPOTA.APP', 300, 710);
+    ctx.fillText('TICKET ID: ' + Math.random().toString(36).substr(2, 9).toUpperCase(), 300, 725);
+
+    // Download logic
+    const dataUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = `spota-gem-${gem.id}.png`;
+    link.href = dataUrl;
+    link.click();
+  };
+
   // Complete offline quest
   useEffect(() => {
     if (isOffline) {
-      completeQuest('offline');
+      const timer = setTimeout(() => {
+        completeQuest('offline');
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [isOffline]);
+  }, [isOffline, completeQuest]);
 
   // Complete AR quest when they actually pan the AR viewfinder
   useEffect(() => {
     if (activeTab === 'ar' && Math.abs(arHeading) > 25) {
-      completeQuest('ar');
+      const timer = setTimeout(() => {
+        completeQuest('ar');
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [activeTab, arHeading]);
+  }, [activeTab, arHeading, completeQuest]);
 
   // Complete scratch quest
   useEffect(() => {
     if (isScratched) {
-      completeQuest('scratch');
+      const timer = setTimeout(() => {
+        completeQuest('scratch');
+      }, 0);
+      return () => clearTimeout(timer);
     }
-  }, [isScratched]);
+  }, [isScratched, completeQuest]);
 
   // Auto scroll chat
   useEffect(() => {

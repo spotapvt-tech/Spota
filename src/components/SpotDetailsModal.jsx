@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getCategoryById } from '../lib/categoryConfig';
 import GemImpactCard from './GemImpactCard';
+import { checkBadges } from '../lib/badgeEngine';
 import './SpotDetailsModal.css';
 
 const REACTION_EMOJIS = {
@@ -236,10 +237,23 @@ export default function SpotDetailsModal({ spot, onClose }) {
         ]);
 
       if (error) throw error;
+
+      const localRated = JSON.parse(localStorage.getItem('spota_rated_spots') || '[]');
+      if (!localRated.includes(spot.id)) {
+        localRated.push(spot.id);
+        localStorage.setItem('spota_rated_spots', JSON.stringify(localRated));
+      }
       
       alert('Vibe Check submitted successfully!');
       setHasRatedVibes(true);
       fetchVibeRatings(); // Reload averages
+
+      // Trigger badge check
+      setTimeout(() => {
+        if (user) {
+          checkBadges(user);
+        }
+      }, 600);
     } catch (err) {
       console.error('Error submitting Vibe Check:', err);
       alert('Failed to submit Vibe Check: ' + err.message);
@@ -453,20 +467,26 @@ export default function SpotDetailsModal({ spot, onClose }) {
   useEffect(() => {
     if (!spot) return;
     
-    // Check saved status
-    const saved = JSON.parse(localStorage.getItem('spota_saved_spots') || '[]');
-    setIsSaved(saved.includes(spot.id));
+    const timer = setTimeout(() => {
+      // Check saved status
+      const saved = JSON.parse(localStorage.getItem('spota_saved_spots') || '[]');
+      setIsSaved(saved.includes(spot.id));
 
-    // Reactions status
-    const initialReactions = { '🧘': 0, '🔥': 0, '❤️': 0, '🌟': 0, ...(spot.reactions || {}) };
-    setReactions(initialReactions);
+      // Reactions status
+      const initialReactions = { '🧘': 0, '🔥': 0, '❤️': 0, '🌟': 0, ...(spot.reactions || {}) };
+      setReactions(initialReactions);
 
-    // User clicked reactions
-    const allUserReacts = JSON.parse(localStorage.getItem('spota_user_reactions') || '{}');
-    setUserReactions(allUserReacts[spot.id] || {});
+      // User clicked reactions
+      const allUserReacts = JSON.parse(localStorage.getItem('spota_user_reactions') || '{}');
+      setUserReactions(allUserReacts[spot.id] || {});
 
-    // Share count
-    setShareCount(spot.share_count || 0);
+      // Share count
+      setShareCount(spot.share_count || 0);
+
+      fetchComments();
+      fetchVibeRatings();
+      fetchPlaylistsData();
+    }, 0);
 
     // Fetch creator profile if user_id exists
     async function fetchCreator() {
@@ -492,9 +512,8 @@ export default function SpotDetailsModal({ spot, onClose }) {
     }
     
     fetchCreator();
-    fetchComments();
-    fetchVibeRatings();
-    fetchPlaylistsData();
+
+    return () => clearTimeout(timer);
   }, [spot, user]);
 
   // Listen to custom update events (like realtime updates)
@@ -887,7 +906,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
                         source_platform: 'spot_details'
                       });
                   } catch (err) {
-                    console.warn('Lead tracking insertion failed');
+                    console.warn('Lead tracking insertion failed', err);
                   }
                   if (spot.agency_id) {
                     const localLeadsKey = `spota_agency_leads_${spot.agency_id}`;

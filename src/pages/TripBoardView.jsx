@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
-import { ArrowLeft, UserPlus, Plus, ThumbsUp, CheckSquare, Square, Info, Calendar, Sparkles } from 'lucide-react';
+import { ArrowLeft, UserPlus, Plus, ThumbsUp, CheckSquare, Square, Info, Sparkles } from 'lucide-react';
 import TripInviteModal from '../components/TripInviteModal';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import TripRecapModal from '../components/TripRecapModal';
@@ -32,6 +32,88 @@ function MapCenter({ position }) {
   return null;
 }
 
+// Dynamic Bounds & Polyline Path Component
+function MapBoundsAndPath({ spots }) {
+  const map = useMap();
+
+  const parseTimeToMinutes = (timeStr) => {
+    if (!timeStr) return 0;
+    const cleanStr = timeStr.trim().toUpperCase();
+    const parts = cleanStr.split(/\s+/);
+    const timePart = parts[0] || '00:00';
+    const modifier = parts[1] || 'AM';
+    
+    const timeSubparts = timePart.split(':');
+    let hours = parseInt(timeSubparts[0], 10) || 0;
+    const minutes = parseInt(timeSubparts[1], 10) || 0;
+    
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+    return hours * 60 + minutes;
+  };
+
+  useEffect(() => {
+    if (!spots || spots.length === 0) return;
+    
+    // Extract coordinates safely (guarantees no NaN values)
+    const coords = spots
+      .map(s => {
+        if (!s.spots) return null;
+        const lat = parseFloat(s.spots.latitude);
+        const lng = parseFloat(s.spots.longitude);
+        return (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : null;
+      })
+      .filter(Boolean);
+
+    if (coords.length > 0) {
+      try {
+        // Auto-fit bounds of all markers with safety padding
+        map.fitBounds(coords, { padding: [50, 50], maxZoom: 15 });
+      } catch (err) {
+        console.error("Leaflet fitBounds failed:", err);
+      }
+    }
+  }, [spots, map]);
+
+  if (!spots || spots.length < 2) return null;
+
+  // Draw connecting itinerary line sorted by Day -> sort_order -> schedule_time (intraday minutes sorting)
+  const pathCoords = [...spots]
+    .sort((a, b) => {
+      if (a.itinerary_day !== b.itinerary_day) {
+        return (a.itinerary_day || 1) - (b.itinerary_day || 1);
+      }
+      if (a.sort_order !== b.sort_order) {
+        return (a.sort_order || 0) - (b.sort_order || 0);
+      }
+      return parseTimeToMinutes(a.schedule_time) - parseTimeToMinutes(b.schedule_time);
+    })
+    .map(s => {
+      if (!s.spots) return null;
+      const lat = parseFloat(s.spots.latitude);
+      const lng = parseFloat(s.spots.longitude);
+      return (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : null;
+    })
+    .filter(Boolean);
+
+  return (
+    <Polyline
+      positions={pathCoords}
+      pathOptions={{
+        color: '#8e44ad',
+        weight: 3,
+        opacity: 0.6,
+        dashArray: '8, 8',
+        lineJoin: 'round'
+      }}
+    />
+  );
+}
+
+function generateRandomId() {
+  return `lead_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+}
+
 export default function TripBoardView() {
   const { tripId } = useParams();
   const { user } = useAuth();
@@ -50,6 +132,7 @@ export default function TripBoardView() {
   const [selectedSpot, setSelectedSpot] = useState(null); // For details modal
   const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]); // Default
   const [agencyBrand, setAgencyBrand] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
 
   // Fetch all collaborative trip board details
   const fetchTripData = useCallback(async () => {
@@ -67,7 +150,7 @@ export default function TripBoardView() {
           tripData = data;
         }
       } catch (err) {
-        console.warn('DB error fetching trip details');
+        console.warn('DB error fetching trip details', err);
       }
 
       // Fallback check in local storage
@@ -97,7 +180,7 @@ export default function TripBoardView() {
             agencyProfile = data;
           }
         } catch (err) {
-          console.warn('DB error fetching trip agency brand');
+          console.warn('DB error fetching trip agency brand', err);
         }
 
         // Fallback check in local storage
@@ -141,7 +224,7 @@ export default function TripBoardView() {
           membersList = data;
         }
       } catch (membersErr) {
-        console.warn('DB error fetching members');
+        console.warn('DB error fetching members', membersErr);
       }
 
       // Local storage fallback for members
@@ -191,7 +274,7 @@ export default function TripBoardView() {
         if (error) throw error;
         tripSpotsData = data;
       } catch (err) {
-        console.warn('DB select with itinerary fields failed, using basic select query');
+        console.warn('DB select with itinerary fields failed, using basic select query', err);
         try {
           const { data, error } = await supabase
             .from('trip_spots')
@@ -278,10 +361,20 @@ export default function TripBoardView() {
   }, [tripId, user.id, navigate]);
 
   useEffect(() => {
-    fetchTripData();
+    const timer = setTimeout(() => {
+      fetchTripData();
+    }, 0);
 
-    // Set up Realtime Sync
+    // Set up Realtime Sync with Presence indicators
     const channel = supabase.channel(`realtime-trip-${tripId}`)
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const users = Object.values(state).flat().map(presence => ({
+          userId: presence.user_id,
+          username: presence.username
+        }));
+        setOnlineUsers(users);
+      })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'trip_spots', filter: `trip_id=eq.${tripId}` }, () => {
         fetchTripData();
       })
@@ -291,12 +384,20 @@ export default function TripBoardView() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'trip_members', filter: `trip_id=eq.${tripId}` }, () => {
         fetchTripData();
       })
-      .subscribe();
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED' && user && !user.isGuest) {
+          await channel.track({
+            user_id: user.id,
+            username: user.username || user.email || 'Explorer'
+          });
+        }
+      });
 
     return () => {
+      clearTimeout(timer);
       supabase.removeChannel(channel);
     };
-  }, [tripId, fetchTripData]);
+  }, [tripId, fetchTripData, user]);
 
   // Vote Actions
   const handleToggleVote = async (spotId) => {
@@ -421,7 +522,7 @@ export default function TripBoardView() {
     const localLeadsKey = `spota_agency_leads_${trip.agency_id}`;
     const localLeads = JSON.parse(localStorage.getItem(localLeadsKey) || '[]');
     const newLead = {
-      id: `lead_${Math.random().toString(36).substr(2, 9)}`,
+      id: generateRandomId(),
       clicked_at: new Date().toISOString(),
       source_platform: 'trip_board',
       spot_name: ts.spots?.title || 'Unknown Spot',
@@ -622,6 +723,7 @@ export default function TripBoardView() {
             className="trip-map"
           >
             <MapCenter position={mapCenter} />
+            <MapBoundsAndPath spots={tripSpots} />
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
               url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
@@ -692,12 +794,18 @@ export default function TripBoardView() {
               {members.map((m, idx) => {
                 const username = m.profiles?.username || 'Explorer';
                 const avatarInitials = username.substring(0, 2).toUpperCase();
+                const isOnline = onlineUsers.some(ou => ou.userId === m.user_id);
                 return (
                   <div 
                     key={idx} 
-                    className="member-avatar-circle" 
-                    title={`${username} (${m.role})`}
-                    style={{ zIndex: 10 - idx, cursor: 'pointer' }}
+                    className={`member-avatar-circle ${isOnline ? 'online' : ''}`} 
+                    title={`${username} (${m.role}) ${isOnline ? '(Online)' : ''}`}
+                    style={{ 
+                      zIndex: 10 - idx, 
+                      cursor: 'pointer',
+                      border: isOnline ? '2px solid #2ecc71' : '1px solid rgba(255, 255, 255, 0.2)',
+                      boxShadow: isOnline ? '0 0 8px #2ecc71' : 'none'
+                    }}
                     onClick={() => navigate('/profile', { state: { userId: m.user_id, collaborator: m } })}
                   >
                     {m.profiles?.avatar_url ? (

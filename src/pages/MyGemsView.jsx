@@ -56,7 +56,9 @@ export default function MyGemsView() {
   }, [user]);
 
   useEffect(() => {
-    fetchAnalytics();
+    setTimeout(() => {
+      fetchAnalytics();
+    }, 0);
   }, [fetchAnalytics]);
 
   // Aggregate stats calculations

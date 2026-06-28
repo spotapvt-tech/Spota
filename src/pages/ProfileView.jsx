@@ -2,9 +2,10 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { LogOut, Award, CheckCircle, Heart, MapPin, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft } from 'lucide-react';
+import { LogOut, Award, CheckCircle, Heart, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft } from 'lucide-react';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import { getActiveTrekLocal } from '../lib/safeTrekTimer';
+import BadgeDisplay from '../components/BadgeDisplay';
 import './ProfileView.css';
 
 export default function ProfileView() {
@@ -86,6 +87,7 @@ export default function ProfileView() {
         }
       } catch (err) {
         // Fallback for local storage check or direct mock if tables don't exist yet
+        console.warn('DB error fetching agency profile:', err);
         const localAgency = localStorage.getItem(`spota_agency_${targetUserId}`);
         if (localAgency) {
           setAgency(JSON.parse(localAgency));
@@ -96,13 +98,27 @@ export default function ProfileView() {
 
       // 2. Fetch user's own spots
       let mySpots = [];
-      const { data, error } = await supabase
-        .from('spots')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .neq('status', 'deleted')
-        .order('created_at', { ascending: false });
-      if (!error && data) mySpots = data;
+      if (isOwnProfile && currentUser?.isGuest) {
+        const localCreated = JSON.parse(localStorage.getItem('spota_created_spots') || '[]');
+        const localCreatedIds = localCreated.map(s => s.id).filter(Boolean);
+        if (localCreatedIds.length > 0) {
+          const { data, error } = await supabase
+            .from('spots')
+            .select('*')
+            .in('id', localCreatedIds)
+            .neq('status', 'deleted')
+            .order('created_at', { ascending: false });
+          if (!error && data) mySpots = data;
+        }
+      } else {
+        const { data, error } = await supabase
+          .from('spots')
+          .select('*')
+          .eq('user_id', targetUserId)
+          .neq('status', 'deleted')
+          .order('created_at', { ascending: false });
+        if (!error && data) mySpots = data;
+      }
       setMyGems(mySpots);
 
       // 3. Fetch saved spots (only show saved gems if viewing own profile)
@@ -155,7 +171,7 @@ export default function ProfileView() {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, targetUserId, isOwnProfile]);
+  }, [currentUser, targetUserId, isOwnProfile, location.state]);
 
   const handleDeleteSpot = async (e, spotId) => {
     e.stopPropagation();
@@ -182,11 +198,15 @@ export default function ProfileView() {
   };
 
   useEffect(() => {
-    fetchData();
+    setTimeout(() => {
+      fetchData();
+    }, 0);
 
     // Listen for custom saves updated event to reload list
     const handleSavesUpdate = () => {
-      fetchData();
+      setTimeout(() => {
+        fetchData();
+      }, 0);
     };
     window.addEventListener('spota_saves_updated', handleSavesUpdate);
 
@@ -269,6 +289,8 @@ export default function ProfileView() {
             <span className="score-label">Contributor Rank</span>
           </div>
         </div>
+
+        {profileUser && <BadgeDisplay user={profileUser} />}
 
         {isOwnProfile && currentUser && (
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', marginTop: '16px' }}>

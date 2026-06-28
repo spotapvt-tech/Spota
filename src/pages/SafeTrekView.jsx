@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { 
-  Shield, ShieldAlert, Check, X, MapPin, Clock, Phone, User, 
-  Mail, ArrowLeft, History, Bell, Play, Square, Navigation, AlertTriangle 
+  Shield, ShieldAlert, Check, MapPin, Clock, Phone, User, 
+  Mail, ArrowLeft, History, Play, Square, Navigation, AlertTriangle 
 } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
@@ -21,6 +21,7 @@ import {
 } from '../lib/safeTrekTimer';
 
 import CheckInModal from '../components/CheckInModal';
+import { checkBadges } from '../lib/badgeEngine';
 
 // Fix for default Leaflet marker icons in React
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -62,7 +63,7 @@ export default function SafeTrekView() {
   // Active Trek State
   const [activeTrek, setActiveTrek] = useState(() => getActiveTrekLocal());
   const [timeRemaining, setTimeRemaining] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
 
   // Setup Form State
@@ -158,32 +159,58 @@ export default function SafeTrekView() {
     }
   }, [user]);
 
+  // Auto trigger overdue in DB
+  const handleTrekOverdue = useCallback(async () => {
+    if (!activeTrek || activeTrek.status !== 'active') return;
+
+    try {
+      const updatedTrek = { ...activeTrek, status: 'overdue' };
+      setActiveTrek(updatedTrek);
+      saveActiveTrekLocal(updatedTrek);
+
+      if (!user.isGuest) {
+        const { error } = await supabase
+          .from('safe_treks')
+          .update({ status: 'overdue' })
+          .eq('id', activeTrek.id);
+
+        if (error) throw error;
+        fetchHistory();
+      }
+    } catch (err) {
+      console.error('Error setting trek overdue:', err);
+    }
+  }, [activeTrek, user, fetchHistory]);
+
   // Initialize
   useEffect(() => {
-    loadActiveTrek();
-    fetchHistory();
-    
-    // Geolocation for map setup center
+    const timer = setTimeout(() => {
+      loadActiveTrek();
+      fetchHistory();
+    }, 0);
+    return () => clearTimeout(timer);
+  }, [loadActiveTrek, fetchHistory]);
+
+  // Map Centering Geolocation
+  useEffect(() => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const coords = [pos.coords.latitude, pos.coords.longitude];
           setMapCenter(coords);
-          if (!markerPosition) {
-            setMarkerPosition(coords);
-          }
+          setMarkerPosition(prev => prev || coords);
         },
         (err) => console.log('Geolocation bypass:', err)
       );
     }
-  }, [loadActiveTrek, fetchHistory]);
+  }, []);
 
   // Countdown timer loop
   useEffect(() => {
     if (!activeTrek) return;
 
     const updateTimer = () => {
-      let remaining = 0;
+      let remaining;
       if (activeTrek.isTestMode) {
         // Test mode: 60 seconds from last check-in
         const lastCheck = new Date(activeTrek.last_checked_in).getTime();
@@ -204,7 +231,7 @@ export default function SafeTrekView() {
     updateTimer();
     const intervalId = setInterval(updateTimer, 1000);
     return () => clearInterval(intervalId);
-  }, [activeTrek]);
+  }, [activeTrek, handleTrekOverdue]);
 
   // Alert and alarm sounds
   useEffect(() => {
@@ -233,28 +260,7 @@ export default function SafeTrekView() {
     }
   }, [timeRemaining, activeTrek, isMuted]);
 
-  // Auto trigger overdue in DB
-  const handleTrekOverdue = async () => {
-    if (!activeTrek || activeTrek.status !== 'active') return;
 
-    try {
-      const updatedTrek = { ...activeTrek, status: 'overdue' };
-      setActiveTrek(updatedTrek);
-      saveActiveTrekLocal(updatedTrek);
-
-      if (!user.isGuest) {
-        const { error } = await supabase
-          .from('safe_treks')
-          .update({ status: 'overdue' })
-          .eq('id', activeTrek.id);
-
-        if (error) throw error;
-        fetchHistory();
-      }
-    } catch (err) {
-      console.error('Error setting trek overdue:', err);
-    }
-  };
 
   // Start Trek Handler
   const handleStartTrek = async (e) => {
@@ -388,12 +394,22 @@ export default function SafeTrekView() {
         if (error) throw error;
       }
 
+      const count = Number(localStorage.getItem('spota_completed_treks_count') || '0');
+      localStorage.setItem('spota_completed_treks_count', String(count + 1));
+
       setActiveTrek(null);
       clearActiveTrekLocal();
       alert('Trek ended safely. Emergency mode deactivated.');
       if (!user.isGuest) {
         fetchHistory();
       }
+
+      // Trigger badge check
+      setTimeout(() => {
+        if (user) {
+          checkBadges(user);
+        }
+      }, 600);
     } catch (err) {
       console.error('Error ending trek:', err);
       alert('Failed to end trek: ' + err.message);

@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Search, Flame, Sparkles } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import { haversineDistance } from '../lib/utils';
 import AIVibeMatcher from '../components/AIVibeMatcher';
 import './FeedView.css';
 
 export default function FeedView() {
-  const { user } = useAuth();
   const [spots, setSpots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,7 +18,10 @@ export default function FeedView() {
 
   // Reset pagination when filter or search changes
   useEffect(() => {
-    setVisibleCount(15);
+    const timer = setTimeout(() => {
+      setVisibleCount(15);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [searchQuery, activeFilter]);
 
   // Fetch user location for distance calculations

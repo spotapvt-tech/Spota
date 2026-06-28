@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getCategoryById } from '../lib/categoryConfig';
-import { Heart, Share, Bookmark, Info, MessageSquare, Flame } from 'lucide-react';
+import { Share, Bookmark, Info, Flame } from 'lucide-react';
 import SpotDetailsModal from './SpotDetailsModal';
 import './SpotVibeCard.css';
 
@@ -66,6 +66,7 @@ export default function SpotVibeCard({ spot, isActive }) {
             setCreatorProfile({ username: 'Explorer', avatar_url: null });
           }
         } catch (err) {
+          console.warn('Error in initCard profiles fetch:', err);
           setCreatorProfile({ username: 'Explorer', avatar_url: null });
         }
       } else {
@@ -76,28 +77,8 @@ export default function SpotVibeCard({ spot, isActive }) {
     initCard();
   }, [spot]);
 
-  // Double Tap gesture
-  const handleDoubleTap = (e) => {
-    const now = Date.now();
-    const DOUBLE_PRESS_DELAY = 300;
-    if (now - lastTap.current < DOUBLE_PRESS_DELAY) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
-      setHeartCoords({ x, y });
-      setShowHeartAnimation(true);
-
-      // Add '❤️' Love reaction
-      triggerEmojiReaction('❤️');
-
-      setTimeout(() => setShowHeartAnimation(false), 800);
-    }
-    lastTap.current = now;
-  };
-
   // Toggle Reactions
-  const triggerEmojiReaction = async (emoji) => {
+  const triggerEmojiReaction = useCallback(async (emoji) => {
     const nextReactions = { ...reactions };
     const nextUserReactions = { ...userReactions };
     const wasActive = nextUserReactions[emoji];
@@ -129,7 +110,27 @@ export default function SpotVibeCard({ spot, isActive }) {
     } catch (err) {
       console.warn('Failed to sync reactions:', err);
     }
-  };
+  }, [reactions, userReactions, spot]);
+
+  // Double Tap gesture
+  const handleDoubleTap = useCallback((e) => {
+    const now = Date.now();
+    const DOUBLE_PRESS_DELAY = 300;
+    if (now - lastTap.current < DOUBLE_PRESS_DELAY) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      setHeartCoords({ x, y });
+      setShowHeartAnimation(true);
+
+      // Add '❤️' Love reaction
+      triggerEmojiReaction('❤️');
+
+      setTimeout(() => setShowHeartAnimation(false), 800);
+    }
+    lastTap.current = now;
+  }, [triggerEmojiReaction]);
 
   // Toggle bookmark saves
   const handleToggleSave = () => {
@@ -153,7 +154,9 @@ export default function SpotVibeCard({ spot, isActive }) {
       window.dispatchEvent(new CustomEvent('spota_spot_updated', {
         detail: { id: spot.id, share_count: nextCount }
       }));
-    } catch (e) {}
+    } catch (err) {
+      console.warn('Failed to update share count in DB:', err);
+    }
 
     if (navigator.share) {
       navigator.share({

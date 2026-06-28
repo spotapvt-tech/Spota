@@ -17,14 +17,7 @@ export default function ChatView() {
   const [activeChat, setActiveChat] = useState(null);
   const [lastMessages, setLastMessages] = useState({});
 
-  // Auto-start chat from routing state (e.g. from SpotDetails or Profile DMs)
-  useEffect(() => {
-    if (user && !user.isGuest && location.state?.startChatWith) {
-      handleStartChat(location.state.startChatWith);
-      // Clean state to avoid re-triggering on reload
-      window.history.replaceState({}, document.title);
-    }
-  }, [user, location.state]);
+  // Routing state checking moved below handleStartChat declaration to comply with eslint lexical definition rules.
 
   // Fetch all chats for the user
   const fetchChats = useCallback(async () => {
@@ -71,10 +64,12 @@ export default function ChatView() {
   }, [user]);
 
   useEffect(() => {
-    fetchChats();
+    const timer = setTimeout(() => {
+      fetchChats();
+    }, 0);
 
     // Subscribe to new messages globally to update the preview snippet in real time
-    if (!user || user.isGuest) return;
+    if (!user || user.isGuest) return () => clearTimeout(timer);
     
     const channel = supabase
       .channel('global_chat_updates')
@@ -93,6 +88,7 @@ export default function ChatView() {
       .subscribe();
 
     return () => {
+      clearTimeout(timer);
       channel.unsubscribe();
     };
   }, [user, fetchChats]);
@@ -124,7 +120,7 @@ export default function ChatView() {
   };
 
   // Start or open a chat room with a specific user
-  const handleStartChat = async (targetUser) => {
+  const handleStartChat = useCallback(async (targetUser) => {
     if (!user || user.isGuest) return;
     
     // Sort IDs to comply with the DB ordering check constraint user1_id < user2_id
@@ -183,7 +179,19 @@ export default function ChatView() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  // Auto-start chat from routing state (e.g. from SpotDetails or Profile DMs)
+  useEffect(() => {
+    if (user && !user.isGuest && location.state?.startChatWith) {
+      const timer = setTimeout(() => {
+        handleStartChat(location.state.startChatWith);
+      }, 0);
+      // Clean state to avoid re-triggering on reload
+      window.history.replaceState({}, document.title);
+      return () => clearTimeout(timer);
+    }
+  }, [user, location.state, handleStartChat]);
 
   const getChatPartner = (chat) => {
     return chat.user1_id === user.id ? chat.user2 : chat.user1;

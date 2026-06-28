@@ -4,8 +4,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(17, 23, 20, 0.7);
-  backdrop-filter: blur(10px);
+  background-color: rgba(17, 23, 20, 0.75);
+  backdrop-filter: blur(12px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -20,11 +20,11 @@
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-lg);
-  padding: 20px;
+  padding: 24px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.35);
 }
 
 .vibe-drop-close {
@@ -42,11 +42,12 @@
   justify-content: center;
   cursor: pointer;
   z-index: 1002;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .vibe-drop-close:hover {
   background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
 }
 
 .scratchcard-container {
@@ -67,13 +68,195 @@
   height: 480px;
   cursor: grab;
   z-index: 1001;
-  touch-action: none; /* Prevents scrolling when scratching on mobile */
+  touch-action: none;
 }
 
 .scratch-canvas:active {
   cursor: grabbing;
 }
 
+/* Intent Selection Overlay styles */
+.intent-selection-overlay {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #FFF;
+  padding: 10px 0;
+}
+
+.award-icon {
+  color: var(--color-accent, #6C8C74);
+  margin-bottom: 12px;
+  animation: pulse 2s infinite;
+}
+
+.intent-selection-overlay h3 {
+  font-size: 20px;
+  margin: 0 0 8px 0;
+  font-weight: 700;
+}
+
+.intent-selection-overlay p {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 20px 0;
+  line-height: 1.4;
+}
+
+.streak-bubble {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(224, 122, 95, 0.2);
+  border: 1px solid rgba(224, 122, 95, 0.4);
+  color: #E07A5F;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.intent-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.intent-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  color: #FFF;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.intent-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--color-accent);
+  transform: translateY(-4px);
+}
+
+.intent-emoji {
+  font-size: 28px;
+  margin-bottom: 8px;
+  transition: transform 0.2s ease;
+}
+
+.intent-btn:hover .intent-emoji {
+  transform: scale(1.2) rotate(-8deg);
+}
+
+.intent-btn strong {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.intent-btn span:not(.intent-emoji) {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Daily Lock Overlay styles */
+.daily-lock-overlay {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #FFF;
+  padding: 20px 10px;
+}
+
+.lock-icon {
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 16px;
+}
+
+.daily-lock-overlay h3 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+}
+
+.daily-lock-overlay p {
+  font-size: 14px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+.streak-stats-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.06);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 13px;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.countdown-timer-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 12px 32px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 28px;
+}
+
+.countdown-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 4px;
+}
+
+.countdown-timer {
+  font-size: 26px;
+  font-family: monospace;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.share-unlock-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--color-accent, #6C8C74), #588157);
+  color: #FFF;
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(108, 140, 116, 0.3);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.share-unlock-btn:hover {
+  opacity: 0.95;
+  transform: translateY(-2px);
+}
+
+/* Revealed Content animations */
 .revealed-spot-card {
   width: 100%;
   height: 100%;
@@ -168,11 +351,23 @@
   gap: 8px;
   margin-top: auto;
   box-shadow: 0 4px 12px rgba(108, 140, 116, 0.35);
-  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .revealed-view-btn:hover {
   background-color: var(--color-accent-hover);
+}
+
+.animate-bounce-in {
+  animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.loading-state {
+  color: #FFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
 }
 
 @keyframes bounceIn {
@@ -180,4 +375,10 @@
   50% { transform: scale(1.05); opacity: 0.8; }
   70% { transform: scale(0.9); opacity: 0.9; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.9; }
 }

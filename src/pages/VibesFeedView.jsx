@@ -16,8 +16,10 @@ export default function VibesFeedView() {
   const wheelCooldown = useRef(false);
 
   // Fetch approved spots
-  const fetchSpots = useCallback(async () => {
-    setLoading(true);
+  const fetchSpots = useCallback(async (showLoading = false) => {
+    if (showLoading) {
+      setLoading(true);
+    }
     try {
       const { data, error } = await supabase
         .from('spots')
@@ -36,7 +38,10 @@ export default function VibesFeedView() {
   }, []);
 
   useEffect(() => {
-    fetchSpots();
+    const timer = setTimeout(() => {
+      fetchSpots(false);
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchSpots]);
 
   // Slides navigation

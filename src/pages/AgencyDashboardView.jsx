@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { Award, ShieldCheck, CreditCard, Plus, Link, Calendar, Users, TrendingUp, DollarSign, ArrowLeft, Edit2, List, BarChart2, CheckCircle2, Clipboard, ShieldAlert, ShoppingBag } from 'lucide-react';
+import { Award, ShieldCheck, CreditCard, Plus, Calendar, Users, TrendingUp, DollarSign, ArrowLeft, Edit2, List, BarChart2, CheckCircle2, Clipboard, ShoppingBag } from 'lucide-react';
 import './AgencyDashboardView.css';
 
 const generateUUID = () => {
@@ -78,7 +78,7 @@ export default function AgencyDashboardView() {
           agencyProfile = data;
         }
       } catch (err) {
-        console.warn('DB error fetching agency, using localStorage fallback');
+        console.warn('DB error fetching agency, using localStorage fallback', err);
       }
 
       // Check LocalStorage fallback
@@ -105,7 +105,7 @@ export default function AgencyDashboardView() {
             tripsList = data;
           }
         } catch (err) {
-          console.warn('DB error fetching agency trips, using localStorage fallback');
+          console.warn('DB error fetching agency trips, using localStorage fallback', err);
         }
 
         // Local storage fallback for agency trips
@@ -144,7 +144,7 @@ export default function AgencyDashboardView() {
             }));
           }
         } catch (err) {
-          console.warn('DB error fetching agency leads, generating simulated leads');
+          console.warn('DB error fetching agency leads, generating simulated leads', err);
         }
 
         // Seed mock leads if none exist to make the dashboard look rich and active!
@@ -189,7 +189,7 @@ export default function AgencyDashboardView() {
             }));
           }
         } catch (err) {
-          console.warn('DB error fetching bookings, using mock storage fallback');
+          console.warn('DB error fetching bookings, using mock storage fallback', err);
         }
 
         // Local storage fallback check
@@ -217,7 +217,10 @@ export default function AgencyDashboardView() {
   }, [user]);
 
   useEffect(() => {
-    fetchAgencyData();
+    const timer = setTimeout(() => {
+      fetchAgencyData();
+    }, 0);
+    return () => clearTimeout(timer);
   }, [fetchAgencyData]);
 
   // Handle Stripe Subscription simulation
@@ -405,7 +408,7 @@ export default function AgencyDashboardView() {
           spotsList = data;
         }
       } catch (dbErr) {
-        console.warn('DB fetch trip spots failed, checking local mocks');
+        console.warn('DB fetch trip spots failed, checking local mocks', dbErr);
       }
 
       // Check LocalStorage fallback
@@ -465,6 +468,7 @@ export default function AgencyDashboardView() {
           
           if (error) dbFailed = true;
         } catch (err) {
+          console.warn('Trip spot update error', err);
           dbFailed = true;
         }
       }

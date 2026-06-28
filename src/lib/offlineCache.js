@@ -10,7 +10,7 @@ function openDB() {
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
 
-    request.onupgradeneeded = (event) => {
+    request.onupgradeneeded = () => {
       const db = request.result;
       if (!db.objectStoreNames.contains('spots')) {
         db.createObjectStore('spots', { keyPath: 'id' });
