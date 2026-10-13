@@ -1,4 +1,3 @@
-import React from 'react';
 import { ShieldAlert, Check } from 'lucide-react';
 import './CheckInModal.css';
 

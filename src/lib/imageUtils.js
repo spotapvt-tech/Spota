@@ -80,12 +80,12 @@ export const compressImage = (file) => {
               try { out = new File([blob], fileName, { type: 'image/jpeg' }); }
               catch { out = blob; out.name = fileName; }
               resolve(out);
-            } catch (e) { clearTimeout(timeoutId); resolve(file); }
+            } catch { clearTimeout(timeoutId); resolve(file); }
           }, 'image/jpeg', 0.6);
-        } catch (e) { clearTimeout(timeoutId); URL.revokeObjectURL(objectUrl); resolve(file); }
+        } catch { clearTimeout(timeoutId); URL.revokeObjectURL(objectUrl); resolve(file); }
       };
       img.onerror = () => { clearTimeout(timeoutId); URL.revokeObjectURL(objectUrl); resolve(file); };
-    } catch (e) { clearTimeout(timeoutId); resolve(file); }
+    } catch { clearTimeout(timeoutId); resolve(file); }
   });
 };
 

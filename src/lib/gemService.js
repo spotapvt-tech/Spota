@@ -47,18 +47,61 @@ async function uploadImage(imageFile, cameraBase64) {
 }
 
 /**
- * Drop a gem. Handles offline queuing automatically.
- * Returns { success: true, spot } or { offline: true } or throws.
+ * Upload a blob/data-URL image (used when re-syncing a queued pending gem).
+ * Returns final URL string, or the original data URL if Storage is unavailable.
  */
-export async function dropGem({ imageFile, cameraBase64, videoFile, location, title, category, description, tags, address, vibeRatings, user }) {
-  // Offline queue
-  if (!navigator.onLine) {
-    const pending = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
-    pending.push({ title, category, description, tags, address, lat: location.lat, lng: location.lng, _pendingAt: Date.now() });
-    localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
-    return { offline: true };
+async function uploadQueuedImage(imageDataUrl) {
+  if (!imageDataUrl) return '';
+  try {
+    const res = await fetch(imageDataUrl);
+    const blob = await res.blob();
+    const ext = (blob.type?.split('/')[1] || 'jpg').replace('jpeg', 'jpg');
+    const filePath = `spot-images/${Date.now()}.${ext}`;
+    const up = await supabase.storage.from('spot-images').upload(filePath, blob);
+    if (up?.error) throw up.error;
+    const { data: pub } = supabase.storage.from('spot-images').getPublicUrl(filePath);
+    if (pub?.publicUrl) return pub.publicUrl;
+  } catch (err) {
+    console.warn('Queued image upload failed, falling back to inline base64:', err);
   }
+  return imageDataUrl;
+}
 
+/**
+ * Best-effort conversion of the current photo into a data URL small enough
+ * to persist in localStorage, so an offline/failed drop can still be
+ * re-synced with its photo later instead of losing it.
+ */
+async function getImageDataForQueue(imageFile, cameraBase64) {
+  if (cameraBase64) {
+    return `data:image/jpeg;base64,${cameraBase64}`;
+  }
+  if (imageFile && imageFile.size < 2 * 1024 * 1024) {
+    try {
+      return await fileToBase64(imageFile);
+    } catch (err) {
+      console.warn('Could not encode image for offline queue:', err);
+    }
+  }
+  return null;
+}
+
+/**
+ * Queue a gem locally (localStorage) so it survives being offline or a
+ * failed submit, and can be retried automatically once back online.
+ */
+async function queuePendingGem(fields, imageFile, cameraBase64) {
+  const imageDataUrl = await getImageDataForQueue(imageFile, cameraBase64);
+  const pending = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+  pending.push({ ...fields, imageDataUrl, _pendingAt: Date.now() });
+  localStorage.setItem(PENDING_KEY, JSON.stringify(pending));
+}
+
+/**
+ * Perform the actual Supabase insert (image upload + spots row + vibe ratings).
+ * Throws on failure — callers decide how to handle that (queue, surface, etc).
+ */
+async function submitGem({ imageFile, cameraBase64, videoFile, location, title, category, description, tags, address, vibeRatings, userId }) {
   // Upload image
   let finalImageUrl = '';
   if (imageFile) {
@@ -96,7 +139,7 @@ export async function dropGem({ imageFile, cameraBase64, videoFile, location, ti
       image_url: finalImageUrl,
       video_url: finalVideoUrl,
       status: 'approved',
-      user_id: user && !user.isGuest ? user.id : null,
+      user_id: userId,
       tags,
       address
     }])
@@ -111,7 +154,7 @@ export async function dropGem({ imageFile, cameraBase64, videoFile, location, ti
   try {
     await supabase.from('vibe_ratings').insert([{
       spot_id: spot.id,
-      user_id: user && !user.isGuest ? user.id : null,
+      user_id: userId,
       cozy: vibeRatings.cozy,
       insta_worthy: vibeRatings.insta_worthy,
       lively: vibeRatings.lively,
@@ -127,5 +170,102 @@ export async function dropGem({ imageFile, cameraBase64, videoFile, location, ti
   localCreated.push({ id: spot.id, category: spot.category, latitude: spot.latitude, longitude: spot.longitude });
   localStorage.setItem('spota_created_spots', JSON.stringify(localCreated));
 
-  return { success: true, spot };
+  return spot;
+}
+
+/**
+ * Drop a gem. Handles offline queuing automatically, and also queues on a
+ * failed online submit (flaky connection, transient Supabase error, etc.)
+ * instead of losing the gem — CLAUDE.md requires a local fallback whenever
+ * a Supabase write fails, not just when navigator.onLine is false.
+ * Returns { success: true, spot } or { offline: true } (queued for later sync).
+ */
+export async function dropGem({ imageFile, cameraBase64, videoFile, location, title, category, description, tags, address, vibeRatings, user }) {
+  const userId = user && !user.isGuest ? user.id : null;
+  const queueFields = { title, category, description, tags, address, lat: location.lat, lng: location.lng, vibeRatings, userId };
+
+  if (!navigator.onLine) {
+    await queuePendingGem(queueFields, imageFile, cameraBase64);
+    return { offline: true };
+  }
+
+  try {
+    const spot = await submitGem({ imageFile, cameraBase64, videoFile, location, title, category, description, tags, address, vibeRatings, userId });
+    return { success: true, spot };
+  } catch (err) {
+    console.warn('Online gem submit failed, queuing locally for retry:', err);
+    await queuePendingGem(queueFields, imageFile, cameraBase64);
+    return { offline: true };
+  }
+}
+
+/**
+ * Re-attempt every locally-queued gem (from an offline drop or a failed
+ * online submit). Called automatically when the browser comes back online.
+ * Successfully synced gems are removed from the queue; failures are kept
+ * for the next attempt.
+ */
+export async function syncPendingGems() {
+  if (!navigator.onLine) return;
+
+  let pending;
+  try {
+    pending = JSON.parse(localStorage.getItem(PENDING_KEY) || '[]');
+  } catch {
+    pending = [];
+  }
+  if (!pending.length) return;
+
+  const stillPending = [];
+  for (const item of pending) {
+    try {
+      const finalImageUrl = await uploadQueuedImage(item.imageDataUrl);
+
+      const { data: insertedData, error } = await supabase
+        .from('spots')
+        .insert([{
+          title: item.title,
+          category: item.category,
+          description: item.description,
+          latitude: item.lat,
+          longitude: item.lng,
+          image_url: finalImageUrl,
+          status: 'approved',
+          user_id: item.userId || null,
+          tags: item.tags,
+          address: item.address,
+        }])
+        .select();
+
+      if (error) throw error;
+      const spot = insertedData?.[0];
+
+      if (spot && item.vibeRatings) {
+        try {
+          await supabase.from('vibe_ratings').insert([{
+            spot_id: spot.id,
+            user_id: item.userId || null,
+            cozy: item.vibeRatings.cozy,
+            insta_worthy: item.vibeRatings.insta_worthy,
+            lively: item.vibeRatings.lively,
+            zen: item.vibeRatings.zen,
+            workspace: item.vibeRatings.workspace
+          }]);
+        } catch (rErr) {
+          console.warn('Queued vibe ratings insert failed (non-fatal):', rErr);
+        }
+      }
+
+      if (spot) {
+        const localCreated = JSON.parse(localStorage.getItem('spota_created_spots') || '[]');
+        localCreated.push({ id: spot.id, category: spot.category, latitude: spot.latitude, longitude: spot.longitude });
+        localStorage.setItem('spota_created_spots', JSON.stringify(localCreated));
+      }
+    } catch (err) {
+      console.warn('Pending gem sync failed, will retry later:', err);
+      stillPending.push(item);
+    }
+  }
+
+  localStorage.setItem(PENDING_KEY, JSON.stringify(stillPending));
 }

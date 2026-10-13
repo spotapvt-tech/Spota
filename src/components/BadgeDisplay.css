@@ -1,9 +1,9 @@
 /* Badge display shelf layout */
 .badge-shelf-wrapper {
   width: 100%;
-  padding: 18px 22px;
-  border-radius: var(--radius-lg);
-  margin-top: 20px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  margin-top: 14px;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -15,34 +15,36 @@
 .badge-shelf-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
+  gap: 6px;
+  margin-bottom: 2px;
 }
 
 .badge-shelf-header h3 {
   margin: 0;
-  font-size: var(--font-size-md);
+  font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-text-primary);
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
 }
 
 .badge-shelf-icon {
   color: var(--color-accent);
+  width: 15px;
+  height: 15px;
 }
 
 .badge-shelf-subtitle {
-  margin: 0 0 16px 0;
-  font-size: var(--font-size-xs);
+  margin: 0 0 10px 0;
+  font-size: 11px;
   color: var(--color-text-secondary);
-  line-height: 1.4;
+  line-height: 1.3;
 }
 
-/* Badge Cards Grid */
+/* Badge Cards Grid — fits all badges on one row to keep the shelf compact */
 .badge-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
+  gap: 6px;
   width: 100%;
 }
 
@@ -50,8 +52,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 6px;
-  border-radius: var(--radius-md);
+  padding: 8px 2px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(255, 255, 255, 0.02);
@@ -89,15 +91,15 @@
 /* Badge Icons and Emoji Wrapper */
 .badge-emoji-wrapper {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
   background: rgba(255, 255, 255, 0.04);
-  margin-bottom: 8px;
-  font-size: 26px;
+  margin-bottom: 5px;
+  font-size: 18px;
   transition: transform 0.3s ease;
 }
 
@@ -112,27 +114,26 @@
 
 .badge-lock-overlay {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: -1px;
+  right: -1px;
   background: rgba(44, 53, 49, 0.9);
   color: var(--color-text-secondary);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-full);
-  padding: 3px;
-  width: 18px;
-  height: 18px;
+  padding: 2px;
+  width: 14px;
+  height: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .badge-name {
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 600;
   color: var(--color-text-primary);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
+  white-space: normal;
+  line-height: 1.15;
   width: 100%;
 }
 
@@ -142,11 +143,11 @@
 
 /* Progress indicator on locked badges */
 .badge-progress-bar-container {
-  width: 75%;
-  height: 4px;
+  width: 80%;
+  height: 3px;
   background: rgba(255, 255, 255, 0.08);
   border-radius: var(--radius-full);
-  margin-top: 6px;
+  margin-top: 4px;
   overflow: hidden;
 }
 

@@ -5,11 +5,15 @@ import './BottomNav.css';
 export default function BottomNav() {
   const location = useLocation();
 
-  // Hide BottomNav on active trip boards and package preview screens
+  // Hide BottomNav on active trip boards, package preview screens, and the
+  // gem-drop wizard (which has its own Back/Next/Submit bar and no unsaved-
+  // changes guard, so leaving it visible let a stray tap silently discard
+  // an in-progress gem).
   const isTripBoard = location.pathname.match(/\/trips\/[^/]+$/);
   const isPreviewPage = location.pathname.includes('/trips/preview/');
+  const isAddGemWizard = location.pathname === '/add';
 
-  if (isTripBoard || isPreviewPage) {
+  if (isTripBoard || isPreviewPage || isAddGemWizard) {
     return null;
   }
 

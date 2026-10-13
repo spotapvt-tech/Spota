@@ -190,6 +190,7 @@ export function NotificationProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook co-located with its Provider
 export function useNotification() {
   const ctx = useContext(NotificationContext);
   if (!ctx) {

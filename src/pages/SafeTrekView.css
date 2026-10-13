@@ -304,6 +304,13 @@
   transition: all var(--transition-fast);
 }
 
+/* Keep room for the leading icon. A global `.form-group input` rule elsewhere
+   (TripPackagePreviewView.css) has equal specificity and would reset this. */
+.safe-trek-container .input-with-icon input {
+  padding-left: 44px;
+  padding-right: 16px;
+}
+
 .input-with-icon input:focus {
   outline: none;
   border-color: var(--color-accent);

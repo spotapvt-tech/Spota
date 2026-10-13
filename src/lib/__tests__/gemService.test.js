@@ -11,7 +11,7 @@ vi.mock('../imageUtils', () => ({
 }));
 
 import { supabase } from '../supabaseClient';
-import { dropGem } from '../gemService';
+import { dropGem, syncPendingGems } from '../gemService';
 
 // Same chainable-thenable pattern used for the badgeEngine tests, matching
 // how a real supabase-js query builder can be both chained and awaited.
@@ -101,7 +101,7 @@ describe('gemService.dropGem', () => {
     ]);
   });
 
-  it('throws when the spots insert itself fails', async () => {
+  it('queues the gem locally instead of losing it when the online insert fails', async () => {
     onLineSpy.mockReturnValue(true);
     supabase.from.mockImplementation((table) => {
       if (table === 'spots') {
@@ -110,7 +110,12 @@ describe('gemService.dropGem', () => {
       return makeQueryBuilder({ error: null });
     });
 
-    await expect(dropGem(baseGemInput)).rejects.toThrow('insert failed');
+    const result = await dropGem(baseGemInput);
+
+    expect(result).toEqual({ offline: true });
+    const pending = JSON.parse(localStorage.getItem('spota_pending_gems'));
+    expect(pending).toHaveLength(1);
+    expect(pending[0]).toMatchObject({ title: 'Hidden Waterfall', category: 'waterfall' });
   });
 
   it('does not fail the whole drop if the (best-effort) vibe_ratings insert fails', async () => {
@@ -150,5 +155,67 @@ describe('gemService.dropGem', () => {
 
     await dropGem({ ...baseGemInput, user: { id: 'guest', isGuest: true } });
     expect(capturedInsertPayload[0].user_id).toBeNull();
+  });
+});
+
+describe('gemService.syncPendingGems', () => {
+  let onLineSpy;
+
+  beforeEach(() => {
+    localStorage.clear();
+    vi.clearAllMocks();
+    onLineSpy = vi.spyOn(navigator, 'onLine', 'get');
+  });
+
+  afterEach(() => {
+    onLineSpy.mockRestore();
+  });
+
+  it('does nothing while offline', async () => {
+    onLineSpy.mockReturnValue(false);
+    localStorage.setItem('spota_pending_gems', JSON.stringify([{ title: 'Queued gem', lat: 1, lng: 1 }]));
+
+    await syncPendingGems();
+
+    expect(supabase.from).not.toHaveBeenCalled();
+    expect(JSON.parse(localStorage.getItem('spota_pending_gems'))).toHaveLength(1);
+  });
+
+  it('submits and removes a queued gem once back online', async () => {
+    onLineSpy.mockReturnValue(true);
+    localStorage.setItem('spota_pending_gems', JSON.stringify([
+      { title: 'Queued gem', category: 'cafe', lat: 1, lng: 1, userId: 'user_1', vibeRatings: { cozy: 3, insta_worthy: 3, lively: 3, zen: 3, workspace: 3 } }
+    ]));
+    supabase.from.mockImplementation((table) => {
+      if (table === 'spots') {
+        return makeQueryBuilder({ data: [{ id: 'spot_synced', category: 'cafe', latitude: 1, longitude: 1 }], error: null });
+      }
+      return makeQueryBuilder({ error: null });
+    });
+
+    await syncPendingGems();
+
+    expect(JSON.parse(localStorage.getItem('spota_pending_gems'))).toEqual([]);
+    const localCreated = JSON.parse(localStorage.getItem('spota_created_spots'));
+    expect(localCreated).toEqual([{ id: 'spot_synced', category: 'cafe', latitude: 1, longitude: 1 }]);
+  });
+
+  it('keeps a gem queued for the next retry if the sync attempt fails', async () => {
+    onLineSpy.mockReturnValue(true);
+    localStorage.setItem('spota_pending_gems', JSON.stringify([
+      { title: 'Still stuck', category: 'cafe', lat: 1, lng: 1 }
+    ]));
+    supabase.from.mockImplementation((table) => {
+      if (table === 'spots') {
+        return makeQueryBuilder({ data: null, error: new Error('still offline') });
+      }
+      return makeQueryBuilder({ error: null });
+    });
+
+    await syncPendingGems();
+
+    const pending = JSON.parse(localStorage.getItem('spota_pending_gems'));
+    expect(pending).toHaveLength(1);
+    expect(pending[0].title).toBe('Still stuck');
   });
 });

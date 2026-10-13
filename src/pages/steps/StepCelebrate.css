@@ -26,8 +26,9 @@
 }
 
 .celebrate-title {
-  font-size: 32px;
+  font-size: var(--font-size-3xl);
   font-weight: 800;
+  letter-spacing: var(--tracking-tighter);
   color: var(--color-text-primary);
   margin: 0;
   animation: fade-up 0.5s 0.3s both;

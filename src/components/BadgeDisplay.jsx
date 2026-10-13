@@ -89,7 +89,7 @@ export default function BadgeDisplay({ user }) {
             >
               <div className="badge-emoji-wrapper">
                 <span className="badge-emoji">{badge.emoji}</span>
-                {!progress.earned && <Lock size={12} className="badge-lock-overlay" />}
+                {!progress.earned && <Lock size={9} className="badge-lock-overlay" />}
               </div>
               <span className="badge-name">{badge.name}</span>
               

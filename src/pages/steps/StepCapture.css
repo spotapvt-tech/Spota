@@ -5,18 +5,20 @@
 }
 
 .step-header {
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .step-header h2 {
-  font-size: var(--font-size-xl);
+  font-size: var(--font-size-2xl);
   font-weight: 700;
+  letter-spacing: var(--tracking-tighter);
+  line-height: 1.15;
   color: var(--color-text-primary);
-  margin: 0 0 4px;
+  margin: 0 0 6px;
 }
 
 .step-header p {
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary);
   margin: 0;
 }

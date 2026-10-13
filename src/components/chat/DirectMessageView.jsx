@@ -138,7 +138,7 @@ export default function DirectMessageView({ chat, partner, onClose }) {
     try {
       const date = new Date(isoString);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    } catch (e) {
+    } catch {
       return '';
     }
   };

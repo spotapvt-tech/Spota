@@ -30,7 +30,7 @@ async function createBucketsIfNotExist() {
   
   // Try to create spot-images
   try {
-    const { data, error } = await supabase.storage.createBucket('spot-images', {
+    const { error } = await supabase.storage.createBucket('spot-images', {
       public: true,
       fileSizeLimit: 10485760 // 10MB
     });
@@ -49,7 +49,7 @@ async function createBucketsIfNotExist() {
 
   // Try to create spot-videos
   try {
-    const { data, error } = await supabase.storage.createBucket('spot-videos', {
+    const { error } = await supabase.storage.createBucket('spot-videos', {
       public: true,
       fileSizeLimit: 20971520 // 20MB
     });
@@ -105,7 +105,7 @@ async function main() {
 
       console.log(`Uploading ${filename} to bucket ${bucketName}...`);
 
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from(bucketName)
         .upload(storagePath, fileBuffer, {
           contentType: isImage ? 'image/jpeg' : 'video/mp4',

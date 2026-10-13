@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
+import { GoogleMap, InfoWindow, Polyline } from '@react-google-maps/api';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -18,42 +18,14 @@ import {
   TrendingUp,
   Clock
 } from 'lucide-react';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useSpotaGoogleMaps, DEFAULT_MAP_OPTIONS } from '../lib/googleMaps';
+import GemMarkerOverlay from '../components/map/GemMarkerOverlay';
 import './TripPackagePreviewView.css';
 
-// Fix for default Leaflet markers
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Custom numbering marker icons for day itinerary route
-const createNumMarker = (num) => {
-  return L.divIcon({
-    className: 'custom-number-marker',
-    html: `<div class="marker-badge">${num}</div>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 30]
-  });
-};
-
-function MapCenter({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) {
-      map.setView(position, map.getZoom());
-    }
-  }, [position, map]);
-  return null;
-}
-
 export default function TripPackagePreviewView() {
+  const { isLoaded } = useSpotaGoogleMaps();
+  const mapRef = useRef(null);
+  const [openPopupSpotId, setOpenPopupSpotId] = useState(null);
   const { packageId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -333,6 +305,13 @@ export default function TripPackagePreviewView() {
     return () => clearTimeout(timer);
   }, [loadPackageDetails]);
 
+  // Pan the map whenever mapCenter changes
+  useEffect(() => {
+    if (mapCenter && mapRef.current) {
+      mapRef.current.panTo({ lat: mapCenter[0], lng: mapCenter[1] });
+    }
+  }, [mapCenter]);
+
   // Handle travelers increment/decrement
   const changeTravelers = (val) => {
     const nextVal = travelersCount + val;
@@ -555,7 +534,7 @@ export default function TripPackagePreviewView() {
       }
       return (a.schedule_time || '').localeCompare(b.schedule_time || '');
     })
-    .map(s => [parseFloat(s.spots.latitude), parseFloat(s.spots.longitude)]);
+    .map(s => ({ lat: parseFloat(s.spots.latitude), lng: parseFloat(s.spots.longitude) }));
 
   const remainingSlots = packageData.slots_total - packageData.slots_booked;
 
@@ -705,50 +684,58 @@ export default function TripPackagePreviewView() {
 
         {/* Right column: Map route & Purchase Card */}
         <div className="preview-sidebar-map-checkout">
-          {/* Leaflet Map Preview */}
+          {/* Route Map Preview */}
           <div className="preview-map-card glass-panel">
             <div className="map-card-header">
               <h3>Route Map</h3>
               <span>Click items to focus</span>
             </div>
             <div className="map-view-wrapper">
-              <MapContainer 
-                center={mapCenter} 
-                zoom={12} 
-                scrollWheelZoom={true} 
-                zoomControl={false}
-                className="preview-leaflet"
-              >
-                <MapCenter position={mapCenter} />
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-                  url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                />
+              {isLoaded && (
+                <GoogleMap
+                  mapContainerClassName="preview-leaflet"
+                  center={{ lat: mapCenter[0], lng: mapCenter[1] }}
+                  zoom={12}
+                  options={DEFAULT_MAP_OPTIONS}
+                  onLoad={(map) => { mapRef.current = map; }}
+                >
+                  {sortedPathCoords.length > 1 && (
+                    <Polyline
+                      path={sortedPathCoords}
+                      options={{
+                        strokeColor: '#8e44ad',
+                        strokeWeight: 4,
+                        strokeOpacity: 0.8,
+                      }}
+                    />
+                  )}
 
-                {spots.map((ts) => (
-                  <Marker 
-                    key={ts.spot_id} 
-                    position={[parseFloat(ts.spots.latitude), parseFloat(ts.spots.longitude)]}
-                    icon={createNumMarker(ts.itinerary_day || 1)}
-                  >
-                    <Popup>
-                      <div className="map-popup-details">
-                        <strong>Day {ts.itinerary_day} - {ts.spots.title}</strong>
-                        <p>{ts.spots.description}</p>
+                  {spots.map((ts) => {
+                    const position = { lat: parseFloat(ts.spots.latitude), lng: parseFloat(ts.spots.longitude) };
+                    return (
+                      <div key={ts.spot_id}>
+                        <GemMarkerOverlay
+                          position={position}
+                          width={30}
+                          height={30}
+                          onClick={() => setOpenPopupSpotId(ts.spot_id)}
+                        >
+                          <div className="marker-badge">{ts.itinerary_day || 1}</div>
+                        </GemMarkerOverlay>
+
+                        {openPopupSpotId === ts.spot_id && (
+                          <InfoWindow position={position} onCloseClick={() => setOpenPopupSpotId(null)}>
+                            <div className="map-popup-details">
+                              <strong>Day {ts.itinerary_day} - {ts.spots.title}</strong>
+                              <p>{ts.spots.description}</p>
+                            </div>
+                          </InfoWindow>
+                        )}
                       </div>
-                    </Popup>
-                  </Marker>
-                ))}
-
-                {sortedPathCoords.length > 1 && (
-                  <Polyline 
-                    positions={sortedPathCoords}
-                    color="#8e44ad"
-                    weight={4}
-                    dashArray="6, 6"
-                  />
-                )}
-              </MapContainer>
+                    );
+                  })}
+                </GoogleMap>
+              )}
             </div>
           </div>
 

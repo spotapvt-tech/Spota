@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(() => {
     try {
       return !localStorage.getItem('spota_guest_user');
-    } catch (e) {
+    } catch {
       return true;
     }
   });
@@ -260,6 +260,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook co-located with its Provider
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) {

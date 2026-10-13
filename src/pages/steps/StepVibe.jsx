@@ -4,7 +4,7 @@ import './StepVibe.css';
 
 export default function StepVibe({ description, setDescription, selectedTags, setSelectedTags, category, colorProfile }) {
   const [aiText, setAiText] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(true);
   const [aiUsed, setAiUsed] = useState(false);
   const [customTag, setCustomTag] = useState('');
   const timerRef = useRef(null);
@@ -12,12 +12,19 @@ export default function StepVibe({ description, setDescription, selectedTags, se
   const suggestedDescription = getSuggestedDescription(category, colorProfile);
   const suggestedTags = RECOMMENDED_TAGS_MAP[category] || RECOMMENDED_TAGS_MAP.default;
 
-  // Typewriter reveal on mount or category change
-  useEffect(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
+  // Restart the typewriter when the suggested text changes (category / photo colours).
+  // State is reset during render; the effect below only drives the timer.
+  const [typedFor, setTypedFor] = useState(suggestedDescription);
+  if (typedFor !== suggestedDescription) {
+    setTypedFor(suggestedDescription);
     setAiText('');
     setIsTyping(true);
     setAiUsed(false);
+  }
+
+  // Typewriter reveal on mount or when the suggestion changes
+  useEffect(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
     let i = 0;
     timerRef.current = setInterval(() => {
       i++;
@@ -28,8 +35,7 @@ export default function StepVibe({ description, setDescription, selectedTags, se
       }
     }, 22);
     return () => clearInterval(timerRef.current);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, colorProfile]);
+  }, [suggestedDescription]);
 
   const applyAiText = () => {
     setDescription(aiText);

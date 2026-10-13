@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { checkBadges } from '../lib/badgeEngine';
 import { analyzeImageColor } from '../lib/imageUtils';
 import { dropGem } from '../lib/gemService';
 import { getSuggestedDescription } from '../lib/gemWizardData';
 import { getCategoryById } from '../lib/categoryConfig';
+import { registerBackInterceptor } from '../lib/hardwareBack';
 
 import GemWizardProgress from '../components/GemWizardProgress';
 import GemWizardCTA from '../components/GemWizardCTA';
@@ -30,6 +33,7 @@ function stepValid(step, state) {
 
 export default function AddGemView() {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Wizard navigation
   const [wizardStep, setWizardStep] = useState(1);
@@ -67,7 +71,7 @@ export default function AddGemView() {
 
   // Analyse image color when photo selected → seeds AI descriptions
   useEffect(() => {
-    if (!photoPreview) { setColorProfile(null); return; }
+    if (!photoPreview) return; // no photo: colour profile is ignored (see activeColorProfile)
     const t = setTimeout(async () => {
       try {
         const profile = await analyzeImageColor(photoPreview);
@@ -84,13 +88,15 @@ export default function AddGemView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [photoPreview]);
 
-  // Auto-fill title from GPS place name if name is empty
-  useEffect(() => {
-    if (location?.placeName && !gemName) {
-      setGemName(location.placeName);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location?.placeName]);
+  const activeColorProfile = photoPreview ? colorProfile : null;
+
+  // Auto-fill title from GPS place name if name is empty (adjusted during render
+  // when the place name changes, instead of in an effect)
+  const [filledFromPlace, setFilledFromPlace] = useState(undefined);
+  if (location?.placeName !== filledFromPlace) {
+    setFilledFromPlace(location?.placeName);
+    if (location?.placeName && !gemName) setGemName(location.placeName);
+  }
 
   const state = { photoFile, location, gemName, category, description };
 
@@ -99,6 +105,36 @@ export default function AddGemView() {
   };
 
   const handleBack = () => setWizardStep(s => Math.max(1, s - 1));
+
+  // Shared by both the header's back arrow and the hardware back button:
+  // step back one wizard step if mid-flow, otherwise confirm before
+  // discarding an in-progress gem and leaving the wizard entirely.
+  // Returns true if the press/tap was consumed (stay on this screen).
+  const consumeBackPress = () => {
+    if (wizardStep > 1 && wizardStep <= 5) {
+      handleBack();
+      return true;
+    }
+    if (wizardStep === 1 && photoFile) {
+      return !confirm('Discard this gem? Your photo and any details you entered will be lost.');
+    }
+    return false;
+  };
+
+  const handleHeaderBack = () => {
+    if (consumeBackPress()) return;
+    navigate('/');
+  };
+
+  // Claim the Android hardware back button while the wizard is on-screen:
+  // wizard steps live in local state, not the URL, so without this a
+  // back-press would fall through to router history and jump straight out
+  // of the whole flow instead of stepping back one step (see
+  // src/lib/hardwareBack.js).
+  useEffect(() => {
+    return registerBackInterceptor(consumeBackPress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wizardStep, photoFile]);
 
   const handleSubmit = async () => {
     if (!stepValid(5, state)) return;
@@ -119,7 +155,7 @@ export default function AddGemView() {
       });
 
       if (result.offline) {
-        setDroppedGem({ title: gemName, category, description, image_url: photoPreview });
+        setDroppedGem({ title: gemName, category, description, image_url: photoPreview, offline: true });
       } else {
         setDroppedGem(result.spot || { title: gemName, category, description, image_url: photoPreview });
         // Trigger badge check
@@ -215,7 +251,7 @@ export default function AddGemView() {
     // Step 2
     location, setLocation, photoGps,
     // Step 3
-    gemName, setGemName, category, setCategory, colorProfile, description, setDescription,
+    gemName, setGemName, category, setCategory, colorProfile: activeColorProfile, description, setDescription,
     // Step 4
     vibeRatings, setVibeRatings,
     // Step 5
@@ -224,6 +260,19 @@ export default function AddGemView() {
 
   return (
     <div className="add-gem-wizard-shell">
+      {wizardStep <= 5 && (
+        <div className="wizard-header-row">
+          <button
+            type="button"
+            className="wizard-header-back-btn"
+            onClick={handleHeaderBack}
+            aria-label="Back"
+          >
+            <ArrowLeft size={20} />
+          </button>
+        </div>
+      )}
+
       {wizardStep <= 5 && (
         <GemWizardProgress currentStep={wizardStep} totalSteps={5} />
       )}

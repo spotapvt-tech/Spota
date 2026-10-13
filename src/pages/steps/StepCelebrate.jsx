@@ -52,7 +52,10 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
 
       <h2 className="celebrate-title">Gem Dropped!</h2>
       <p className="celebrate-subtitle">
-        <strong>{gem?.title || 'Your Gem'}</strong> is now live on the map.
+        <strong>{gem?.title || 'Your Gem'}</strong>{' '}
+        {gem?.offline
+          ? "is saved on your device and will sync as soon as you're back online."
+          : 'is now live on the map.'}
       </p>
 
       {/* Category badge */}
@@ -61,15 +64,23 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
       </div>
 
       {/* Gem counter */}
-      <div className="celebrate-counter-card">
-        <span className="celebrate-counter-num">{gemCount}</span>
-        <span className="celebrate-counter-label">gems spotted in this area</span>
-      </div>
+      {!gem?.offline && (
+        <div className="celebrate-counter-card">
+          <span className="celebrate-counter-num">{gemCount}</span>
+          <span className="celebrate-counter-label">gems spotted in this area</span>
+        </div>
+      )}
 
       {/* Reputation */}
-      <div className="celebrate-rep-banner">
-        ✨ +25 Reputation Points earned!
-      </div>
+      {gem?.offline ? (
+        <div className="celebrate-rep-banner offline">
+          ⏳ Pending sync — reputation points are added once it's live.
+        </div>
+      ) : (
+        <div className="celebrate-rep-banner">
+          ✨ +25 Reputation Points earned!
+        </div>
+      )}
 
       {/* Actions */}
       <div className="celebrate-actions">

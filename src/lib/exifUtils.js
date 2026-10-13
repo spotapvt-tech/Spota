@@ -41,3 +41,54 @@ export async function extractExifGps(file) {
     return null;
   }
 }
+
+/**
+ * Extracts GPS coordinates AND the capture time from an image's EXIF.
+ * Used by Spota Expeditions to match a summit photo against the GPS track
+ * (BRD FR-3.2, "Photo EXIF match").
+ *
+ * Like extractExifGps, call this on the ORIGINAL file before compressImage().
+ *
+ * Timezone note: EXIF DateTimeOriginal has no zone. exifr interprets it in the
+ * device's local timezone, which is correct when the photo is read on the
+ * same phone that took it (the normal summit-photo flow).
+ *
+ * @param {File|Blob} file
+ * @returns {Promise<{lat: number|null, lng: number|null, takenAt: string|null} | null>}
+ *   null when neither GPS nor a capture time is present.
+ */
+export async function extractExifMeta(file) {
+  if (!file) return null;
+  const type = file.type || '';
+  if (type && !type.startsWith('image/')) return null;
+
+  try {
+    const exifr = await import('exifr');
+    const [coords, tags] = await Promise.all([
+      exifr.gps(file).catch(() => null),
+      exifr.parse(file, ['DateTimeOriginal', 'CreateDate']).catch(() => null)
+    ]);
+
+    let lat = null;
+    let lng = null;
+    if (Number.isFinite(coords?.latitude) && Number.isFinite(coords?.longitude)) {
+      const valid =
+        !(coords.latitude === 0 && coords.longitude === 0) &&
+        Math.abs(coords.latitude) <= 90 &&
+        Math.abs(coords.longitude) <= 180;
+      if (valid) {
+        lat = coords.latitude;
+        lng = coords.longitude;
+      }
+    }
+
+    const raw = tags?.DateTimeOriginal || tags?.CreateDate || null;
+    const date = raw instanceof Date ? raw : raw ? new Date(raw) : null;
+    const takenAt = date && !Number.isNaN(date.getTime()) ? date.toISOString() : null;
+
+    if (lat === null && takenAt === null) return null;
+    return { lat, lng, takenAt };
+  } catch {
+    return null;
+  }
+}

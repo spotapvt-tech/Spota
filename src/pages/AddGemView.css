@@ -6,8 +6,39 @@
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  /* Clears the fixed 60px .top-bar (see TopBar.css) — without this, the
+     wizard's own content starts at the same y:0 the TopBar is fixed to,
+     so anything placed at the top of the shell (e.g. wizard-header-row)
+     renders hidden underneath it instead of below it. */
+  padding-top: calc(60px + env(safe-area-inset-top));
   background: var(--color-bg-primary);
   overflow: hidden;
+}
+
+.wizard-header-row {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px 4px;
+  flex-shrink: 0;
+}
+
+.wizard-header-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.wizard-header-back-btn:hover {
+  background: var(--color-bg-secondary);
+  transform: translateX(-2px);
 }
 
 .wizard-step-content {
@@ -17,7 +48,7 @@
 }
 
 .wizard-step {
-  padding: 20px 20px 160px; /* clears fixed CTA (60px) + bottom nav (80px) */
+  padding: 20px 20px 100px; /* clears the fixed CTA bar — BottomNav is hidden on /add */
 }
 
 /* =====================================================
@@ -401,7 +432,7 @@
 .live-share-card-inner {
   width: 100%;
   max-width: 320px;
-  background: linear-gradient(180deg, #1C2621 0%, #0D110F 100%);
+  background: linear-gradient(180deg, #1E2124 0%, #0B0C0D 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 28px;
   padding: 24px;

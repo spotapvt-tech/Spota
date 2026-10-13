@@ -1,62 +1,41 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
+import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Search, X } from 'lucide-react';
 import { reverseGeocode, searchPlaces } from '../../lib/geocoding';
-import 'leaflet/dist/leaflet.css';
+import { useSpotaGoogleMaps, DEFAULT_MAP_OPTIONS } from '../../lib/googleMaps';
 import './StepPin.css';
 
-// Fix Leaflet default icons
-import iconUrl from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-const DefaultIcon = L.icon({ iconUrl, shadowUrl: iconShadow, iconSize: [25,41], iconAnchor: [12,41] });
-L.Marker.prototype.options.icon = DefaultIcon;
-
-function MapCenter({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) map.setView(position, map.getZoom() < 14 ? 14 : map.getZoom());
-  }, [position, map]);
-  return null;
-}
-
-function ClickMarker({ location, setLocation }) {
-  useMapEvents({
-    click(e) {
-      setLocation(prev => ({ ...prev, lat: e.latlng.lat, lng: e.latlng.lng, source: 'map' }));
-    }
-  });
-  if (!location?.lat) return null;
-  return (
-    <Marker
-      position={[location.lat, location.lng]}
-      draggable
-      eventHandlers={{
-        dragend(e) {
-          const p = e.target.getLatLng();
-          setLocation(prev => ({ ...prev, lat: p.lat, lng: p.lng, source: 'map' }));
-        }
-      }}
-    />
-  );
-}
-
 export default function StepPin({ location, setLocation, photoGps }) {
-  const [gpsStatus, setGpsStatus] = useState('idle'); // idle | loading | success | denied | photo
+  const { isLoaded } = useSpotaGoogleMaps();
+  // idle | loading | success | denied | photo. Initial value mirrors what the
+  // step-entry effect below is about to do, so the effect needn't set it synchronously.
+  const [gpsStatus, setGpsStatus] = useState(() => {
+    if (location?.lat) return location.source === 'exif' ? 'photo' : 'success';
+    if (photoGps?.lat && photoGps?.lng) return 'loading';
+    if (!('geolocation' in navigator) || !navigator.onLine) return 'denied';
+    return 'loading';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const abortRef = useRef(null);
   const searchContainerRef = useRef(null);
+  const mapRef = useRef(null);
 
-  const mapCenter = location?.lat ? [location.lat, location.lng] : [28.6139, 77.2090];
+  const mapCenter = location?.lat ? { lat: location.lat, lng: location.lng } : { lat: 28.6139, lng: 77.2090 };
+
+  // Pan/zoom the map whenever the pinned location changes
+  useEffect(() => {
+    if (location?.lat && mapRef.current) {
+      mapRef.current.panTo({ lat: location.lat, lng: location.lng });
+      if (mapRef.current.getZoom() < 14) mapRef.current.setZoom(14);
+    }
+  }, [location?.lat, location?.lng]);
 
   // Auto GPS on step entry
-  const detectGPS = useCallback(() => {
-    if (!('geolocation' in navigator)) { setGpsStatus('denied'); return; }
-    if (!navigator.onLine) { setGpsStatus('denied'); return; }
-    setGpsStatus('loading');
+  // Ask the device for a position (status updates happen in the async callbacks)
+  const requestDevicePosition = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const { latitude: lat, longitude: lng } = pos.coords;
@@ -69,15 +48,18 @@ export default function StepPin({ location, setLocation, photoGps }) {
     );
   }, [setLocation]);
 
+  // Retry button: show the loading state, then request
+  const detectGPS = useCallback(() => {
+    if (!('geolocation' in navigator) || !navigator.onLine) { setGpsStatus('denied'); return; }
+    setGpsStatus('loading');
+    requestDevicePosition();
+  }, [requestDevicePosition]);
+
   useEffect(() => {
-    if (location?.lat) {
-      // Already have a location — just show it
-      setGpsStatus(location.source === 'exif' ? 'photo' : 'success');
-      return;
-    }
+    // Already have a location: initial gpsStatus already reflects it
+    if (location?.lat) return;
     if (photoGps?.lat && photoGps?.lng) {
       // EXIF GPS found in the photo — use it, then reverse-geocode for place name
-      setGpsStatus('loading');
       reverseGeocode(photoGps.lat, photoGps.lng).then(({ name, address }) => {
         setLocation({
           lat: photoGps.lat,
@@ -92,9 +74,9 @@ export default function StepPin({ location, setLocation, photoGps }) {
         setLocation({ lat: photoGps.lat, lng: photoGps.lng, source: 'exif' });
         setGpsStatus('photo');
       });
-    } else {
-      // No EXIF GPS — fall back to device GPS
-      detectGPS();
+    } else if ('geolocation' in navigator && navigator.onLine) {
+      // No EXIF GPS: fall back to device GPS (initial status is already 'loading')
+      requestDevicePosition();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -110,7 +92,7 @@ export default function StepPin({ location, setLocation, photoGps }) {
 
   // Debounced search
   useEffect(() => {
-    if (searchQuery.trim().length < 3) { setSearchResults([]); setShowDropdown(false); return; }
+    if (searchQuery.trim().length < 3) return; // results are hidden while the query is short (see below)
     const t = setTimeout(async () => {
       if (abortRef.current) abortRef.current.abort();
       abortRef.current = new AbortController();
@@ -146,6 +128,14 @@ export default function StepPin({ location, setLocation, photoGps }) {
     setShowDropdown(false);
     setSearchResults([]);
     setGpsStatus('success');
+  };
+
+  const handleMapClick = (e) => {
+    setLocation(prev => ({ ...prev, lat: e.latLng.lat(), lng: e.latLng.lng(), source: 'map' }));
+  };
+
+  const handleMarkerDragEnd = (e) => {
+    setLocation(prev => ({ ...prev, lat: e.latLng.lat(), lng: e.latLng.lng(), source: 'map' }));
   };
 
   return (
@@ -231,7 +221,7 @@ export default function StepPin({ location, setLocation, photoGps }) {
           )}
         </div>
 
-        {showDropdown && (searchResults.length > 0 || isSearching) && (
+        {showDropdown && searchQuery.trim().length >= 3 && (searchResults.length > 0 || isSearching) && (
           <div className="pin-search-dropdown glass-panel">
             {isSearching ? (
               <div className="pin-search-loading">Searching… 🗺️</div>
@@ -255,15 +245,24 @@ export default function StepPin({ location, setLocation, photoGps }) {
 
       {/* Map */}
       <div className="pin-map-wrapper">
-        <MapContainer center={mapCenter} zoom={14} scrollWheelZoom zoomControl={false}
-          style={{ height: '100%', width: '100%' }}>
-          <MapCenter position={location?.lat ? [location.lat, location.lng] : null} />
-          <TileLayer
-            attribution='&copy; <a href="https://carto.com/attributions">CARTO</a>'
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          />
-          <ClickMarker location={location} setLocation={setLocation} />
-        </MapContainer>
+        {isLoaded && (
+          <GoogleMap
+            mapContainerStyle={{ height: '100%', width: '100%' }}
+            center={mapCenter}
+            zoom={14}
+            options={DEFAULT_MAP_OPTIONS}
+            onClick={handleMapClick}
+            onLoad={(map) => { mapRef.current = map; }}
+          >
+            {location?.lat && (
+              <Marker
+                position={{ lat: location.lat, lng: location.lng }}
+                draggable
+                onDragEnd={handleMarkerDragEnd}
+              />
+            )}
+          </GoogleMap>
+        )}
         <div className="pin-map-hint">Tap map to move pin · Drag pin to fine-tune</div>
       </div>
 

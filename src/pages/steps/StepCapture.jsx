@@ -16,10 +16,10 @@ const FILTERS = [
 
 export default function StepCapture({
   photoPreview, setPhotoPreview,
-  photoFile, setPhotoFile,
+  setPhotoFile,
   photoFilter, setPhotoFilter,
-  cameraBase64, setCameraBase64,
-  videoFile, setVideoFile,
+  setCameraBase64,
+  setVideoFile,
   videoPreview, setVideoPreview,
   onExifGps,   // (coords: {lat,lng} | null) => void — called after EXIF parse
 }) {
@@ -63,13 +63,19 @@ export default function StepCapture({
 
   const takeNativePhoto = async (source) => {
     try {
-      const perms = await CapCamera.requestPermissions({
-        permissions: source === CameraSource.Camera ? ['camera'] : ['photos']
-      });
-      const key = source === CameraSource.Camera ? 'camera' : 'photos';
-      if (perms[key] === 'denied') {
-        alert('Permission denied. Please enable in device settings.');
-        return;
+      // Only the Camera source maps to a real Android/iOS runtime permission.
+      // The Photos/gallery source needs none — Capacitor's own picker requires
+      // no permission grant (see @capacitor/camera README: "requires no
+      // permissions, unless using saveToGallery: true"), and on Android the
+      // 'photos' alias has no permission strings behind it at all, so
+      // pre-flighting requestPermissions(['photos']) here was a no-op at best
+      // and could hang the picker open on some devices at worst.
+      if (source === CameraSource.Camera) {
+        const perms = await CapCamera.requestPermissions({ permissions: ['camera'] });
+        if (perms.camera === 'denied') {
+          alert('Permission denied. Please enable in device settings.');
+          return;
+        }
       }
       const photo = await CapCamera.getPhoto({
         quality: 60, width: 800, height: 800,

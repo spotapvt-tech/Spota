@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { categories } from '../../lib/categoryConfig';
-import { getSuggestedDescription, AI_SUGGESTIONS_MAP } from '../../lib/gemWizardData';
+import { getSuggestedDescription } from '../../lib/gemWizardData';
 import './StepName.css';
 
 // Generate a suggested name from category + color profile
@@ -32,15 +32,17 @@ export default function StepName({
   colorProfile,
   description, setDescription,
 }) {
-  const [suggestion, setSuggestion] = useState('');
+  // Derived from inputs, no state needed
+  const suggestion = generateNameSuggestion(category, colorProfile);
   const [usedSuggestion, setUsedSuggestion] = useState(false);
 
-  useEffect(() => {
-    const s = generateNameSuggestion(category, colorProfile);
-    setSuggestion(s);
+  // When category / photo colours change, re-offer the suggestion (unless a name is set).
+  // Adjusting state during render avoids an extra effect pass (react.dev: "You might not need an effect").
+  const [suggestionInputs, setSuggestionInputs] = useState({ category, colorProfile });
+  if (suggestionInputs.category !== category || suggestionInputs.colorProfile !== colorProfile) {
+    setSuggestionInputs({ category, colorProfile });
     if (!gemName) setUsedSuggestion(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [category, colorProfile]);
+  }
 
   const applySuggestion = () => {
     setGemName(suggestion);

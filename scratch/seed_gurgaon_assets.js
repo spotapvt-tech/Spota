@@ -275,7 +275,7 @@ async function main() {
     const creatorUserId = await authenticate();
 
     console.log('Detecting Supabase Storage bucket configurations...');
-    const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+    const { data: buckets } = await supabase.storage.listBuckets();
     
     const hasImagesBucket = buckets && buckets.some(b => b.id === 'spot-images');
     const hasVideosBucket = buckets && buckets.some(b => b.id === 'spot-videos');
@@ -322,7 +322,7 @@ async function main() {
 
         if (hasImagesBucket) {
           // Upload to Supabase
-          const { data, error } = await supabase.storage
+          const { error } = await supabase.storage
             .from('spot-images')
             .upload(`spot-images/${imgFilename}`, imgBuffer, {
               contentType: 'image/jpeg'
@@ -351,7 +351,7 @@ async function main() {
 
           if (hasVideosBucket) {
             // Upload to Supabase
-            const { data, error } = await supabase.storage
+            const { error } = await supabase.storage
               .from('spot-videos')
               .upload(`spot-videos/${vidFilename}`, vidBuffer, {
                 contentType: 'video/mp4'
