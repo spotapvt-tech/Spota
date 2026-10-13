@@ -1,42 +1,21 @@
-import { useState, useEffect } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap, Circle, CircleMarker } from 'react-leaflet';
+import { useState, useEffect, useRef } from 'react';
+import { GoogleMap, Circle, InfoWindow } from '@react-google-maps/api';
 import { supabase } from '../lib/supabaseClient';
-import { Search, Camera, Sparkles, Download, WifiOff } from 'lucide-react';
+import { Search, Camera, Sparkles, Download, WifiOff, MapPin } from 'lucide-react';
 import { haversineDistance, adjustOverlappingCoordinates } from '../lib/utils';
+import { searchPlaces } from '../lib/geocoding';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import ARView from './ARView';
 import AIVibeMatcher from '../components/AIVibeMatcher';
 import OfflineModal from '../components/OfflineModal';
 import useOfflineSpots from '../hooks/useOfflineSpots';
 import { categories } from '../lib/categoryConfig';
-import 'leaflet/dist/leaflet.css';
+import { useSpotaGoogleMaps, DEFAULT_MAP_OPTIONS } from '../lib/googleMaps';
+import GemMarkerOverlay from '../components/map/GemMarkerOverlay';
 import './MapView.css';
 
-// Fix for default Leaflet marker icons in React
-import L from 'leaflet';
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Helper component to center map dynamically
-function MapCenter({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) {
-      map.setView(position, map.getZoom());
-    }
-  }, [position, map]);
-  return null;
-}
-
 export default function MapView() {
+  const { isLoaded } = useSpotaGoogleMaps();
   const [spots, setSpots] = useState([]);
   const [center, setCenter] = useState([28.6139, 77.2090]); // Default Delhi, India
   const [userLocation, setUserLocation] = useState(null);
@@ -47,6 +26,18 @@ export default function MapView() {
   const [showAiMatcher, setShowAiMatcher] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [openPopupSpotId, setOpenPopupSpotId] = useState(null);
+  const [showUserPopup, setShowUserPopup] = useState(false);
+
+  // Place search — jump the map to an area, state, or place name (as
+  // distinct from filtering the pins already on screen by title/tag below)
+  const [placeResults, setPlaceResults] = useState([]);
+  const [isSearchingPlaces, setIsSearchingPlaces] = useState(false);
+  const [showPlaceDropdown, setShowPlaceDropdown] = useState(false);
+  const placeAbortRef = useRef(null);
+  const searchContainerRef = useRef(null);
+
+  const mapRef = useRef(null);
 
   const { isOffline, offlineSpots, refreshCache } = useOfflineSpots();
 
@@ -56,7 +47,7 @@ export default function MapView() {
       try {
         const { data, error } = await supabase.from('spots').select('*').neq('status', 'deleted');
         if (error) throw error;
-        
+
         if (data && data.length > 0) {
           setSpots(data);
           // Default center on the most recently added spot
@@ -66,7 +57,7 @@ export default function MapView() {
         console.error('Error fetching map spots:', error);
       }
     }
-    
+
     if (!isOffline) {
       fetchSpots();
     }
@@ -93,6 +84,55 @@ export default function MapView() {
     }
   }, [isOffline, offlineSpots]);
 
+  // Pan the map whenever `center` changes (mirrors the old Leaflet MapCenter helper)
+  useEffect(() => {
+    if (center && mapRef.current) {
+      mapRef.current.panTo({ lat: center[0], lng: center[1] });
+    }
+  }, [center]);
+
+  // Debounced place search — matches areas, states, cities, and named
+  // places (not just spots already on the map)
+  useEffect(() => {
+    if (searchQuery.trim().length < 3) return; // results are hidden while the query is short (see render)
+    const t = setTimeout(async () => {
+      if (placeAbortRef.current) placeAbortRef.current.abort();
+      placeAbortRef.current = new AbortController();
+      setIsSearchingPlaces(true);
+      const results = await searchPlaces(searchQuery, placeAbortRef.current.signal);
+      if (results !== null) {
+        setPlaceResults(results || []);
+        setShowPlaceDropdown(true);
+      }
+      setIsSearchingPlaces(false);
+    }, 380);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  // Click outside the search bar closes the place dropdown
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(e.target)) {
+        setShowPlaceDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const handleSelectPlace = (item) => {
+    const lat = parseFloat(item.lat);
+    const lng = parseFloat(item.lon);
+    if (isNaN(lat) || isNaN(lng)) return;
+    setCenter([lat, lng]);
+    if (mapRef.current) mapRef.current.setZoom(13);
+    // Clear the text filter so pins near the searched place aren't hidden
+    // by a title/tag match against the full place name.
+    setSearchQuery('');
+    setPlaceResults([]);
+    setShowPlaceDropdown(false);
+  };
+
   // Listen to realtime or local updates to update likes and shares instantly on map markers
   useEffect(() => {
     const handleSpotUpdate = (e) => {
@@ -100,10 +140,10 @@ export default function MapView() {
       setSpots((prevSpots) =>
         prevSpots.map((spot) =>
           spot.id === id
-            ? { 
-                ...spot, 
-                reactions: reactions !== undefined ? reactions : spot.reactions, 
-                share_count: share_count !== undefined ? share_count : spot.share_count 
+            ? {
+                ...spot,
+                reactions: reactions !== undefined ? reactions : spot.reactions,
+                share_count: share_count !== undefined ? share_count : spot.share_count
               }
             : spot
         )
@@ -181,6 +221,8 @@ export default function MapView() {
     );
   });
 
+  const referenceCoords = getReferenceCoords();
+
   return (
     <div className="map-container-wrapper">
       {/* Offline Status Banner */}
@@ -192,8 +234,8 @@ export default function MapView() {
       )}
 
       {/* AR Mode Trigger Button */}
-      <button 
-        className="map-ar-trigger-btn glass-panel animate-fade-in" 
+      <button
+        className="map-ar-trigger-btn glass-panel animate-fade-in"
         onClick={() => setShowAR(true)}
         title="Open AR Finder"
       >
@@ -202,8 +244,8 @@ export default function MapView() {
 
       {/* Offline Download Trigger Button */}
       {!isOffline && (
-        <button 
-          className="map-download-trigger-btn glass-panel animate-fade-in" 
+        <button
+          className="map-download-trigger-btn glass-panel animate-fade-in"
           onClick={() => setShowOfflineModal(true)}
           title="Download Map Area Offline"
         >
@@ -212,7 +254,7 @@ export default function MapView() {
       )}
 
       {/* Floating Explore Nearby AR CTA */}
-      <button 
+      <button
         className="map-explore-cta glass-panel animate-pulse-glow"
         onClick={() => setShowAR(true)}
         title="Explore Nearby in Augmented Reality"
@@ -222,23 +264,45 @@ export default function MapView() {
       </button>
 
       {/* Vibe & Spot Search Overlay */}
-      <div className="map-search-overlay">
+      <div className="map-search-overlay" ref={searchContainerRef}>
         <Search size={18} className="map-search-icon" />
-        <input 
-          type="text" 
-          placeholder="Search map spots, category, or vibe..." 
+        <input
+          type="text"
+          placeholder="Search an area, state, place, or your spots..."
           className="map-search-input"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onFocus={() => placeResults.length > 0 && setShowPlaceDropdown(true)}
         />
-        <button 
-          type="button" 
+        <button
+          type="button"
           className="map-ai-search-trigger"
           onClick={() => setShowAiMatcher(true)}
           title="Ask Spota Vibe AI"
         >
           <Sparkles size={18} />
         </button>
+
+        {showPlaceDropdown && searchQuery.trim().length >= 3 && (placeResults.length > 0 || isSearchingPlaces) && (
+          <div className="map-search-dropdown glass-panel">
+            {isSearchingPlaces ? (
+              <div className="map-search-loading">Searching places… 🗺️</div>
+            ) : (
+              placeResults.map((item, idx) => {
+                const parts = (item.display_name || '').split(',');
+                return (
+                  <div key={item.place_id || idx} className="map-search-result" onClick={() => handleSelectPlace(item)}>
+                    <MapPin size={14} className="map-result-icon" />
+                    <div>
+                      <div className="map-result-main">{parts[0]}</div>
+                      {parts[1] && <div className="map-result-sub">{parts.slice(1, 3).join(', ')}</div>}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        )}
       </div>
 
       {/* Range Filter Overlay */}
@@ -284,107 +348,112 @@ export default function MapView() {
         </div>
       </div>
 
-      <MapContainer 
-        center={center} 
-        zoom={13} 
-        scrollWheelZoom={true} 
-        zoomControl={false}
-        className="full-screen-map"
-      >
-        <MapCenter position={center} />
-        
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}{r}.png"
-        />
+      {isLoaded && (
+        <GoogleMap
+          mapContainerClassName="full-screen-map"
+          center={{ lat: center[0], lng: center[1] }}
+          zoom={13}
+          options={DEFAULT_MAP_OPTIONS}
+          onLoad={(map) => { mapRef.current = map; }}
+        >
+          {/* User Location Pulse Marker */}
+          {userLocation && (
+            <>
+              <GemMarkerOverlay
+                position={{ lat: userLocation[0], lng: userLocation[1] }}
+                width={18}
+                height={18}
+                zIndex={5}
+                onClick={() => setShowUserPopup(true)}
+              >
+                <div className="user-location-dot" />
+              </GemMarkerOverlay>
+              {showUserPopup && (
+                <InfoWindow
+                  position={{ lat: userLocation[0], lng: userLocation[1] }}
+                  onCloseClick={() => setShowUserPopup(false)}
+                >
+                  <div style={{ color: '#2C3531', fontWeight: 600 }}>Your Location</div>
+                </InfoWindow>
+              )}
+            </>
+          )}
 
-        {/* User Location Pulse Marker */}
-        {userLocation && (
-          <CircleMarker
-            center={userLocation}
-            radius={8}
-            pathOptions={{
-              fillColor: '#4A90E2',
-              fillOpacity: 0.9,
-              color: '#ffffff',
-              weight: 2
-            }}
-          >
-            <Popup>
-              <div style={{ color: '#2C3531', fontWeight: 600 }}>Your Location</div>
-            </Popup>
-          </CircleMarker>
-        )}
+          {/* Visual Range Circle Overlay */}
+          {selectedRange !== 'All' && referenceCoords && (
+            <Circle
+              center={{ lat: referenceCoords[0], lng: referenceCoords[1] }}
+              radius={Number(selectedRange) * 1000}
+              options={{
+                fillColor: '#6C8C74',
+                fillOpacity: 0.08,
+                strokeColor: '#6C8C74',
+                strokeWeight: 1.5,
+                clickable: false,
+              }}
+            />
+          )}
 
-        {/* Visual Range Circle Overlay */}
-        {selectedRange !== 'All' && getReferenceCoords() && (
-          <Circle
-            center={getReferenceCoords()}
-            radius={Number(selectedRange) * 1000}
-            pathOptions={{
-              fillColor: 'var(--color-accent)',
-              fillOpacity: 0.08,
-              color: 'var(--color-accent)',
-              weight: 1.5,
-              dashArray: '5, 5'
-            }}
-          />
-        )}
-        
-        {filteredSpots.map((spot) => {
-          const popularity = getPopularity(spot);
-          const isTrending = popularity >= 5;
-          const isPending = spot.status === 'pending';
-          
-          const spotIcon = L.divIcon({
-            className: 'custom-gem-marker',
-            html: `<div class="marker-gem-pin ${isTrending ? 'trending' : ''} ${isPending ? 'pending' : ''}">
-              ${isPending ? '⏳' : (isTrending ? '🔥' : '💎')}
-            </div>`,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32]
-          });
+          {filteredSpots.map((spot) => {
+            const popularity = getPopularity(spot);
+            const isTrending = popularity >= 5;
+            const isPending = spot.status === 'pending';
+            const position = { lat: spot.latitude, lng: spot.longitude };
 
-          return (
-            <Marker key={spot.id} position={[spot.latitude, spot.longitude]} icon={spotIcon}>
-              <Popup>
-                <div className="custom-popup">
-                  {isPending && <span className="popup-pending-tag" style={{ color: '#E07A5F', fontWeight: '700', fontSize: '10px', textTransform: 'uppercase', marginBottom: '2px', display: 'block' }}>⏳ Pending Review</span>}
-                  {isTrending && !isPending && <span className="popup-trending-tag">🔥 Trending</span>}
-                  {spot.image_url && (
-                    <img src={spot.image_url} alt={spot.title} className="popup-image-mini" />
-                  )}
-                  <h3>{spot.title}</h3>
-                  <p>{spot.description || spot.category}</p>
-                  {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
-                    <div className="popup-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', margin: '4px 0 8px 0' }}>
-                      {spot.tags.map((tag, idx) => (
-                        <span key={idx} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 600 }}>
-                          #{tag}
-                        </span>
-                      ))}
+            return (
+              <div key={spot.id}>
+                <GemMarkerOverlay
+                  position={position}
+                  width={32}
+                  height={32}
+                  onClick={() => setOpenPopupSpotId(spot.id)}
+                >
+                  <div className={`marker-gem-pin ${isTrending ? 'trending' : ''} ${isPending ? 'pending' : ''}`}>
+                    {isPending ? '⏳' : (isTrending ? '🔥' : '💎')}
+                  </div>
+                </GemMarkerOverlay>
+
+                {openPopupSpotId === spot.id && (
+                  <InfoWindow position={position} onCloseClick={() => setOpenPopupSpotId(null)}>
+                    <div className="custom-popup">
+                      {isPending && <span className="popup-pending-tag" style={{ color: '#E07A5F', fontWeight: '700', fontSize: '10px', textTransform: 'uppercase', marginBottom: '2px', display: 'block' }}>⏳ Pending Review</span>}
+                      {isTrending && !isPending && <span className="popup-trending-tag">🔥 Trending</span>}
+                      {spot.image_url && (
+                        <img src={spot.image_url} alt={spot.title} className="popup-image-mini" />
+                      )}
+                      <h3>{spot.title}</h3>
+                      <p>{spot.description || spot.category}</p>
+                      {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
+                        <div className="popup-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', margin: '4px 0 8px 0' }}>
+                          {spot.tags.map((tag, idx) => (
+                            <span key={idx} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 600 }}>
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      <button
+                        className="popup-details-btn"
+                        onClick={() => setSelectedSpot(spot)}
+                      >
+                        View Details
+                      </button>
                     </div>
-                  )}
-                  <button 
-                    className="popup-details-btn" 
-                    onClick={() => setSelectedSpot(spot)}
-                  >
-                    View Details
-                  </button>
-                </div>
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MapContainer>
+                  </InfoWindow>
+                )}
+              </div>
+            );
+          })}
+        </GoogleMap>
+      )}
 
       {selectedSpot && (
         <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
       )}
 
       {showAiMatcher && (
-        <AIVibeMatcher 
-          onClose={() => setShowAiMatcher(false)} 
+        <AIVibeMatcher
+          onClose={() => setShowAiMatcher(false)}
           onSelectSpot={(spot) => {
             setShowAiMatcher(false);
             setSelectedSpot(spot);
@@ -393,10 +462,10 @@ export default function MapView() {
       )}
 
       {showAR && (
-        <ARView 
-          spots={displaySpots} 
-          userLocation={userLocation} 
-          onClose={() => setShowAR(false)} 
+        <ARView
+          spots={displaySpots}
+          userLocation={userLocation}
+          onClose={() => setShowAR(false)}
           onSelectSpot={(spot) => {
             setShowAR(false);
             setSelectedSpot(spot);
@@ -405,13 +474,13 @@ export default function MapView() {
       )}
 
       {showOfflineModal && (
-        <OfflineModal 
-          center={center} 
-          spots={spots} 
-          onClose={() => setShowOfflineModal(false)} 
+        <OfflineModal
+          center={center}
+          spots={spots}
+          onClose={() => setShowOfflineModal(false)}
           onSuccess={() => {
             refreshCache();
-          }} 
+          }}
         />
       )}
     </div>

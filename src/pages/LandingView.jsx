@@ -676,41 +676,6 @@ export default function LandingView() {
         </div>
       )}
 
-      {/* Floating Quest HUD Widget */}
-      <div className="l-quest-hud">
-        <div className="l-quest-header">
-          <span className="l-quest-title">
-            <Trophy size={18} style={{ color: '#E0A96D' }} />
-            <span>Quest Log</span>
-          </span>
-          <span className="l-level-tag">{levelName}</span>
-        </div>
-
-        {/* XP Section */}
-        <div className="l-xp-section">
-          <div className="l-xp-info">
-            <span>Level {level}</span>
-            <span>{xp} / 250 XP</span>
-          </div>
-          <div className="l-xp-bar-bg">
-            <div className="l-xp-bar-fill" style={{ width: `${Math.min(100, (xp / 250) * 100)}%` }}></div>
-          </div>
-        </div>
-
-        {/* Checklist */}
-        <div className="l-quest-list">
-          {quests.map(q => (
-            <div key={q.id} className={`l-quest-item ${q.done ? 'completed' : ''}`}>
-              <div className="l-quest-check">
-                {q.done ? '✓' : ''}
-              </div>
-              <span>{q.text}</span>
-              {!q.done && <span className="l-quest-xp-reward">+{q.reward} XP</span>}
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Floating Zen Ambient Soundscape Player (Bottom-Left) */}
       <div 
         className={`l-ambient-player ${isPlayingMusic ? 'active' : ''}`}
@@ -753,7 +718,7 @@ export default function LandingView() {
         </nav>
         <div className="l-header-actions">
           <button className="l-btn-secondary" onClick={() => setShowAuthModal(true)}>Sign In</button>
-          <button className="l-btn-primary" onClick={() => setShowAuthModal(true)}>Launch Web App</button>
+          <button className="l-btn-primary" onClick={() => setShowAuthModal(true)}>Start Exploring Free</button>
         </div>
       </header>
 
@@ -763,25 +728,11 @@ export default function LandingView() {
           <span className="l-tagline">💎 Zen-Social Spot Discovery</span>
           <h1 className="l-hero-title">Ditch the tourists. Find the vibe.</h1>
           <p className="l-hero-desc">
-            Spota is a zen-social discovery map built for off-beat explorers. Track atmospheric vibes, stream loopable Video Vibes, planning cooperative trips, and discover hidden gems in AR—even with zero cellular signal.
+            Spota is a zen-social discovery map built for off-beat explorers. Track atmospheric vibes, stream loopable Video Vibes, plan cooperative trips, and discover hidden gems in AR, even with zero cellular signal.
           </p>
           <div className="l-hero-ctas">
             <button className="l-btn-primary" onClick={() => setShowAuthModal(true)}>Start Exploring Free</button>
             <a href="#sandbox" className="l-btn-secondary">Try Demo Sandbox</a>
-          </div>
-          <div className="l-hero-stats">
-            <div className="l-stat-item">
-              <span className="l-stat-num">24k+</span>
-              <span className="l-stat-lbl">Gems Dropped</span>
-            </div>
-            <div className="l-stat-item">
-              <span className="l-stat-num">98.4%</span>
-              <span className="l-stat-lbl">Off-grid Reliability</span>
-            </div>
-            <div className="l-stat-item">
-              <span className="l-stat-num">12+</span>
-              <span className="l-stat-lbl">Atmospheric Ranks</span>
-            </div>
           </div>
         </div>
 
@@ -1111,6 +1062,22 @@ export default function LandingView() {
         </div>
       </section>
 
+      {/* 2b. Stat strip - moved out of the hero (hero stays value-prop + CTA only) */}
+      <div className="l-stats-bar">
+        <div className="l-stat-item">
+          <span className="l-stat-num">24k+</span>
+          <span className="l-stat-lbl">Gems Dropped</span>
+        </div>
+        <div className="l-stat-item">
+          <span className="l-stat-num">98.4%</span>
+          <span className="l-stat-lbl">Off-grid Reliability</span>
+        </div>
+        <div className="l-stat-item">
+          <span className="l-stat-num">12+</span>
+          <span className="l-stat-lbl">Atmospheric Ranks</span>
+        </div>
+      </div>
+
       {/* 3. Sandbox Panel controls */}
       <section id="sandbox" className="l-sandbox-section">
         <div className="l-sandbox-intro">
@@ -1299,7 +1266,6 @@ export default function LandingView() {
       {/* 5. PRD Specifications and Row-Level Security rules */}
       <section id="specifications" className="l-specs-section">
         <div className="l-sandbox-intro" style={{ alignSelf: 'center' }}>
-          <span className="l-tagline">⚙️ Engineering Specs</span>
           <h2 className="l-sandbox-title">System Architecture</h2>
         </div>
 
@@ -1382,7 +1348,7 @@ export default function LandingView() {
             Join thousands of modern explorers dropping gems in Kasol, Dharamshala, Manali, and beyond. Launch the web app directly or sign up to cache offline maps.
           </p>
           <button className="l-btn-primary" style={{ padding: '16px 40px', fontSize: '16px' }} onClick={() => setShowAuthModal(true)}>
-            Open Web App Interface
+            Start Exploring Free
           </button>
         </div>
       </section>
@@ -1437,6 +1403,44 @@ export default function LandingView() {
         </div>
       </footer>
 
+      {/* Floating Quest HUD Widget — placed after all page content so mobile's
+          static/in-flow layout (see .l-quest-hud media query) puts it at the
+          bottom of the page instead of ahead of the header/hero. Desktop
+          keeps it position:fixed regardless of DOM order. */}
+      <div className="l-quest-hud">
+        <div className="l-quest-header">
+          <span className="l-quest-title">
+            <Trophy size={18} style={{ color: '#E0A96D' }} />
+            <span>Quest Log</span>
+          </span>
+          <span className="l-level-tag">{levelName}</span>
+        </div>
+
+        {/* XP Section */}
+        <div className="l-xp-section">
+          <div className="l-xp-info">
+            <span>Level {level}</span>
+            <span>{xp} / 250 XP</span>
+          </div>
+          <div className="l-xp-bar-bg">
+            <div className="l-xp-bar-fill" style={{ width: `${Math.min(100, (xp / 250) * 100)}%` }}></div>
+          </div>
+        </div>
+
+        {/* Checklist */}
+        <div className="l-quest-list">
+          {quests.map(q => (
+            <div key={q.id} className={`l-quest-item ${q.done ? 'completed' : ''}`}>
+              <div className="l-quest-check">
+                {q.done ? '✓' : ''}
+              </div>
+              <span>{q.text}</span>
+              {!q.done && <span className="l-quest-xp-reward">+{q.reward} XP</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* 8. Glassmorphic Authentication Modal Overlay */}
       {showAuthModal && (
         <div className="l-modal-overlay">
@@ -1444,7 +1448,7 @@ export default function LandingView() {
             <button className="l-modal-close-btn" onClick={() => setShowAuthModal(false)}>
               <X size={16} />
             </button>
-            <AuthView />
+            <AuthView onClose={() => setShowAuthModal(false)} />
           </div>
         </div>
       )}

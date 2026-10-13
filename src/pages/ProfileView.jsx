@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { LogOut, Award, CheckCircle, Heart, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft } from 'lucide-react';
+import { LogOut, Award, CheckCircle, Heart, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft, Grid3x3, Bookmark } from 'lucide-react';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import { getActiveTrekLocal } from '../lib/safeTrekTimer';
 import BadgeDisplay from '../components/BadgeDisplay';
@@ -371,90 +371,108 @@ export default function ProfileView() {
 
       {isOwnProfile ? (
         <div className="profile-tabs">
-          <button 
+          <button
             className={`tab-btn ${activeTab === 'my-gems' ? 'active' : ''}`}
             onClick={() => setActiveTab('my-gems')}
           >
-            My Gems ({myGemsCount})
+            <Grid3x3 size={18} strokeWidth={activeTab === 'my-gems' ? 2.25 : 1.75} />
+            <span>Gems ({myGemsCount})</span>
           </button>
-          <button 
+          <button
             className={`tab-btn ${activeTab === 'saved-gems' ? 'active' : ''}`}
             onClick={() => setActiveTab('saved-gems')}
           >
-            Saved Gems ({savedGemsCount})
+            <Bookmark size={18} strokeWidth={activeTab === 'saved-gems' ? 2.25 : 1.75} />
+            <span>Saved ({savedGemsCount})</span>
           </button>
         </div>
       ) : (
-        <h3 style={{ marginTop: '24px', marginBottom: '16px', color: 'var(--color-text-primary)' }}>
-          Gems Dropped ({myGemsCount})
-        </h3>
+        <div className="profile-tabs">
+          <div className="tab-btn active" style={{ cursor: 'default' }}>
+            <Grid3x3 size={18} strokeWidth={2.25} />
+            <span>Gems Dropped ({myGemsCount})</span>
+          </div>
+        </div>
       )}
 
       <div className="tab-content">
         {loading ? (
           <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', marginTop: '20px' }}>Loading list...</p>
         ) : !isOwnProfile || activeTab === 'my-gems' ? (
-          <div className="spot-grid">
-            {myGems.length === 0 ? (
-              <div className="empty-state glass-panel">
-                <Gem size={32} strokeWidth={1.5} />
-                <p>No gems dropped yet</p>
-                {isOwnProfile && <span>Tap "Add" in the navigation bar to drop your first spot!</span>}
-              </div>
-            ) : (
-              myGems.map(spot => (
-                <div key={spot.id} className="spot-mini-card glass-panel" onClick={() => setSelectedSpot(spot)}>
+          myGems.length === 0 ? (
+            <div className="empty-state glass-panel">
+              <Gem size={32} strokeWidth={1.5} />
+              <p>No gems dropped yet</p>
+              {isOwnProfile && <span>Tap "Add" in the navigation bar to drop your first spot!</span>}
+            </div>
+          ) : (
+            <div className="ig-grid">
+              {myGems.map(spot => (
+                <div
+                  key={spot.id}
+                  className="ig-tile"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View ${spot.title}`}
+                  onClick={() => setSelectedSpot(spot)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSpot(spot); } }}
+                >
                   {spot.image_url ? (
-                    <img src={spot.image_url} alt={spot.title} className="spot-mini-image" />
+                    <img src={spot.image_url} alt={spot.title} className="ig-tile-image" loading="lazy" />
                   ) : (
-                    <div className="spot-mini-image" style={{ backgroundColor: 'var(--color-accent)' }}></div>
-                  )}
-                  <div className="spot-mini-info">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <h4 style={{ margin: 0, textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', flex: 1 }}>
-                        {spot.title}
-                      </h4>
-                      {isOwnProfile && (
-                        <button 
-                          className="profile-delete-btn" 
-                          onClick={(e) => handleDeleteSpot(e, spot.id)}
-                          title="Delete Gem"
-                          style={{ background: 'none', border: 'none', color: '#c94a4a', cursor: 'pointer', padding: '2px 0 2px 8px', display: 'flex', alignItems: 'center' }}
-                        >
-                          <Trash2 size={15} />
-                        </button>
-                      )}
+                    <div className="ig-tile-image ig-tile-fallback">
+                      <Gem size={24} strokeWidth={1.5} />
                     </div>
-                    <p>{spot.category} · {spot.description || "No vibe description"}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        ) : (
-          <div className="spot-grid">
-            {savedGems.length === 0 ? (
-              <div className="empty-state glass-panel">
-                <Heart size={32} strokeWidth={1.5} />
-                <p>No saved gems yet</p>
-                <span>Save cool spots from the Map or Feed to keep them here.</span>
-              </div>
-            ) : (
-              savedGems.map(spot => (
-                <div key={spot.id} className="spot-mini-card glass-panel" onClick={() => setSelectedSpot(spot)}>
-                  {spot.image_url ? (
-                    <img src={spot.image_url} alt={spot.title} className="spot-mini-image" />
-                  ) : (
-                    <div className="spot-mini-image" style={{ backgroundColor: 'var(--color-accent)' }}></div>
                   )}
-                  <div className="spot-mini-info">
-                    <h4>{spot.title}</h4>
-                    <p>{spot.category} · {spot.description || "No vibe description"}</p>
+                  <div className="ig-tile-overlay">
+                    <span className="ig-tile-title">{spot.title}</span>
+                  </div>
+                  {isOwnProfile && (
+                    <button
+                      className="ig-tile-delete"
+                      onClick={(e) => handleDeleteSpot(e, spot.id)}
+                      title="Delete Gem"
+                    >
+                      <Trash2 size={13} />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
+        ) : (
+          savedGems.length === 0 ? (
+            <div className="empty-state glass-panel">
+              <Heart size={32} strokeWidth={1.5} />
+              <p>No saved gems yet</p>
+              <span>Save cool spots from the Map or Feed to keep them here.</span>
+            </div>
+          ) : (
+            <div className="ig-grid">
+              {savedGems.map(spot => (
+                <div
+                  key={spot.id}
+                  className="ig-tile"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`View ${spot.title}`}
+                  onClick={() => setSelectedSpot(spot)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSpot(spot); } }}
+                >
+                  {spot.image_url ? (
+                    <img src={spot.image_url} alt={spot.title} className="ig-tile-image" loading="lazy" />
+                  ) : (
+                    <div className="ig-tile-image ig-tile-fallback">
+                      <Heart size={24} strokeWidth={1.5} />
+                    </div>
+                  )}
+                  <div className="ig-tile-overlay">
+                    <span className="ig-tile-title">{spot.title}</span>
                   </div>
                 </div>
-              ))
-            )}
-          </div>
+              ))}
+            </div>
+          )
         )}
       </div>
 

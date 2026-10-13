@@ -8,6 +8,12 @@ export default defineConfig({
     allowedHosts: [
       'unwired-pledge-cabdriver.ngrok-free.dev'
     ]
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: './src/test/setupTests.js',
+    globals: true,
+    css: false,
+    exclude: ['**/node_modules/**', 'e2e/**']
   }
 })
-

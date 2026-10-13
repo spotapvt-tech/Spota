@@ -1,85 +1,51 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from 'react-leaflet';
+import { GoogleMap, InfoWindow, Polyline } from '@react-google-maps/api';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { ArrowLeft, UserPlus, Plus, ThumbsUp, CheckSquare, Square, Info, Sparkles } from 'lucide-react';
 import TripInviteModal from '../components/TripInviteModal';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import TripRecapModal from '../components/TripRecapModal';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useSpotaGoogleMaps, DEFAULT_MAP_OPTIONS } from '../lib/googleMaps';
+import GemMarkerOverlay from '../components/map/GemMarkerOverlay';
 import './TripBoardView.css';
 
-// Fix for default Leaflet markers
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
+function parseTimeToMinutes(timeStr) {
+  if (!timeStr) return 0;
+  const cleanStr = timeStr.trim().toUpperCase();
 
-function MapCenter({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) {
-      map.setView(position, map.getZoom());
-    }
-  }, [position, map]);
-  return null;
+  // Match hours, minutes, and optional AM/PM modifier with or without spacing
+  const match = cleanStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/);
+  if (!match) return 0;
+
+  let hours = parseInt(match[1], 10) || 0;
+  const minutes = parseInt(match[2], 10) || 0;
+  const modifier = match[3] || 'AM';
+
+  if (modifier === 'PM' && hours < 12) hours += 12;
+  if (modifier === 'AM' && hours === 12) hours = 0;
+  return hours * 60 + minutes;
 }
 
-// Dynamic Bounds & Polyline Path Component
-function MapBoundsAndPath({ spots }) {
-  const map = useMap();
+// Extracts valid {lat,lng} coords for each trip spot, safely dropping any
+// with missing/NaN coordinates.
+function getSpotCoords(spots) {
+  return (spots || [])
+    .map(s => {
+      if (!s.spots) return null;
+      const lat = parseFloat(s.spots.latitude);
+      const lng = parseFloat(s.spots.longitude);
+      return (!isNaN(lat) && !isNaN(lng)) ? { lat, lng } : null;
+    })
+    .filter(Boolean);
+}
 
-  const parseTimeToMinutes = (timeStr) => {
-    if (!timeStr) return 0;
-    const cleanStr = timeStr.trim().toUpperCase();
-    const parts = cleanStr.split(/\s+/);
-    const timePart = parts[0] || '00:00';
-    const modifier = parts[1] || 'AM';
-    
-    const timeSubparts = timePart.split(':');
-    let hours = parseInt(timeSubparts[0], 10) || 0;
-    const minutes = parseInt(timeSubparts[1], 10) || 0;
-    
-    if (modifier === 'PM' && hours < 12) hours += 12;
-    if (modifier === 'AM' && hours === 12) hours = 0;
-    return hours * 60 + minutes;
-  };
-
-  useEffect(() => {
-    if (!spots || spots.length === 0) return;
-    
-    // Extract coordinates safely (guarantees no NaN values)
-    const coords = spots
-      .map(s => {
-        if (!s.spots) return null;
-        const lat = parseFloat(s.spots.latitude);
-        const lng = parseFloat(s.spots.longitude);
-        return (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : null;
-      })
-      .filter(Boolean);
-
-    if (coords.length > 0) {
-      try {
-        // Auto-fit bounds of all markers with safety padding
-        map.fitBounds(coords, { padding: [50, 50], maxZoom: 15 });
-      } catch (err) {
-        console.error("Leaflet fitBounds failed:", err);
-      }
-    }
-  }, [spots, map]);
-
-  if (!spots || spots.length < 2) return null;
-
-  // Draw connecting itinerary line sorted by Day -> sort_order -> schedule_time (intraday minutes sorting)
-  const pathCoords = [...spots]
-    .sort((a, b) => {
+// Itinerary path sorted by Day -> sort_order -> schedule_time (intraday minutes sorting)
+function getTripPathCoords(spots) {
+  if (!spots || spots.length < 2) return [];
+  return getSpotCoords(
+    [...spots].sort((a, b) => {
       if (a.itinerary_day !== b.itinerary_day) {
         return (a.itinerary_day || 1) - (b.itinerary_day || 1);
       }
@@ -88,25 +54,6 @@ function MapBoundsAndPath({ spots }) {
       }
       return parseTimeToMinutes(a.schedule_time) - parseTimeToMinutes(b.schedule_time);
     })
-    .map(s => {
-      if (!s.spots) return null;
-      const lat = parseFloat(s.spots.latitude);
-      const lng = parseFloat(s.spots.longitude);
-      return (!isNaN(lat) && !isNaN(lng)) ? [lat, lng] : null;
-    })
-    .filter(Boolean);
-
-  return (
-    <Polyline
-      positions={pathCoords}
-      pathOptions={{
-        color: '#8e44ad',
-        weight: 3,
-        opacity: 0.6,
-        dashArray: '8, 8',
-        lineJoin: 'round'
-      }}
-    />
   );
 }
 
@@ -118,21 +65,45 @@ export default function TripBoardView() {
   const { tripId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { isLoaded } = useSpotaGoogleMaps();
+  const mapRef = useRef(null);
 
   const [trip, setTrip] = useState(null);
   const [members, setMembers] = useState([]);
   const [tripSpots, setTripSpots] = useState([]);
   const [votes, setVotes] = useState([]); // Array of { spot_id, user_id }
   const [allAvailableSpots, setAllAvailableSpots] = useState([]); // Spots not in trip yet
-  
+
   const [loading, setLoading] = useState(true);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [showAddSpotDrawer, setShowAddSpotDrawer] = useState(false);
   const [showRecapModal, setShowRecapModal] = useState(false);
   const [selectedSpot, setSelectedSpot] = useState(null); // For details modal
-  const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]); // Default
+  const [openPopupSpotId, setOpenPopupSpotId] = useState(null);
+  const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Default to Delhi
   const [agencyBrand, setAgencyBrand] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+
+  // Pan the map whenever mapCenter changes
+  useEffect(() => {
+    if (mapCenter && mapRef.current) {
+      mapRef.current.panTo({ lat: mapCenter[0], lng: mapCenter[1] });
+    }
+  }, [mapCenter]);
+
+  // Auto-fit bounds to all pinned spots whenever the trip's spots change
+  useEffect(() => {
+    if (!mapRef.current || !tripSpots || tripSpots.length === 0) return;
+    const coords = getSpotCoords(tripSpots);
+    if (coords.length === 0) return;
+    try {
+      const bounds = new window.google.maps.LatLngBounds();
+      coords.forEach(c => bounds.extend(c));
+      mapRef.current.fitBounds(bounds, 50);
+    } catch (err) {
+      console.error('Map fitBounds failed:', err);
+    }
+  }, [tripSpots]);
 
   // Fetch all collaborative trip board details
   const fetchTripData = useCallback(async () => {
@@ -715,67 +686,82 @@ export default function TripBoardView() {
       <div className="trip-board-body">
         {/* Map panel */}
         <div className="trip-board-map">
-          <MapContainer 
-            center={mapCenter} 
-            zoom={13} 
-            scrollWheelZoom={true} 
-            zoomControl={false}
-            className="trip-map"
-          >
-            <MapCenter position={mapCenter} />
-            <MapBoundsAndPath spots={tripSpots} />
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-              url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            />
+          {isLoaded && (
+            <GoogleMap
+              mapContainerClassName="trip-map"
+              center={{ lat: mapCenter[0], lng: mapCenter[1] }}
+              zoom={13}
+              options={DEFAULT_MAP_OPTIONS}
+              onLoad={(map) => { mapRef.current = map; }}
+            >
+              {getTripPathCoords(tripSpots).length > 1 && (
+                <Polyline
+                  path={getTripPathCoords(tripSpots)}
+                  options={{
+                    strokeColor: '#8e44ad',
+                    strokeWeight: 3,
+                    strokeOpacity: 0.6,
+                  }}
+                />
+              )}
 
-            {tripSpots.map((ts) => {
-              const spot = ts.spots;
-              const votesCount = getSpotVotesCount(spot.id);
-              const customPin = L.divIcon({
-                className: 'custom-trip-marker',
-                html: `<div class="trip-gem-pin ${ts.visited ? 'visited' : ''}" style="${agencyBrand ? 'border-color: #8e44ad;' : ''}">
-                  <span class="pin-votes">${votesCount > 0 ? `👍 ${votesCount}` : '💎'}</span>
-                </div>`,
-                iconSize: [36, 36],
-                iconAnchor: [18, 36]
-              });
+              {tripSpots.map((ts) => {
+                const spot = ts.spots;
+                const votesCount = getSpotVotesCount(spot.id);
+                const position = { lat: spot.latitude, lng: spot.longitude };
 
-              return (
-                <Marker key={spot.id} position={[spot.latitude, spot.longitude]} icon={customPin}>
-                  <Popup>
-                    <div className="custom-popup">
-                      {spot.image_url && <img src={spot.image_url} alt={spot.title} className="popup-image-mini" />}
-                      <h3>{spot.title}</h3>
-                      <p>{spot.description || spot.category}</p>
-                      <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-                        <button className="popup-details-btn" onClick={() => setSelectedSpot(spot)} style={{ margin: 0, flex: 1 }}>
-                          Details
-                        </button>
-                        <button 
-                          onClick={() => handleToggleVote(spot.id)}
-                          style={{
-                            background: userHasVoted(spot.id) ? 'var(--color-accent)' : 'rgba(108,140,116,0.1)',
-                            color: userHasVoted(spot.id) ? '#fff' : 'var(--color-accent)',
-                            border: 'none',
-                            borderRadius: 'var(--radius-sm)',
-                            padding: '6px 12px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          <ThumbsUp size={12} />
-                          <span>{votesCount}</span>
-                        </button>
+                return (
+                  <div key={spot.id}>
+                    <GemMarkerOverlay
+                      position={position}
+                      width={36}
+                      height={36}
+                      onClick={() => setOpenPopupSpotId(spot.id)}
+                    >
+                      <div
+                        className={`trip-gem-pin ${ts.visited ? 'visited' : ''}`}
+                        style={agencyBrand ? { borderColor: '#8e44ad' } : undefined}
+                      >
+                        <span className="pin-votes">{votesCount > 0 ? `👍 ${votesCount}` : '💎'}</span>
                       </div>
-                    </div>
-                  </Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
+                    </GemMarkerOverlay>
+
+                    {openPopupSpotId === spot.id && (
+                      <InfoWindow position={position} onCloseClick={() => setOpenPopupSpotId(null)}>
+                        <div className="custom-popup">
+                          {spot.image_url && <img src={spot.image_url} alt={spot.title} className="popup-image-mini" />}
+                          <h3>{spot.title}</h3>
+                          <p>{spot.description || spot.category}</p>
+                          <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
+                            <button className="popup-details-btn" onClick={() => setSelectedSpot(spot)} style={{ margin: 0, flex: 1 }}>
+                              Details
+                            </button>
+                            <button
+                              onClick={() => handleToggleVote(spot.id)}
+                              style={{
+                                background: userHasVoted(spot.id) ? 'var(--color-accent)' : 'rgba(108,140,116,0.1)',
+                                color: userHasVoted(spot.id) ? '#fff' : 'var(--color-accent)',
+                                border: 'none',
+                                borderRadius: 'var(--radius-sm)',
+                                padding: '6px 12px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              <ThumbsUp size={12} />
+                              <span>{votesCount}</span>
+                            </button>
+                          </div>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </div>
+                );
+              })}
+            </GoogleMap>
+          )}
         </div>
 
         {/* Spot planning list drawer */}

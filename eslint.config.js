@@ -18,4 +18,9 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  // Node-run scripts: seed/migration scripts and the Playwright config
+  {
+    files: ['scratch/**/*.js', 'playwright.config.js'],
+    languageOptions: { globals: { ...globals.node } },
+  },
 ])

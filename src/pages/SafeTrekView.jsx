@@ -4,11 +4,10 @@ import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { 
   Shield, ShieldAlert, Check, MapPin, Clock, Phone, User, 
-  Mail, ArrowLeft, History, Play, Square, Navigation, AlertTriangle 
+  Mail, ArrowLeft, History, Play, Square, Navigation, AlertTriangle, Trophy, X
 } from 'lucide-react';
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useSpotaGoogleMaps, DEFAULT_MAP_OPTIONS } from '../lib/googleMaps';
 import './SafeTrekView.css';
 
 import { 
@@ -23,40 +22,28 @@ import {
 import CheckInModal from '../components/CheckInModal';
 import { checkBadges } from '../lib/badgeEngine';
 
-// Fix for default Leaflet marker icons in React
-import icon from 'leaflet/dist/images/marker-icon.png';
-import iconShadow from 'leaflet/dist/images/marker-shadow.png';
-
-let DefaultIcon = L.icon({
-    iconUrl: icon,
-    shadowUrl: iconShadow,
-    iconSize: [25, 41],
-    iconAnchor: [12, 41]
-});
-L.Marker.prototype.options.icon = DefaultIcon;
-
-// Helper component to center map dynamically
-function MapCenter({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) {
-      map.setView(position, map.getZoom());
-    }
-  }, [position, map]);
-  return null;
-}
-
-// Map events handler to allow placing a marker by clicking
-function MapEvents({ onMapClick }) {
-  useMapEvents({
-    click(e) {
-      onMapClick(e.latlng);
-    }
-  });
-  return null;
-}
+// Spota Expeditions (docs/spota-expeditions-implementation-plan.md)
+import ExpeditionPicker from '../components/ExpeditionPicker';
+import ExpeditionTracker from '../components/ExpeditionTracker';
+import ExpeditionCompleteModal from '../components/ExpeditionCompleteModal';
+import { fetchAdventures } from '../lib/adventureCatalog';
+import {
+  startRecording,
+  stopRecording,
+  discardRecording,
+  resumeActiveRecording,
+  isRecording
+} from '../lib/trackRecorder';
+import {
+  addSummitPhoto,
+  completeAttempt,
+  syncPendingAttempts,
+  registerAutoSync
+} from '../lib/expeditionService';
 
 export default function SafeTrekView() {
+  const { isLoaded } = useSpotaGoogleMaps();
+  const mapRef = useRef(null);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -69,7 +56,7 @@ export default function SafeTrekView() {
   // Setup Form State
   const [destinationName, setDestinationName] = useState('');
   const [markerPosition, setMarkerPosition] = useState(null);
-  const [mapCenter, setMapCenter] = useState([40.7128, -74.0060]); // NY Default
+  const [mapCenter, setMapCenter] = useState([28.6139, 77.2090]); // Delhi Default
   const [emergencyName, setEmergencyName] = useState('');
   const [emergencyPhone, setEmergencyPhone] = useState('');
   const [emergencyEmail, setEmergencyEmail] = useState('');
@@ -80,6 +67,18 @@ export default function SafeTrekView() {
   const [trekHistory, setTrekHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  // Expedition State
+  const [adventuresState, setAdventures] = useState(null); // null = not loaded yet
+  const [adventuresFromCache, setAdventuresFromCache] = useState(false);
+  const [selectedAdventureId, setSelectedAdventureId] = useState('');
+  const [isGuided, setIsGuided] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [expeditionResult, setExpeditionResult] = useState(null);
+  const [expeditionError, setExpeditionError] = useState(null);
+
+  const adventures = adventuresState ?? [];
+  const adventuresLoading = adventuresState === null;
 
   // Audio warning reference
   const audioRef = useRef(null);
@@ -138,7 +137,8 @@ export default function SafeTrekView() {
         if (localTrek && localTrek.id === dbTrek.id) {
           const merged = {
             ...dbTrek,
-            isTestMode: localTrek.isTestMode
+            isTestMode: localTrek.isTestMode,
+            expedition: localTrek.expedition // device-only: linked GPS recording
           };
           setActiveTrek(merged);
           saveActiveTrekLocal(merged);
@@ -164,7 +164,12 @@ export default function SafeTrekView() {
     if (!activeTrek || activeTrek.status !== 'active') return;
 
     try {
-      const updatedTrek = { ...activeTrek, status: 'overdue' };
+      const updatedTrek = {
+        ...activeTrek,
+        status: 'overdue',
+        // A missed check-in forfeits the Expedition safety bonus (BRD FR-4.1)
+        expedition: activeTrek.expedition ? { ...activeTrek.expedition, missedCheckin: true } : activeTrek.expedition
+      };
       setActiveTrek(updatedTrek);
       saveActiveTrekLocal(updatedTrek);
 
@@ -190,6 +195,63 @@ export default function SafeTrekView() {
     }, 0);
     return () => clearTimeout(timer);
   }, [loadActiveTrek, fetchHistory]);
+
+  // Expeditions: load catalog, flush any offline-queued attempts, auto-sync on reconnect.
+  // Keyed on the user id (not the user object, which AuthContext re-creates on every
+  // session/profile refresh) so the catalog is fetched once per signed-in user.
+  const expeditionUserId = user && !user.isGuest ? user.id : null;
+  useEffect(() => {
+    if (!expeditionUserId) return undefined;
+    let cancelled = false;
+    fetchAdventures().then(({ items, fromCache }) => {
+      if (cancelled) return;
+      setAdventures(items);
+      setAdventuresFromCache(fromCache);
+    });
+    syncPendingAttempts();
+    const cleanup = registerAutoSync();
+    return () => {
+      cancelled = true;
+      cleanup();
+    };
+  }, [expeditionUserId]);
+
+  // Expeditions: show the result banner (it sits above the form, usually off-screen after submit)
+  // The banner only renders once the Safe Trek has ended (setup screen is back), so
+  // scroll when both are true rather than when the result is first set.
+  const expeditionResultRef = useRef(null);
+  const showExpeditionResult = Boolean(expeditionResult) && !activeTrek;
+  useEffect(() => {
+    if (showExpeditionResult) expeditionResultRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+  }, [showExpeditionResult]);
+
+  // Expeditions: re-attach GPS after an app restart / kill mid-trek
+  const expeditionAttemptId = activeTrek?.expedition?.clientAttemptId;
+  useEffect(() => {
+    if (!expeditionAttemptId || isRecording()) return;
+    resumeActiveRecording().catch((err) => {
+      setExpeditionError(`GPS recording could not resume: ${err.message}`);
+    });
+  }, [expeditionAttemptId]);
+
+  const handleSelectAdventure = (id) => {
+    setSelectedAdventureId(id);
+    const adv = adventures.find((a) => a.id === id);
+    if (!adv) return;
+    setDestinationName(adv.name);
+    if (adv.endpointLat != null && adv.endpointLng != null) {
+      const coords = [adv.endpointLat, adv.endpointLng];
+      setMarkerPosition(coords);
+      setMapCenter(coords);
+    }
+  };
+
+  // Pan the setup map whenever mapCenter changes
+  useEffect(() => {
+    if (mapCenter && mapRef.current) {
+      mapRef.current.panTo({ lat: mapCenter[0], lng: mapCenter[1] });
+    }
+  }, [mapCenter]);
 
   // Map Centering Geolocation
   useEffect(() => {
@@ -321,6 +383,32 @@ export default function SafeTrekView() {
         };
       }
 
+      // Expeditions: start offline GPS recording linked to this Safe Trek
+      const adventure = !user.isGuest ? adventures.find((a) => a.id === selectedAdventureId) : null;
+      if (adventure) {
+        try {
+          const { clientAttemptId, sourceKind } = await startRecording({
+            adventureId: adventure.id,
+            adventureName: adventure.name,
+            safeTrekId: typeof activeData.id === 'number' ? activeData.id : null,
+            isGuided
+          });
+          activeData = {
+            ...activeData,
+            expedition: {
+              clientAttemptId,
+              adventureId: adventure.id,
+              adventureName: adventure.name,
+              sourceKind,
+              missedCheckin: false
+            }
+          };
+          setExpeditionError(null);
+        } catch (err) {
+          setExpeditionError(`Safe Trek started, but GPS recording could not start: ${err.message}`);
+        }
+      }
+
       setActiveTrek(activeData);
       saveActiveTrekLocal(activeData);
       
@@ -330,7 +418,10 @@ export default function SafeTrekView() {
       setEmergencyPhone('');
       setEmergencyEmail('');
       setIsTestMode(false);
-      
+      setSelectedAdventureId('');
+      setIsGuided(false);
+      setExpeditionResult(null);
+
       if (!user.isGuest) {
         fetchHistory();
       }
@@ -382,8 +473,47 @@ export default function SafeTrekView() {
   // End Trek Handler
   const handleEndTrek = async () => {
     if (!activeTrek) return;
+    // Expedition-linked trek: finish through the summit-photo flow instead
+    if (activeTrek.expedition) {
+      setShowCompleteModal(true);
+      return;
+    }
     if (!confirm('Are you sure you want to end this trek? Your emergency contacts will no longer be monitored.')) return;
+    await finishSafeTrek();
+  };
 
+  // Expeditions: stop GPS → attach photo → submit (or queue offline) → end the Safe Trek
+  const handleSubmitExpedition = async (photoFile) => {
+    const exp = activeTrek?.expedition;
+    if (!exp) return;
+    if (isRecording()) await stopRecording();
+    await addSummitPhoto(exp.clientAttemptId, photoFile);
+    const result = await completeAttempt(exp.clientAttemptId, { checkinsOnTime: !exp.missedCheckin });
+    detachExpedition();
+    setShowCompleteModal(false);
+    setExpeditionResult({ name: exp.adventureName, status: result.status, error: result.error || null });
+    await finishSafeTrek({ silent: true });
+  };
+
+  const handleDiscardExpedition = async () => {
+    await discardRecording();
+    detachExpedition();
+    setShowCompleteModal(false);
+    await finishSafeTrek({ silent: true });
+  };
+
+  // The expedition is handled (submitted/queued/discarded) even if ending the
+  // Safe Trek row fails (e.g. offline), so unlink it to avoid a double submit.
+  const detachExpedition = () => {
+    setActiveTrek((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev, expedition: null };
+      saveActiveTrekLocal(next);
+      return next;
+    });
+  };
+
+  const finishSafeTrek = async ({ silent = false } = {}) => {
     try {
       if (!user.isGuest) {
         const { error } = await supabase
@@ -399,7 +529,7 @@ export default function SafeTrekView() {
 
       setActiveTrek(null);
       clearActiveTrekLocal();
-      alert('Trek ended safely. Emergency mode deactivated.');
+      if (!silent) alert('Trek ended safely. Emergency mode deactivated.');
       if (!user.isGuest) {
         fetchHistory();
       }
@@ -416,9 +546,9 @@ export default function SafeTrekView() {
     }
   };
 
-  // Leaflet map click helper
-  const handleMapClick = (latlng) => {
-    setMarkerPosition([latlng.lat, latlng.lng]);
+  // Map click helper — place the destination marker
+  const handleMapClick = (e) => {
+    setMarkerPosition([e.latLng.lat(), e.latLng.lng()]);
   };
 
   // Use current browser location
@@ -503,6 +633,21 @@ export default function SafeTrekView() {
             </div>
           </div>
 
+          {activeTrek.expedition && (
+            <ExpeditionTracker
+              clientAttemptId={activeTrek.expedition.clientAttemptId}
+              adventureName={activeTrek.expedition.adventureName}
+              sourceKind={activeTrek.expedition.sourceKind}
+            />
+          )}
+
+          {expeditionError && (
+            <div className="warning-banner-trek">
+              <AlertTriangle size={18} />
+              <span>{expeditionError}</span>
+            </div>
+          )}
+
           <div className="trek-details-card glass-panel">
             <h3>{activeTrek.destination_name}</h3>
             <div className="detail-row">
@@ -551,15 +696,40 @@ export default function SafeTrekView() {
 
             <button className="end-trek-btn-secondary" onClick={handleEndTrek}>
               <Square size={16} />
-              End Trek Safely
+              {activeTrek.expedition ? 'Complete Expedition' : 'End Trek Safely'}
             </button>
           </div>
         </div>
       ) : (
         /* SETUP MODE STATE */
         <div className="setup-trek-panel">
+          {expeditionResult && (
+            <div className="expedition-result glass-panel" role="status" ref={expeditionResultRef}>
+              <Trophy size={18} />
+              <span>
+                {expeditionResult.status === 'submitted'
+                  ? <><strong>{expeditionResult.name}</strong> submitted for verification. Your Adventure Points appear once it's verified.</>
+                  : <><strong>{expeditionResult.name}</strong> saved on this device. It submits automatically when you're back online.{expeditionResult.error ? ` (${expeditionResult.error})` : ''}</>}
+              </span>
+              <button type="button" aria-label="Dismiss" onClick={() => setExpeditionResult(null)}>
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
           <form className="trek-form glass-panel" onSubmit={handleStartTrek}>
             <h2 className="section-title">Configure Safe Trek</h2>
+
+            <ExpeditionPicker
+              adventures={adventures}
+              loading={adventuresLoading}
+              fromCache={adventuresFromCache}
+              selectedId={selectedAdventureId}
+              onSelect={handleSelectAdventure}
+              isGuided={isGuided}
+              onGuidedChange={setIsGuided}
+              isGuest={Boolean(user?.isGuest)}
+            />
 
             <div className="form-group">
               <label>Destination Name</label>
@@ -585,15 +755,20 @@ export default function SafeTrekView() {
                 </button>
               </div>
               <div className="setup-map-container">
-                <MapContainer center={mapCenter} zoom={13} style={{ height: '200px', width: '100%', borderRadius: '12px' }}>
-                  <TileLayer
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  />
-                  {markerPosition && <Marker position={markerPosition} />}
-                  <MapCenter position={mapCenter} />
-                  <MapEvents onMapClick={handleMapClick} />
-                </MapContainer>
+                {isLoaded && (
+                  <GoogleMap
+                    mapContainerStyle={{ height: '200px', width: '100%', borderRadius: '12px' }}
+                    center={{ lat: mapCenter[0], lng: mapCenter[1] }}
+                    zoom={13}
+                    options={DEFAULT_MAP_OPTIONS}
+                    onClick={handleMapClick}
+                    onLoad={(map) => { mapRef.current = map; }}
+                  >
+                    {markerPosition && (
+                      <Marker position={{ lat: markerPosition[0], lng: markerPosition[1] }} />
+                    )}
+                  </GoogleMap>
+                )}
               </div>
               {markerPosition && (
                 <span className="coords-helper">
@@ -723,6 +898,15 @@ export default function SafeTrekView() {
           onClose={() => setShowAlertModal(false)}
           timeRemainingStr={formatCountdown(timeRemaining)}
           isOverdue={isOverdue}
+        />
+      )}
+
+      {showCompleteModal && activeTrek?.expedition && (
+        <ExpeditionCompleteModal
+          adventureName={activeTrek.expedition.adventureName}
+          onSubmit={handleSubmitExpedition}
+          onDiscard={handleDiscardExpedition}
+          onCancel={() => setShowCompleteModal(false)}
         />
       )}
     </div>

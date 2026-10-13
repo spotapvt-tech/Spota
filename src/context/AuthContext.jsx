@@ -16,7 +16,7 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(() => {
     try {
       return !localStorage.getItem('spota_guest_user');
-    } catch (e) {
+    } catch {
       return true;
     }
   });
@@ -47,7 +47,10 @@ export function AuthProvider({ children }) {
             ...authUser.user_metadata,
             username: data.username || authUser.user_metadata.username,
             reputation: data.reputation ?? authUser.user_metadata.reputation,
-            is_verified: data.is_verified ?? authUser.user_metadata.is_verified
+            is_verified: data.is_verified ?? authUser.user_metadata.is_verified,
+            // Server-set only (see supabase_p0_security_fixes.sql) — never
+            // trust a client-supplied value for this.
+            is_admin: data.is_admin === true
           }
         };
       }
@@ -257,6 +260,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components -- hook co-located with its Provider
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) {

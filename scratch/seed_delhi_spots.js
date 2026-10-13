@@ -325,7 +325,7 @@ async function runSeeding() {
           if (addrObj.postal_code) parts.push(addrObj.postal_code);
           if (addrObj.state) parts.push(addrObj.state);
           addressStr = parts.join(', ');
-        } catch (e) {
+        } catch {
           addressStr = row.complete_address;
         }
       }
@@ -366,7 +366,7 @@ async function runSeeding() {
               }
             }
           }
-        } catch (e) {
+        } catch {
           // ignore
         }
       }
