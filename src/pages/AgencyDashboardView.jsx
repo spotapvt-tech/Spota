@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { Award, ShieldCheck, CreditCard, Plus, Calendar, Users, TrendingUp, DollarSign, ArrowLeft, Edit2, List, BarChart2, CheckCircle2, Clipboard, ShoppingBag } from 'lucide-react';
+import { Award, ShieldCheck, CreditCard, Plus, Calendar, Users, TrendingUp, DollarSign, ArrowLeft, Edit2, List, BarChart2, CheckCircle2, Clipboard, ShoppingBag, Flag } from 'lucide-react';
+import AgencyChallengesPanel from '../components/AgencyChallengesPanel';
 import './AgencyDashboardView.css';
 
 const generateUUID = () => {
@@ -527,7 +528,7 @@ export default function AgencyDashboardView() {
         tier: 'boutique',
         name: 'Boutique Plan',
         price: '$49',
-        color: '#6C8C74',
+        color: '#C6F36B',
         desc: 'Best for local guides and weekend group coordinators.',
         features: [
           'Up to 5 active client groups',
@@ -540,7 +541,7 @@ export default function AgencyDashboardView() {
         tier: 'professional',
         name: 'Professional Plan',
         price: '$149',
-        color: '#8e44ad',
+        color: '#B79CFF',
         popular: true,
         desc: 'Ideal for growing travel agencies and trek coordinators.',
         features: [
@@ -728,7 +729,7 @@ export default function AgencyDashboardView() {
       {/* Analytics Dashboard Grid */}
       <div className="analytics-dashboard-grid">
         <div className="metric-card glass-panel">
-          <div className="metric-icon" style={{ backgroundColor: 'rgba(108, 140, 116, 0.15)', color: 'var(--color-accent)' }}>
+          <div className="metric-icon" style={{ backgroundColor: 'rgba(198, 243, 107, 0.15)', color: 'var(--color-accent)' }}>
             <Users size={20} />
           </div>
           <div className="metric-info">
@@ -738,7 +739,7 @@ export default function AgencyDashboardView() {
         </div>
 
         <div className="metric-card glass-panel">
-          <div className="metric-icon" style={{ backgroundColor: 'rgba(142, 68, 173, 0.15)', color: '#8e44ad' }}>
+          <div className="metric-icon" style={{ backgroundColor: 'rgba(183, 156, 255, 0.15)', color: '#B79CFF' }}>
             <ShoppingBag size={20} />
           </div>
           <div className="metric-info">
@@ -794,6 +795,12 @@ export default function AgencyDashboardView() {
           onClick={() => setActiveTab('leads')}
         >
           <BarChart2 size={16} /> Bookings & Payouts Ledger
+        </button>
+        <button 
+          className={`tab-btn ${activeTab === 'challenges' ? 'active' : ''}`}
+          onClick={() => setActiveTab('challenges')}
+        >
+          <Flag size={16} /> Challenges
         </button>
       </div>
 
@@ -980,6 +987,9 @@ export default function AgencyDashboardView() {
           </div>
         )}
 
+        {/* EXPEDITION CHALLENGES TAB */}
+        {activeTab === 'challenges' && <AgencyChallengesPanel agency={agency} />}
+
         {/* LEADS & BOOKINGS TAB */}
         {activeTab === 'leads' && (
           <div className="leads-tab-content animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -1007,7 +1017,7 @@ export default function AgencyDashboardView() {
                     {bookings.map((booking) => (
                       <tr key={booking.id}>
                         <td style={{ fontWeight: 600 }}>{booking.buyer_name}</td>
-                        <td style={{ color: '#8e44ad', fontWeight: 600 }}>{booking.package_name}</td>
+                        <td style={{ color: '#B79CFF', fontWeight: 600 }}>{booking.package_name}</td>
                         <td style={{ textAlign: 'center' }}>{booking.travelers_count} traveler(s)</td>
                         <td>{new Date(booking.booking_date).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                         <td style={{ fontWeight: 600 }}>${booking.amount_paid.toFixed(2)}</td>
@@ -1114,7 +1124,7 @@ export default function AgencyDashboardView() {
                   id="isPublicPackage"
                   checked={tripForm.isPublicPackage}
                   onChange={(e) => setTripForm({ ...tripForm, isPublicPackage: e.target.checked })}
-                  style={{ width: '18px', height: '18px', accentColor: '#8e44ad', cursor: 'pointer' }}
+                  style={{ width: '18px', height: '18px', accentColor: '#B79CFF', cursor: 'pointer' }}
                 />
                 <label htmlFor="isPublicPackage" style={{ fontWeight: 700, fontSize: '13px', cursor: 'pointer', color: 'var(--color-text-primary)' }}>
                   🏷️ Publish as Marketplace Trip Package
@@ -1123,10 +1133,10 @@ export default function AgencyDashboardView() {
 
               {tripForm.isPublicPackage && (
                 <div className="animate-fade-in" style={{ 
-                  backgroundColor: 'rgba(142, 68, 173, 0.04)', 
+                  backgroundColor: 'rgba(183, 156, 255, 0.04)', 
                   padding: '16px', 
                   borderRadius: '12px', 
-                  border: '1px solid rgba(142, 68, 173, 0.15)', 
+                  border: '1px solid rgba(183, 156, 255, 0.15)', 
                   marginBottom: '16px',
                   display: 'flex',
                   flexDirection: 'column',

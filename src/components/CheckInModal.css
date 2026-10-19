@@ -74,12 +74,12 @@
   font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(198, 243, 107, 0.12);
   padding: 8px 20px;
   border-radius: var(--radius-full);
   letter-spacing: 1.5px;
   margin-bottom: 24px;
-  border: 1px solid rgba(108, 140, 116, 0.2);
+  border: 1px solid rgba(198, 243, 107, 0.2);
 }
 
 .modal-buttons {
@@ -108,7 +108,7 @@
 
 .check-in-action-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 6px 20px rgba(198, 243, 107, 0.3);
 }
 
 .dismiss-btn {

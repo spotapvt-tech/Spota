@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { App as CapacitorApp } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 import Layout from './components/layout/Layout';
+import HomeView from './pages/HomeView';
 import MapView from './pages/MapView';
 import VibesFeedView from './pages/VibesFeedView';
 import ProfileView from './pages/ProfileView';
@@ -14,9 +15,12 @@ import MyTripsView from './pages/MyTripsView';
 import TripBoardView from './pages/TripBoardView';
 import MyGemsView from './pages/MyGemsView';
 import SafeTrekView from './pages/SafeTrekView';
+import LeaderboardView from './pages/LeaderboardView';
+import ExpeditionsView from './pages/ExpeditionsView';
 import AgencyDashboardView from './pages/AgencyDashboardView';
 import TripPackagePreviewView from './pages/TripPackagePreviewView';
 import LandingView from './pages/LandingView';
+import DesignPreview from './pages/DesignPreview';
 import { NotificationProvider } from './context/NotificationContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { syncPendingGems } from './lib/gemService';
@@ -62,6 +66,7 @@ function AppContent() {
       {/* Public Marketing/Landing Routes (Full Width) */}
       <Route path="/landing" element={<LandingView />} />
       <Route path="/welcome" element={<LandingView />} />
+      <Route path="/design-preview" element={<DesignPreview />} />
 
       {/* App Routes (Mobile-first Wrapped) */}
       <Route
@@ -72,7 +77,8 @@ function AppContent() {
               <NotificationProvider>
                 <Routes>
                   <Route path="/" element={<Layout />}>
-                    <Route index element={<MapView />} />
+                    <Route index element={<HomeView />} />
+                    <Route path="explore" element={<MapView />} />
                     <Route path="vibes" element={<VibesFeedView />} />
                     <Route path="add" element={<AddGemView />} />
                     <Route path="profile" element={<ProfileView />} />
@@ -82,6 +88,8 @@ function AppContent() {
                     <Route path="trips" element={<MyTripsView />} />
                     <Route path="trips/:tripId" element={<TripBoardView />} />
                     <Route path="safe-trek" element={<SafeTrekView />} />
+                    <Route path="leaderboard" element={<LeaderboardView />} />
+                    <Route path="expeditions" element={<ExpeditionsView />} />
                     <Route path="agency-dashboard" element={<AgencyDashboardView />} />
                     <Route path="trips/preview/:packageId" element={<TripPackagePreviewView />} />
                   </Route>

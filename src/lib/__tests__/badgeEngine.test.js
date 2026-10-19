@@ -161,9 +161,11 @@ describe('badgeEngine', () => {
     });
   });
 
-  it('BADGE_DEFS exposes the 5 documented badges with their targets', () => {
+  it('BADGE_DEFS exposes the 9 documented badges with their targets', () => {
     expect(Object.keys(BADGE_DEFS).sort()).toEqual(
-      ['gem_hunter', 'pioneer', 'solo_explorer', 'trail_blazer', 'vibe_lord'].sort()
+      ['gem_hunter', 'pioneer', 'solo_explorer', 'trail_blazer', 'vibe_lord',
+       // Spota Expeditions (BRD FR-6.2)
+       'first_expedition', 'high_altitude', 'winter_warrior', 'state_explorer'].sort()
     );
     expect(BADGE_DEFS.gem_hunter.target).toBe(10);
     expect(BADGE_DEFS.solo_explorer.target).toBe(3);

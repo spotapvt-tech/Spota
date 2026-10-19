@@ -64,8 +64,8 @@
 }
 
 .admin-tab-btn.active {
-  background: linear-gradient(135deg, #2ecc71, #1abc9c);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--success), var(--success));
+  color: var(--text-strong);
 }
 
 /* Moderation Stats */
@@ -168,12 +168,12 @@
 
 .mod-meta-badge.pending {
   background-color: rgba(46, 204, 113, 0.12);
-  color: #2ecc71;
+  color: var(--success);
 }
 
 .mod-meta-badge.reported {
   background-color: rgba(231, 76, 60, 0.12);
-  color: #e74c3c;
+  color: var(--danger);
 }
 
 .mod-actions {
@@ -196,17 +196,17 @@
 }
 
 .mod-btn.approve-btn {
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--success), var(--success));
+  color: var(--text-strong);
 }
 
 .mod-btn.approve-btn:hover {
-  background: linear-gradient(135deg, #2ecc71, #1e8449);
+  background: linear-gradient(135deg, var(--success), #1e8449);
 }
 
 .mod-btn.reject-btn {
   background-color: rgba(231, 76, 60, 0.1);
-  color: #e74c3c;
+  color: var(--danger);
   border: 1px solid rgba(231, 76, 60, 0.2);
 }
 
@@ -259,7 +259,7 @@
 .toggle-status-lbl {
   font-size: var(--font-size-xs);
   font-weight: 700;
-  color: #2ecc71;
+  color: var(--success);
 }
 
 /* switch toggle styled slider */
@@ -294,12 +294,12 @@
   width: 16px;
   left: 3px;
   bottom: 3px;
-  background-color: white;
+  background-color: var(--color-bg-secondary);
   transition: .3s;
 }
 
 .switch input:checked + .slider {
-  background-color: #2ecc71;
+  background-color: var(--success);
 }
 
 .switch input:checked + .slider:before {
@@ -361,12 +361,12 @@
 
 .weight-check-badge.valid {
   background-color: rgba(46, 204, 113, 0.15);
-  color: #2ecc71;
+  color: var(--success);
 }
 
 .weight-check-badge.invalid {
   background-color: rgba(231, 76, 60, 0.15);
-  color: #e74c3c;
+  color: var(--danger);
 }
 
 /* Sliders */
@@ -389,7 +389,7 @@
 }
 
 .slider-row input[type="range"] {
-  accent-color: #2ecc71;
+  accent-color: var(--success);
   height: 6px;
   border-radius: 3px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -430,8 +430,8 @@
 }
 
 .rules-save-btn {
-  background: linear-gradient(135deg, #2ecc71, #1abc9c);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--success), var(--success));
+  color: var(--text-strong);
   border: none;
   padding: 14px;
   border-radius: var(--radius-full);
@@ -476,22 +476,22 @@
 
 .analytic-icon.download {
   background-color: rgba(46, 204, 113, 0.15);
-  color: #2ecc71;
+  color: var(--success);
 }
 
 .analytic-icon.click {
   background-color: rgba(26, 188, 156, 0.15);
-  color: #1abc9c;
+  color: var(--success);
 }
 
 .analytic-icon.checkin {
   background-color: rgba(46, 204, 113, 0.25);
-  color: #2ecc71;
+  color: var(--success);
 }
 
 .analytic-icon.trek {
   background-color: rgba(39, 174, 96, 0.15);
-  color: #27ae60;
+  color: var(--success);
 }
 
 .analytic-details {
@@ -558,15 +558,15 @@
 }
 
 .bar-fill.clicks {
-  background-color: #1abc9c;
+  background-color: var(--success);
 }
 
 .bar-fill.downloads {
-  background-color: #2ecc71;
+  background-color: var(--success);
 }
 
 .bar-fill.checkins {
-  background-color: #27ae60;
+  background-color: var(--success);
 }
 
 .bar-value {
@@ -608,7 +608,7 @@
   border-radius: var(--radius-full);
   font-size: var(--font-size-xs);
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -618,15 +618,15 @@
 }
 
 .sim-btn.dl-btn {
-  background-color: #2ecc71;
+  background-color: var(--success);
 }
 
 .sim-btn.dl-btn:hover {
-  background-color: #27ae60;
+  background-color: var(--success);
 }
 
 .sim-btn.clk-btn {
-  background-color: #1abc9c;
+  background-color: var(--success);
 }
 
 .sim-btn.clk-btn:hover {

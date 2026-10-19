@@ -5,9 +5,9 @@
 ════════════════════════════════════════ */
 
 .auth-shell {
-  --auth-bg: #070908;
-  --auth-accent: #6C8C74;
-  --auth-accent-hover: #5A7561;
+  --auth-bg: var(--accent-ink);
+  --auth-accent: var(--accent);
+  --auth-accent-hover: var(--accent-hover);
 }
 
 /* Shell: full-screen dark modal */
@@ -17,8 +17,8 @@
   width: 100%;
   min-height: 100dvh;
   background: var(--auth-bg);
-  color: #ffffff;
-  font-family: var(--font-family-base, 'Outfit', system-ui, sans-serif);
+  color: var(--text-strong);
+  font-family: var(--font-family-base, 'Archivo Variable', system-ui, sans-serif);
   padding: 0;
   box-sizing: border-box;
   position: relative;
@@ -67,7 +67,7 @@
 .auth-back-btn:hover,
 .auth-close-btn:hover {
   background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  color: var(--text-strong);
 }
 
 /* Empty placeholder to keep logo centered when no back btn */
@@ -90,7 +90,7 @@
   font-weight: 800;
   line-height: 1.08;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--text-strong);
   margin: 0 0 10px 0;
   text-transform: lowercase;
 }
@@ -118,7 +118,7 @@
   background: #111111;
   border: 1.5px solid #222222;
   border-radius: 14px;
-  color: #ffffff;
+  color: var(--text-strong);
   font-size: 16px;
   font-family: inherit;
   outline: none;

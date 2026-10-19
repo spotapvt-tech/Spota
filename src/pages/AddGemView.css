@@ -10,21 +10,46 @@
      wizard's own content starts at the same y:0 the TopBar is fixed to,
      so anything placed at the top of the shell (e.g. wizard-header-row)
      renders hidden underneath it instead of below it. */
-  padding-top: calc(60px + env(safe-area-inset-top));
+  /* TopBar is hidden on /add (focus mode, see TopBar.jsx) */
+  padding-top: var(--safe-top);
   background: var(--color-bg-primary);
   overflow: hidden;
 }
 
+.wizard-header-title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--font-size-base);
+}
+.wizard-header-count { width: 40px; text-align: right; font-size: var(--font-size-xs); color: var(--text-faint); }
+
+.wizard-error {
+  margin: 0 var(--gutter) 110px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--danger-wash);
+  border: 1px solid var(--danger);
+  color: var(--text-strong);
+  font-size: var(--font-size-sm);
+}
+.wizard-error svg { color: var(--danger); flex-shrink: 0; margin-top: 2px; }
+
 .wizard-header-row {
   display: flex;
   align-items: center;
-  padding: 10px 20px 4px;
+  gap: 8px;
+  padding: 8px var(--gutter) 10px;
   flex-shrink: 0;
 }
 
 .wizard-header-back-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -38,7 +63,6 @@
 
 .wizard-header-back-btn:hover {
   background: var(--color-bg-secondary);
-  transform: translateX(-2px);
 }
 
 .wizard-step-content {
@@ -129,10 +153,10 @@
 }
 
 .tab-select-btn.active {
-  background: rgba(108, 140, 116, 0.15);
+  background: rgba(198, 243, 107, 0.15);
   border-color: var(--color-accent);
   color: var(--color-accent);
-  box-shadow: 0 4px 12px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 4px 12px rgba(198, 243, 107, 0.15);
 }
 
 /* Milestone Banners */
@@ -151,12 +175,12 @@
 .milestone-alert-banner.pioneer {
   background: rgba(224, 122, 95, 0.12);
   border: 1px solid rgba(224, 122, 95, 0.25);
-  color: #e07a5f;
+  color: var(--danger);
 }
 
 .milestone-alert-banner.milestone {
-  background: rgba(108, 140, 116, 0.12);
-  border: 1px solid rgba(108, 140, 116, 0.25);
+  background: rgba(198, 243, 107, 0.12);
+  border: 1px solid rgba(198, 243, 107, 0.25);
   color: var(--color-accent);
 }
 
@@ -218,7 +242,7 @@
   width: 44px;
   height: 44px;
   border-radius: var(--radius-full);
-  background: rgba(108, 140, 116, 0.08);
+  background: rgba(198, 243, 107, 0.08);
   color: var(--color-accent);
   transition: all var(--transition-fast);
 }
@@ -233,13 +257,13 @@
 
 .photo-source-card:hover {
   border-color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.04);
+  background: rgba(198, 243, 107, 0.04);
   transform: translateY(-2px);
 }
 
 .photo-source-card:hover .icon-container {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-on-accent);
   transform: scale(1.05);
 }
 
@@ -259,7 +283,7 @@
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow-md);
-  background: #000;
+  background: var(--ink-1000);
   transition: transform var(--transition-normal);
 }
 
@@ -287,12 +311,12 @@
   bottom: 12px;
   left: 12px;
   padding: 6px 12px;
-  background: rgba(44, 53, 49, 0.75);
+  background: rgba(245, 245, 239, 0.75);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: var(--radius-full);
-  color: #fff;
+  color: var(--text-strong);
   font-size: var(--font-size-xs);
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -312,7 +336,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
+  color: var(--text-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -323,7 +347,7 @@
 .remove-image-btn:hover {
   background: rgba(224, 122, 95, 0.9);
   transform: scale(1.1);
-  color: #fff;
+  color: var(--text-strong);
 }
 
 .zen-input, .zen-textarea {
@@ -486,7 +510,7 @@
   border-radius: 12px;
   font-size: 9px;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-strong);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
@@ -500,7 +524,7 @@
   margin: 0;
   font-size: var(--font-size-md);
   font-weight: 800;
-  color: #fff;
+  color: var(--text-strong);
   text-transform: capitalize;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -570,7 +594,7 @@
   font-size: 10px;
   font-weight: 700;
   color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(198, 243, 107, 0.12);
   padding: 3px 8px;
   border-radius: 10px;
 }
@@ -601,7 +625,7 @@
 }
 
 .qr-dot {
-  background-color: #fff;
+  background-color: var(--color-bg-secondary);
   border-radius: 1px;
 }
 
@@ -610,7 +634,7 @@
   width: 100%;
   padding: 16px;
   background-color: var(--color-accent);
-  color: #FFF;
+  color: var(--color-on-accent);
   border: none;
   border-radius: var(--radius-full);
   font-size: var(--font-size-md);
@@ -620,7 +644,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 6px 16px rgba(108, 140, 116, 0.25);
+  box-shadow: 0 6px 16px rgba(198, 243, 107, 0.25);
   cursor: pointer;
   transition: all var(--transition-normal);
 }
@@ -628,7 +652,7 @@
 .submit-gem-btn:hover {
   background-color: #597560;
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(108, 140, 116, 0.35);
+  box-shadow: 0 8px 20px rgba(198, 243, 107, 0.35);
 }
 
 .submit-gem-btn:active {
@@ -687,8 +711,8 @@
 
 /* AI Description Suggestion Bubble */
 .ai-suggestion-bubble {
-  background: rgba(108, 140, 116, 0.08);
-  border: 1px solid rgba(108, 140, 116, 0.2);
+  background: rgba(198, 243, 107, 0.08);
+  border: 1px solid rgba(198, 243, 107, 0.2);
   border-radius: var(--radius-md);
   padding: 10px 14px;
   font-size: var(--font-size-sm);
@@ -705,9 +729,9 @@
 }
 
 .ai-suggestion-bubble:hover {
-  background: rgba(108, 140, 116, 0.15);
+  background: rgba(198, 243, 107, 0.15);
   border-color: var(--color-accent);
-  box-shadow: 0 4px 20px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 4px 20px rgba(198, 243, 107, 0.15);
   transform: translateY(-1px);
 }
 
@@ -715,7 +739,7 @@
   background: rgba(209, 144, 76, 0.06);
   border-color: rgba(209, 144, 76, 0.2);
   cursor: default;
-  color: #D1904C;
+  color: var(--warning);
   font-weight: 500;
 }
 
@@ -728,13 +752,13 @@
 }
 
 .ai-suggestion-bubble:hover .apply-link {
-  text-shadow: 0 0 10px rgba(108, 140, 116, 0.3);
+  text-shadow: 0 0 10px rgba(198, 243, 107, 0.3);
 }
 
 /* Animations */
 .spin-icon {
   animation: ai-spin 1.8s linear infinite;
-  color: #D1904C;
+  color: var(--warning);
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -756,9 +780,6 @@
   50% { transform: scale(1.15); opacity: 1; }
 }
 
-.animate-fade-in {
-  animation: ai-fade-in 0.4s ease-out forwards;
-}
 
 @keyframes ai-fade-in {
   from {
@@ -856,7 +877,7 @@
 }
 
 .search-result-item:hover {
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(198, 243, 107, 0.12);
 }
 
 .search-result-item .result-icon {
@@ -919,10 +940,10 @@
 }
 
 .preset-chip.active {
-  background: rgba(108, 140, 116, 0.15);
+  background: rgba(198, 243, 107, 0.15);
   border-color: var(--color-accent);
   color: var(--color-accent);
-  box-shadow: 0 0 10px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 0 10px rgba(198, 243, 107, 0.15);
 }
 
 .preset-emoji {
@@ -973,7 +994,7 @@
 .suggested-tag-chip.active {
   background: var(--tag-color, var(--color-accent));
   border-color: var(--tag-color, var(--color-accent));
-  color: #fff;
+  color: var(--color-on-accent);
   opacity: 0.95;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }

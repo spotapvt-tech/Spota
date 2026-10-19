@@ -17,7 +17,10 @@ export default function ExpeditionPicker({
   onSelect,
   isGuided = false,
   onGuidedChange,
-  isGuest = false
+  isGuest = false,
+  onBrowse,
+  lowPower = false,
+  onLowPowerChange
 }) {
   const grouped = useMemo(() => {
     const byState = new Map();
@@ -68,6 +71,11 @@ export default function ExpeditionPicker({
       {fromCache && adventures.length > 0 && (
         <span className="expedition-hint"><WifiOff size={12} /> Offline: showing saved adventures</span>
       )}
+      {onBrowse && (
+        <button type="button" className="expedition-browse-link" onClick={onBrowse}>
+          Browse all expeditions &amp; leaderboards →
+        </button>
+      )}
       {!loading && adventures.length === 0 && (
         <span className="expedition-hint">No adventures available yet. Connect once to download the list.</span>
       )}
@@ -88,6 +96,12 @@ export default function ExpeditionPicker({
             <input type="checkbox" checked={isGuided} onChange={(e) => onGuidedChange?.(e.target.checked)} />
             Guided / with an agency (scores the same)
           </label>
+          {onLowPowerChange && (
+            <label className="expedition-guided">
+              <input type="checkbox" checked={lowPower} onChange={(e) => onLowPowerChange(e.target.checked)} />
+              Battery saver: GPS fix every 60 s instead of 30 s (multi-day treks)
+            </label>
+          )}
           <p className="expedition-hint">
             GPS records your route, even offline. Finish with a summit photo to get verified.
           </p>

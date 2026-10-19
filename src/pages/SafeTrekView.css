@@ -105,7 +105,7 @@
 .test-badge {
   font-size: 9px;
   background: rgba(244, 162, 97, 0.15);
-  color: #f4a261;
+  color: var(--warning);
   padding: 2px 6px;
   border-radius: var(--radius-full);
   margin-top: 4px;
@@ -118,7 +118,7 @@
   filter: drop-shadow(0 0 8px rgba(244, 162, 97, 0.5));
 }
 .countdown-wrapper.warning .countdown-time {
-  color: #f4a261;
+  color: var(--warning);
   animation: timerPulse 1s infinite alternate;
 }
 
@@ -127,7 +127,7 @@
   filter: drop-shadow(0 0 10px rgba(224, 122, 95, 0.6));
 }
 .countdown-wrapper.overdue .countdown-time {
-  color: #e07a5f;
+  color: var(--danger);
   animation: timerPulse 0.5s infinite alternate;
 }
 
@@ -186,13 +186,13 @@
 
 .warning-banner-trek {
   background: rgba(244, 162, 97, 0.1);
-  color: #f4a261;
+  color: var(--warning);
   border: 1px solid rgba(244, 162, 97, 0.2);
 }
 
 .danger-banner-trek {
   background: rgba(224, 122, 95, 0.1);
-  color: #e07a5f;
+  color: var(--danger);
   border: 1px solid rgba(224, 122, 95, 0.2);
 }
 
@@ -217,14 +217,14 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(108, 140, 116, 0.2);
+  box-shadow: 0 4px 15px rgba(198, 243, 107, 0.2);
   transition: all var(--transition-fast);
 }
 
 .check-in-btn-primary:hover {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 6px 20px rgba(198, 243, 107, 0.3);
 }
 
 .end-trek-btn-secondary {
@@ -246,7 +246,7 @@
 
 .end-trek-btn-secondary:hover {
   background: rgba(224, 122, 95, 0.08);
-  color: #e07a5f;
+  color: var(--danger);
   border-color: rgba(224, 122, 95, 0.2);
 }
 
@@ -314,7 +314,7 @@
 .input-with-icon input:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 0 0 3px rgba(198, 243, 107, 0.15);
 }
 
 .map-label-row {
@@ -335,7 +335,7 @@
   font-size: 11px;
   font-weight: 600;
   color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.1);
+  background: rgba(198, 243, 107, 0.1);
   padding: 4px 10px;
   border-radius: var(--radius-full);
 }
@@ -372,7 +372,7 @@
 }
 
 .interval-btn:hover {
-  background: rgba(108, 140, 116, 0.05);
+  background: rgba(198, 243, 107, 0.05);
   color: var(--color-text-primary);
 }
 
@@ -389,8 +389,8 @@
 }
 
 .interval-btn.test-mode-btn.active {
-  background: #f4a261;
-  border-color: #f4a261;
+  background: var(--warning);
+  border-color: var(--warning);
   color: var(--color-bg-primary);
 }
 
@@ -408,14 +408,14 @@
   justify-content: center;
   gap: 8px;
   margin-top: 24px;
-  box-shadow: 0 4px 15px rgba(108, 140, 116, 0.2);
+  box-shadow: 0 4px 15px rgba(198, 243, 107, 0.2);
   transition: all var(--transition-fast);
 }
 
 .start-trek-submit:hover:not(:disabled) {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 6px 20px rgba(198, 243, 107, 0.3);
 }
 
 .start-trek-submit:disabled {
@@ -516,7 +516,7 @@
 }
 
 .status-badge.active {
-  background: rgba(108, 140, 116, 0.15);
+  background: rgba(198, 243, 107, 0.15);
   color: var(--color-accent);
 }
 
@@ -527,5 +527,5 @@
 
 .status-badge.overdue {
   background: rgba(224, 122, 95, 0.15);
-  color: #e07a5f;
+  color: var(--danger);
 }

@@ -703,7 +703,7 @@ export default function TripPackagePreviewView() {
                     <Polyline
                       path={sortedPathCoords}
                       options={{
-                        strokeColor: '#8e44ad',
+                        strokeColor: '#B79CFF',
                         strokeWeight: 4,
                         strokeOpacity: 0.8,
                       }}

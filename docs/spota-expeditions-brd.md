@@ -5,7 +5,7 @@
 | **Feature** | Spota Expeditions — verified real-life adventures with ranked leaderboards |
 | **Product** | Spota (pan-India trekking discovery + safety companion) |
 | **Owner** | Rahul Gautam (Product) |
-| **Status** | v1.1 — Phase 0 in build |
+| **Status** | v3.0 — Phases 0–3 live; V2 community features built; closed beta next |
 | **Date** | 13 Oct 2026 |
 | **Companion doc** | `claude/spota-expeditions-implementation-plan.md` |
 
@@ -51,9 +51,9 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 7. **Appeals**: pending/rejected attempts go to the existing AdminView moderation queue.
 
 ### 5.2 Out of scope — MVP (V2+)
-- Region/valley-level boards and quarterly Season window (V2)
-- Buddy/guide attestation (V2)
-- User-submitted routes (V2)
+- ~~Region/valley-level boards and quarterly Season window (V2)~~ shipped in Phase 2
+- ~~Buddy/guide attestation (V2)~~ built 16 Oct (FR-9)
+- ~~User-submitted routes (V2)~~ built 16 Oct (FR-10)
 - Clubs/team leaderboards, agency-sponsored challenges (V3)
 - International treks outside India (V3; global board exists from day 1 but only India data)
 
@@ -65,6 +65,10 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 | D2 | Leaderboards public by default? | **Yes — public by default.** Guardrail: only *summary* data is public (username, tier, AP, rank, adventure names + dates). Raw GPS tracks are **private**; any shared track has the first/last 500 m trimmed to protect home/stay locations. User can opt out of public boards in Settings. | 13 Oct 2026 |
 | D3 | Rank on speed/time? | **No.** Never rank time, which would encourage unsafe behaviour. | 13 Oct 2026 |
 | D4 | Rank by where the user lives or where they trekked? | **Both**: Home lens (user's home location) + Terrain lens (where the adventure happened). | 13 Oct 2026 |
+| D6 | Can a track with vehicle-speed movement auto-verify? | **No.** A failed movement check (or any mock-location fix) caps the score below the auto-verify line, so it goes to manual review. | 14 Oct 2026 |
+| D7 | Can users read analytics data? | **No.** Users can only write their own events. Verification and tier events are logged by the server. Only admins read the data (Beta health panel). | 14 Oct 2026 |
+| D8 | How much does a buddy/guide vouch count? | **+15 verification score, once per trek.** It never overrides D6 (mock GPS / vehicle speed stay ≤74 → manual review). Buddies must be Ridge Runner+; guides must be Spota partner agencies. Each attester gets 10 confirmations per 30 days; mutual vouches within 30 days get no bonus. | 16 Oct 2026 |
+| D9 | Who counts as a "verified" agency for vouching and challenges? | **Only agencies an admin has marked as Spota partners.** The existing `verified_at` is set by the agency itself at checkout, so it is not trusted. | 16 Oct 2026 |
 | D5 | "Region" definition | Home lens → district/city. Terrain lens → mountain range/valley (Kullu, Garhwal, Kumaon, Ladakh…). | 13 Oct 2026 |
 
 ## 7. Functional requirements
@@ -93,7 +97,7 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 | Movement sanity | 15 | No segment > 15 km/h sustained > 2 min; no teleport jumps > 2 km between consecutive points |
 | Elevation sanity | 10 | Max recorded/DEM altitude ≥ 90% of adventure max_altitude |
 
-- FR-3.3 Score ≥ 75 → `verified` (AP awarded). 40–74 → `pending` (manual review). < 40 → `rejected` (appealable once).
+- FR-3.3 Score ≥ 75 → `verified` (AP awarded). 40–74 → `pending` (manual review). < 40 → `rejected` (appealable once). Mock-location fixes or a failed movement check cap the score at 74 (D6).
 - FR-3.4 Admin can override status from AdminView with a reason (audited).
 
 ### FR-4 Adventure Points
@@ -113,8 +117,8 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 
 ### FR-5 Leaderboards
 - FR-5.1 Two lenses: **Home** (by user's home country/state/region) and **Terrain** (by adventure's country/state/terrain_region).
-- FR-5.2 Levels: Global, Country, State (MVP); Region (V2).
-- FR-5.3 Windows: All-time (MVP); Season = calendar quarter (V2).
+- FR-5.2 Levels: Global, Country, State, Region (Region pulled into MVP).
+- FR-5.3 Windows: All-time and Season = calendar quarter, IST (Season pulled into MVP).
 - FR-5.4 Each board shows the Top 100 and the viewer's own position with ±5 neighbours.
 - FR-5.5 Ties are broken by earliest date reaching that AP.
 - FR-5.6 Users who opted out of public boards (D2) are excluded from all boards. They still see their private rank.
@@ -125,7 +129,7 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 |---|---|---|
 | Wanderer | 0 | — |
 | Trailblazer | 500 | Profile frame |
-| Ridge Runner | 2,000 | Eligible to attest others' treks (V2) |
+| Ridge Runner | 2,000 | Can vouch for others' treks (FR-9) |
 | Summiteer | 6,000 | Agency package discounts |
 | Expedition Legend | 15,000 | Featured profile, early access to new routes |
 - FR-6.1 Tier-up triggers the existing badge celebration (`triggerBadgeCelebration`) and a share card.
@@ -139,6 +143,21 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 - FR-8.1 Home location is set during onboarding or in Settings (state + district picker). It isn't inferred silently.
 - FR-8.2 "Show me on public leaderboards" toggle, default ON (D2).
 - FR-8.3 Raw tracks are visible only to the owner and admins. Shared tracks are trimmed by 500 m at both ends.
+
+### FR-9 Buddy / guide vouches (V2)
+- FR-9.1 Within 14 days of a trek that is still pending or rejected (and not decided by an admin), the trekker can ask up to 3 people by username to vouch, as a trek buddy or a guide.
+- FR-9.2 The person asked sees the request on their profile and confirms ("I was there") or declines.
+- FR-9.3 The first valid confirmation adds +15 to the score (D8). It may verify the trek and award AP. Admins see who vouched and whether that person recorded the same trek.
+
+### FR-10 User-submitted routes (V2)
+- FR-10.1 Signed-in users can suggest an adventure: name, state, region, grade, distance, climb, max altitude, days, and endpoint (typed, from GPS, or from a summit photo's EXIF).
+- FR-10.2 Duplicates (within 300 m of an existing or pending endpoint) are refused. Each user can have at most 5 pending suggestions.
+- FR-10.3 Admins approve suggestions into the catalog, setting the endpoint radius and whether coordinates were checked, or reject them with a note the submitter sees.
+
+### FR-11 Agency challenges (V2)
+- FR-11.1 Partner agencies (D9) create time-boxed challenges (up to 6 months) with a scope (region / state / specific treks / any), minimum grade, treks needed and a reward text.
+- FR-11.2 Trekkers browse and join challenges on the Expeditions page. Progress counts distinct verified adventures in scope that were completed during the challenge.
+- FR-11.3 Agencies see who joined and who completed, so they can honour rewards. Only usernames and tier are shown.
 
 ## 8. Non-functional requirements
 
@@ -189,7 +208,7 @@ Every completed adventure is **GPS-verified**, converted into **Adventure Points
 | Phase 1 | Verification + AP engine | Week 3–4 |
 | Phase 2 | Leaderboards + tiers + profile | Week 5–6 |
 | Phase 3 | Beta with 50 trekkers, tuning, launch | Week 7–8 |
-| V2 | Region boards, Seasons, attestation, user-submitted routes | Post-launch +6 wks |
+| V2 | Attestation, user-submitted routes, agency challenges (region boards + Seasons shipped in Phase 2) | Built 16 Oct 2026 |
 
 Details are in the implementation plan.
 
@@ -198,3 +217,6 @@ Details are in the implementation plan.
 |---|---|---|
 | 1.0 | 13 Oct 2026 | Initial BRD. Decisions D1 (guided = same scoring) and D2 (public by default, with privacy guardrails) recorded. |
 | 1.1 | 13 Oct 2026 | Phase 0 built. No requirement changes. Clarified FR-2.1: the server attempt record is created on completion (offline-first), not at start. |
+| 2.0 | 14 Oct 2026 | Phases 1–2 built. Added D6 (vehicle-speed / mock tracks never auto-verify). Region boards and Seasons moved from V2 into MVP. |
+| 2.1 | 14 Oct 2026 | Phase 3 tooling built: FR-6.2 Pioneer badges, FR-7.2 share card now an image (1080×1350), analytics per plan §8, admin Beta-health metrics for threshold tuning, battery-saver recording mode. Added D7 (analytics: write-own, admin-read). |
+| 3.0 | 16 Oct 2026 | V2 built: FR-9 vouches, FR-10 user routes, FR-11 agency challenges. Added D8 (+15 vouch, D6 still wins, anti-collusion) and D9 (admin-granted partner status; self-set `verified_at` not trusted). |

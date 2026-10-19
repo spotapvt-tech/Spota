@@ -96,7 +96,7 @@
 }
 
 .radius-chip:hover {
-  background: rgba(108, 140, 116, 0.08);
+  background: rgba(198, 243, 107, 0.08);
 }
 
 .radius-chip.active {
@@ -117,7 +117,7 @@
   color: var(--color-bg-primary);
   font-weight: 600;
   font-size: var(--font-size-sm);
-  box-shadow: 0 4px 12px rgba(108, 140, 116, 0.2);
+  box-shadow: 0 4px 12px rgba(198, 243, 107, 0.2);
   margin-top: 8px;
 }
 

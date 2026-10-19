@@ -3,61 +3,64 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80px; /* slightly taller for mobile touch targets */
-  display: flex;
-  justify-content: space-around;
+  height: calc(68px + var(--safe-bottom));
+  padding: 0 6px var(--safe-bottom);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   align-items: center;
-  padding-bottom: env(safe-area-inset-bottom);
-  border-top-left-radius: var(--radius-lg);
-  border-top-right-radius: var(--radius-lg);
   z-index: var(--z-nav);
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+  background: rgba(10, 15, 13, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--line-subtle);
 }
 
-.nav-item {
+.nav-item,
+.nav-drop {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  color: var(--color-text-secondary);
-  transition: color var(--transition-fast), transform var(--transition-fast);
-}
-
-.nav-item span {
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  opacity: 0.8;
-}
-
-.nav-item.active {
-  color: var(--color-text-primary);
-}
-
-.nav-item.active span {
-  opacity: 1;
-}
-
-.nav-item:active {
-  transform: scale(0.92);
-}
-
-.add-btn {
-  transform: translateY(-20px);
-}
-
-.add-icon-wrapper {
-  background-color: var(--color-accent);
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  display: flex;
   justify-content: center;
+  gap: 3px;
+  color: var(--text-faint);
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item__icon {
+  display: flex;
   align-items: center;
-  box-shadow: 0 8px 16px rgba(108, 140, 116, 0.3);
+  justify-content: center;
+  width: 44px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
+}
+
+.nav-item__label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.nav-item.active { color: var(--text-strong); }
+.nav-item.active .nav-item__icon { background: var(--accent-wash); color: var(--accent); }
+.nav-item:active .nav-item__icon { transform: scale(0.9); }
+
+.nav-drop { color: var(--text-muted); }
+.nav-drop__btn {
+  width: 48px;
+  height: 36px;
+  margin-top: -2px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-accent);
   transition: transform var(--transition-fast), background-color var(--transition-fast);
 }
-
-.add-btn:active .add-icon-wrapper {
-  transform: scale(0.92);
-  background-color: var(--color-accent-hover);
-}
+.nav-drop:hover .nav-drop__btn { background: var(--accent-hover); }
+.nav-drop:active .nav-drop__btn { transform: scale(0.92) rotate(90deg); }

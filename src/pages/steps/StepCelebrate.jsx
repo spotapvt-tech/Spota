@@ -29,8 +29,8 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
         const duration = 3000;
         const end = Date.now() + duration;
         const frame = () => {
-          confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#6C8C74','#E07A5F','#DDA15E'] });
-          confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#6C8C74','#E07A5F','#DDA15E'] });
+          confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#C6F36B','#FF6A4D','#DDA15E'] });
+          confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#C6F36B','#FF6A4D','#DDA15E'] });
           if (Date.now() < end) requestAnimationFrame(frame);
         };
         frame();
@@ -44,13 +44,13 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
     animateCount(0, targetCount, 1400, setGemCount);
   }, []);
 
-  const catInfo = gem ? getCategoryById(gem.category) : { emoji: '💎', label: 'Gem', color: '#6C8C74' };
+  const catInfo = gem ? getCategoryById(gem.category) : { emoji: '💎', label: 'Gem', color: '#C6F36B' };
 
   return (
     <div className="step-celebrate">
       <div className="celebrate-gem-icon">💎</div>
 
-      <h2 className="celebrate-title">Gem Dropped!</h2>
+      <h2 className="celebrate-title">SPOTA dropped.</h2>
       <p className="celebrate-subtitle">
         <strong>{gem?.title || 'Your Gem'}</strong>{' '}
         {gem?.offline
@@ -78,20 +78,20 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
         </div>
       ) : (
         <div className="celebrate-rep-banner">
-          ✨ +25 Reputation Points earned!
+          +10 reputation earned
         </div>
       )}
 
       {/* Actions */}
       <div className="celebrate-actions">
         <button type="button" className="celebrate-btn primary" onClick={onShareCard}>
-          📲 Download Share Card
+          Download share card
         </button>
-        <button type="button" className="celebrate-btn secondary" onClick={() => navigate('/')}>
-          🗺️ See on Map
+        <button type="button" className="celebrate-btn secondary" onClick={() => navigate('/explore', gem?.id ? { state: { focusSpotId: gem.id } } : undefined)}>
+          See it on the map
         </button>
         <button type="button" className="celebrate-btn ghost" onClick={onDropAnother}>
-          ↺ Drop Another Gem
+          Drop another
         </button>
       </div>
     </div>

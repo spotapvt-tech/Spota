@@ -58,7 +58,7 @@
 
 .recap-close-btn:hover {
   opacity: 1;
-  background-color: rgba(108, 140, 116, 0.08);
+  background-color: rgba(198, 243, 107, 0.08);
 }
 
 .recap-desc {
@@ -95,7 +95,7 @@
   width: 100%;
   padding: 14px;
   background-color: var(--color-accent);
-  color: #ffffff;
+  color: var(--color-on-accent);
   font-weight: 600;
   border-radius: var(--radius-full);
   border: none;

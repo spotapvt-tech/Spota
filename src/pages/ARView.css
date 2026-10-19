@@ -6,7 +6,7 @@
   height: 100vh;
   z-index: 2000;
   overflow: hidden;
-  background-color: #000;
+  background-color: var(--ink-1000);
   user-select: none;
 }
 
@@ -30,12 +30,12 @@
   color: rgba(255, 255, 255, 0.6);
   padding: 40px;
   text-align: center;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family-base);
   background: radial-gradient(circle, #2C3531 0%, #111714 100%);
 }
 
 .ar-camera-fallback h3 {
-  color: #FFF;
+  color: var(--text-strong);
   margin: 0;
   font-size: var(--font-size-lg);
 }
@@ -54,7 +54,7 @@
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #FFF;
+  color: var(--text-strong);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,14 +79,14 @@
   align-items: center;
   gap: 6px;
   pointer-events: none;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family-base);
 }
 
 .hud-heading {
-  background: rgba(44, 53, 49, 0.75);
+  background: rgba(245, 245, 239, 0.75);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #FFF;
+  color: var(--text-strong);
   padding: 6px 14px;
   border-radius: var(--radius-full);
   font-size: 13px;
@@ -131,20 +131,20 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(44, 53, 49, 0.65);
+  background: rgba(245, 245, 239, 0.65);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 8px 14px;
   border-radius: var(--radius-md);
-  color: #FFF;
+  color: var(--text-strong);
   box-shadow: 0 10px 25px rgba(0,0,0,0.4);
   white-space: nowrap;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family-base);
   transition: all 0.2s ease;
 }
 
 .ar-marker-card:hover {
-  background: rgba(108, 140, 116, 0.75);
+  background: rgba(198, 243, 107, 0.75);
   border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-4px);
 }
@@ -171,7 +171,7 @@
   left: 50%;
   transform: translateX(-50%);
   color: rgba(255, 255, 255, 0.65);
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family-base);
   font-size: 14px;
   font-weight: 500;
   background: rgba(0, 0, 0, 0.4);

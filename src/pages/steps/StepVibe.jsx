@@ -61,7 +61,7 @@ export default function StepVibe({ description, setDescription, selectedTags, se
   return (
     <div className="step-vibe wizard-step">
       <div className="step-header">
-        <h2>Write the Vibe ✍️</h2>
+        <h2>Tell its story</h2>
         <p>What makes this place special?</p>
       </div>
 

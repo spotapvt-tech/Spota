@@ -1,74 +1,55 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { Map, PlusCircle, User, MessageSquare, Compass, Film } from 'lucide-react';
+import { House, Map, Plus, Mountain, User } from 'lucide-react';
 import './BottomNav.css';
+
+// Routes that belong to the "Adventures" tab so it stays lit while the
+// explorer is inside any part of the expedition / trip / safety toolkit.
+const ADVENTURE_PATHS = ['/expeditions', '/trips', '/safe-trek', '/leaderboard'];
+
+function Tab({ to, icon: Icon, label, end, forceActive }) {
+  return (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) => `nav-item ${isActive || forceActive ? 'active' : ''}`}
+    >
+      {({ isActive }) => {
+        const on = isActive || forceActive;
+        return (
+          <>
+            <span className="nav-item__icon"><Icon size={22} strokeWidth={on ? 2.4 : 1.9} /></span>
+            <span className="nav-item__label">{label}</span>
+          </>
+        );
+      }}
+    </NavLink>
+  );
+}
 
 export default function BottomNav() {
   const location = useLocation();
+  const path = location.pathname;
 
-  // Hide BottomNav on active trip boards, package preview screens, and the
-  // gem-drop wizard (which has its own Back/Next/Submit bar and no unsaved-
-  // changes guard, so leaving it visible let a stray tap silently discard
-  // an in-progress gem).
-  const isTripBoard = location.pathname.match(/\/trips\/[^/]+$/);
-  const isPreviewPage = location.pathname.includes('/trips/preview/');
-  const isAddGemWizard = location.pathname === '/add';
+  // Hidden on full-screen flows that own their own bottom bar: trip boards,
+  // package previews and the drop wizard (no unsaved-changes guard there, so
+  // a stray tap on the nav would silently discard an in-progress SPOTA).
+  const isTripBoard = /\/trips\/[^/]+$/.test(path);
+  const isPreviewPage = path.includes('/trips/preview/');
+  const isAddGemWizard = path === '/add';
+  if (isTripBoard || isPreviewPage || isAddGemWizard) return null;
 
-  if (isTripBoard || isPreviewPage || isAddGemWizard) {
-    return null;
-  }
+  const inAdventures = ADVENTURE_PATHS.some((p) => path.startsWith(p));
 
   return (
-    <nav className="bottom-nav glass-panel">
-      <NavLink to="/" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`} end>
-        {({ isActive }) => (
-          <>
-            <Map size={24} strokeWidth={isActive ? 2.5 : 2} />
-            <span>Map</span>
-          </>
-        )}
+    <nav className="bottom-nav" aria-label="Primary">
+      <Tab to="/" icon={House} label="Home" end />
+      <Tab to="/explore" icon={Map} label="Explore" />
+      <NavLink to="/add" className="nav-drop" aria-label="Drop a SPOTA">
+        <span className="nav-drop__btn"><Plus size={26} strokeWidth={2.6} /></span>
+        <span className="nav-item__label">Drop</span>
       </NavLink>
-      
-      <NavLink to="/vibes" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        {({ isActive }) => (
-          <>
-            <Film size={24} strokeWidth={isActive ? 2.5 : 2} />
-            <span>Vibes</span>
-          </>
-        )}
-      </NavLink>
-      
-      <NavLink to="/add" className="nav-item add-btn">
-        <div className="add-icon-wrapper">
-          <PlusCircle size={28} strokeWidth={2.5} color="var(--color-bg-primary)" />
-        </div>
-      </NavLink>
-
-      <NavLink to="/trips" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        {({ isActive }) => (
-          <>
-            <Compass size={24} strokeWidth={isActive ? 2.5 : 2} />
-            <span>Trips</span>
-          </>
-        )}
-      </NavLink>
-
-      <NavLink to="/chat" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        {({ isActive }) => (
-          <>
-            <MessageSquare size={24} strokeWidth={isActive ? 2.5 : 2} />
-            <span>Chat</span>
-          </>
-        )}
-      </NavLink>
-      
-      <NavLink to="/profile" state={{ userId: null }} className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
-        {({ isActive }) => (
-          <>
-            <User size={24} strokeWidth={isActive ? 2.5 : 2} />
-            <span>Profile</span>
-          </>
-        )}
-      </NavLink>
+      <Tab to="/expeditions" icon={Mountain} label="Adventures" forceActive={inAdventures} />
+      <Tab to="/profile" icon={User} label="Profile" />
     </nav>
   );
 }

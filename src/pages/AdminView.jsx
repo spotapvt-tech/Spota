@@ -2,14 +2,17 @@ import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { Shield, ArrowLeft, Check, Trash2, Eye, Sliders, BarChart2, Plus, Download, MousePointerClick, CheckCircle, Activity } from 'lucide-react';
+import { Shield, ArrowLeft, Check, Trash2, Eye, Sliders, BarChart2, Plus, Download, MousePointerClick, CheckCircle, Activity, Mountain } from 'lucide-react';
 import SpotDetailsModal from '../components/SpotDetailsModal';
+import ExpeditionReviewPanel from '../components/ExpeditionReviewPanel';
+import ExpeditionStatsPanel from '../components/ExpeditionStatsPanel';
+import { RouteSubmissionsPanel, AgencyPartnersPanel } from '../components/RouteSubmissionsPanel';
 import './AdminView.css';
 
 export default function AdminView() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('moderation'); // 'moderation' | 'rules' | 'analytics'
+  const [activeTab, setActiveTab] = useState('moderation'); // 'moderation' | 'rules' | 'analytics' | 'expeditions'
   const [spots, setSpots] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedSpot, setSelectedSpot] = useState(null);
@@ -134,8 +137,9 @@ export default function AdminView() {
       if (errTreks) console.warn('Error fetching treks count:', errTreks);
 
       setAnalytics({
-        downloads: downloadsCount || 142, // Seed baseline if empty
-        clicks: clicksCount || 1084,     // Seed baseline if empty
+        // Real counts only (previously showed invented 142 / 1084 baselines when empty)
+        downloads: downloadsCount,
+        clicks: clicksCount,
         checkins: checkinsCount || 0,
         activeTreks: treksCount || 0
       });
@@ -234,10 +238,12 @@ export default function AdminView() {
   // Telemetry Simulation helper
   const handleSimulateEvent = async (type) => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
       const { error } = await supabase
         .from('analytics_events')
         .insert({
           event_type: type,
+          user_id: user?.id,
           details: { client_agent: navigator.userAgent, simulated: true }
         });
       
@@ -295,7 +301,23 @@ export default function AdminView() {
           <BarChart2 size={16} />
           Platform Analytics
         </button>
+        <button 
+          className={`admin-tab-btn ${activeTab === 'expeditions' ? 'active' : ''}`}
+          onClick={() => setActiveTab('expeditions')}
+        >
+          <Mountain size={16} />
+          Expeditions
+        </button>
       </div>
+
+      {activeTab === 'expeditions' && (
+        <>
+          <ExpeditionStatsPanel />
+          <ExpeditionReviewPanel />
+          <RouteSubmissionsPanel />
+          <AgencyPartnersPanel />
+        </>
+      )}
 
       {activeTab === 'moderation' && (
         <>

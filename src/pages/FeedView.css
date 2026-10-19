@@ -91,7 +91,7 @@
 
 .feed-search-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 0 0 3px rgba(198, 243, 107, 0.15);
 }
 
 .search-icon-inside {
@@ -120,7 +120,7 @@
   top: 12px;
   left: 12px;
   background-color: var(--color-live);
-  color: #ffffff;
+  color: var(--color-on-accent);
   padding: 4px 10px;
   border-radius: var(--radius-full);
   font-size: 10px;
@@ -192,6 +192,6 @@
 
 .ai-search-trigger:hover {
   transform: scale(1.1);
-  background-color: rgba(108, 140, 116, 0.12);
+  background-color: rgba(198, 243, 107, 0.12);
   color: var(--color-accent-hover);
 }

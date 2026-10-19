@@ -84,8 +84,8 @@
 
 .trips-btn.primary {
   background-color: var(--color-accent);
-  color: #ffffff;
-  box-shadow: 0 4px 12px rgba(108, 140, 116, 0.25);
+  color: var(--color-on-accent);
+  box-shadow: 0 4px 12px rgba(198, 243, 107, 0.25);
 }
 
 .trips-btn.primary:hover {
@@ -99,7 +99,7 @@
 }
 
 .trips-btn.secondary:hover {
-  background-color: rgba(108, 140, 116, 0.05);
+  background-color: rgba(198, 243, 107, 0.05);
 }
 
 .empty-trips-state {
@@ -169,7 +169,7 @@
 
 .trip-delete-btn:hover {
   opacity: 1;
-  color: #c94a4a;
+  color: var(--danger);
   background-color: rgba(201, 74, 74, 0.08);
 }
 
@@ -193,7 +193,7 @@
 .role-tag {
   font-size: 11px;
   font-weight: 600;
-  background-color: rgba(108, 140, 116, 0.1);
+  background-color: rgba(198, 243, 107, 0.1);
   color: var(--color-accent);
   padding: 2px 8px;
   border-radius: var(--radius-full);
@@ -275,7 +275,7 @@
   width: 100%;
   padding: 14px;
   background-color: var(--color-accent);
-  color: #ffffff;
+  color: var(--color-on-accent);
   font-weight: 600;
   border-radius: var(--radius-full);
   border: none;
@@ -350,8 +350,8 @@
 
 .trips-mode-selector .tab-btn.active {
   background-color: var(--color-accent);
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(108, 140, 116, 0.2);
+  color: var(--color-on-accent);
+  box-shadow: 0 2px 8px rgba(198, 243, 107, 0.2);
 }
 
 /* Category horizontal scroll chips */
@@ -381,9 +381,9 @@
 }
 
 .chip-btn.active {
-  background-color: #8e44ad;
-  color: #ffffff;
-  border-color: #8e44ad;
+  background-color: var(--violet-400);
+  color: var(--text-strong);
+  border-color: var(--violet-400);
   box-shadow: 0 2px 8px rgba(142, 68, 173, 0.2);
 }
 
@@ -409,10 +409,10 @@
 }
 
 .animate-pulse {
-  animation: pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: mytrips-pulse 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-@keyframes pulse {
+@keyframes mytrips-pulse {
   0%, 100% {
     opacity: 1;
   }

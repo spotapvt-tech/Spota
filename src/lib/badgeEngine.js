@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { isInWinterWindow } from './apFormula';
 import { getCachedZones } from './offlineCache';
 
 export const BADGE_DEFS = {
@@ -36,6 +37,35 @@ export const BADGE_DEFS = {
     emoji: '🛡️',
     description: 'Successfully complete 3 Safe Trek sessions.',
     target: 3
+  },
+  // Spota Expeditions (BRD FR-6.2). Counted from server-verified attempts only.
+  first_expedition: {
+    id: 'first_expedition',
+    name: 'First Expedition',
+    emoji: '🏁',
+    description: 'Complete your first verified expedition.',
+    target: 1
+  },
+  high_altitude: {
+    id: 'high_altitude',
+    name: 'High Altitude',
+    emoji: '🏔️',
+    description: 'Verify an expedition that tops out at 5,000 m or higher.',
+    target: 1
+  },
+  winter_warrior: {
+    id: 'winter_warrior',
+    name: 'Winter Warrior',
+    emoji: '❄️',
+    description: "Verify an expedition inside its winter season.",
+    target: 1
+  },
+  state_explorer: {
+    id: 'state_explorer',
+    name: 'State Explorer',
+    emoji: '🗺️',
+    description: 'Verify 5 different expeditions in the same state.',
+    target: 5
   }
 };
 
@@ -80,7 +110,11 @@ export async function getBadgesProgress(user) {
     gem_hunter: { current: 0, target: BADGE_DEFS.gem_hunter.target, earned: false },
     trail_blazer: { current: 0, target: BADGE_DEFS.trail_blazer.target, earned: false },
     vibe_lord: { current: 0, target: BADGE_DEFS.vibe_lord.target, earned: false },
-    solo_explorer: { current: 0, target: BADGE_DEFS.solo_explorer.target, earned: false }
+    solo_explorer: { current: 0, target: BADGE_DEFS.solo_explorer.target, earned: false },
+    first_expedition: { current: 0, target: BADGE_DEFS.first_expedition.target, earned: false },
+    high_altitude: { current: 0, target: BADGE_DEFS.high_altitude.target, earned: false },
+    winter_warrior: { current: 0, target: BADGE_DEFS.winter_warrior.target, earned: false },
+    state_explorer: { current: 0, target: BADGE_DEFS.state_explorer.target, earned: false }
   };
 
   // Local Caches
@@ -102,6 +136,7 @@ export async function getBadgesProgress(user) {
   let dbRatings = [];
   let dbTreksCount = 0;
   let dbEarnedBadges = [];
+  let verifiedExpeditions = [];
 
   const isGuest = !user || user.isGuest;
 
@@ -136,6 +171,14 @@ export async function getBadgesProgress(user) {
         .select('badge_id')
         .eq('user_id', user.id);
       if (badges) dbEarnedBadges = badges.map((b) => b.badge_id);
+
+      // 5. Verified expeditions (server-judged, so they can't be earned offline)
+      const { data: expeditions } = await supabase
+        .from('adventure_attempts')
+        .select('adventure_id, completed_at, adventures(max_altitude_m, state, winter_start_md, winter_end_md)')
+        .eq('user_id', user.id)
+        .eq('status', 'verified');
+      if (Array.isArray(expeditions)) verifiedExpeditions = expeditions;
     } catch (err) {
       console.warn('Database query failed for badges check, falling back to local data:', err);
     }
@@ -202,6 +245,22 @@ export async function getBadgesProgress(user) {
   // Evaluate Badge 5: solo_explorer (3 completed treks)
   progress.solo_explorer.current = completedTreks;
   progress.solo_explorer.earned = earnedBadgeIds.has('solo_explorer') || completedTreks >= BADGE_DEFS.solo_explorer.target;
+
+  // Expedition badges
+  const exp = verifiedExpeditions.filter((e) => e && e.adventures);
+  const evaluate = (id, current) => {
+    progress[id].current = current;
+    progress[id].earned = earnedBadgeIds.has(id) || current >= BADGE_DEFS[id].target;
+  };
+  evaluate('first_expedition', Math.min(exp.length, 1));
+  evaluate('high_altitude', exp.some((e) => Number(e.adventures.max_altitude_m) >= 5000) ? 1 : 0);
+  evaluate('winter_warrior', exp.some((e) => isInWinterWindow(e.completed_at, e.adventures.winter_start_md, e.adventures.winter_end_md)) ? 1 : 0);
+  const perState = new Map();
+  exp.forEach((e) => {
+    if (!perState.has(e.adventures.state)) perState.set(e.adventures.state, new Set());
+    perState.get(e.adventures.state).add(e.adventure_id);
+  });
+  evaluate('state_explorer', Math.max(0, ...[...perState.values()].map((set) => set.size)));
 
   return { progress, earnedBadgeIds: Array.from(earnedBadgeIds) };
 }
@@ -277,10 +336,10 @@ export function triggerBadgeCelebration(badges) {
   // Particles config
   const particles = [];
   const colors = [
-    '#E07A5F', // Terracotta
+    '#FF6A4D', // Terracotta
     '#F4A261', // Gold/Sand
     '#83C5BE', // Teal
-    '#6C8C74', // Sage Green
+    '#C6F36B', // Sage Green
     '#E9C46A', // Bright Yellow
     '#9B5DE5', // Vivid Purple
     '#FF6B6B'  // Rose Pink
@@ -369,7 +428,7 @@ export function triggerBadgeCelebration(badges) {
   alertBox.style.zIndex = '999999';
   alertBox.style.backgroundColor = 'rgba(28, 38, 32, 0.95)';
   alertBox.style.backdropFilter = 'blur(12px)';
-  alertBox.style.border = '1px solid rgba(108, 140, 116, 0.4)';
+  alertBox.style.border = '1px solid rgba(198, 243, 107, 0.4)';
   alertBox.style.borderRadius = '16px';
   alertBox.style.padding = '16px 24px';
   alertBox.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(255,255,255,0.05)';
@@ -379,14 +438,14 @@ export function triggerBadgeCelebration(badges) {
   alertBox.style.gap = '8px';
   alertBox.style.minWidth = '280px';
   alertBox.style.color = '#FFF';
-  alertBox.style.fontFamily = "'Outfit', sans-serif";
+  alertBox.style.fontFamily = "'Archivo Variable', sans-serif";
   alertBox.style.textAlign = 'center';
 
   // Content
   const title = document.createElement('div');
   title.style.fontSize = '12px';
   title.style.letterSpacing = '2px';
-  title.style.color = 'var(--color-accent, #6C8C74)';
+  title.style.color = 'var(--color-accent, #C6F36B)';
   title.style.fontWeight = '700';
   title.innerText = '🏆 BADGE UNLOCKED!';
 

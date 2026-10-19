@@ -250,7 +250,7 @@ export default function FeedView() {
                         {spot.title}
                       </h3>
                       {spot.status === 'pending' && (
-                        <span style={{ backgroundColor: 'rgba(224, 122, 95, 0.15)', color: '#E07A5F', fontSize: '10px', padding: '2px 8px', borderRadius: '9999px', fontWeight: 600, flexShrink: 0 }}>
+                        <span style={{ backgroundColor: 'rgba(255, 106, 77, 0.15)', color: '#FF6A4D', fontSize: '10px', padding: '2px 8px', borderRadius: '9999px', fontWeight: 600, flexShrink: 0 }}>
                           Pending
                         </span>
                       )}
@@ -263,7 +263,7 @@ export default function FeedView() {
                   {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
                     <div className="spot-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
                       {spot.tags.map((tag, idx) => (
-                        <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(108,140,116,0.08)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600 }}>
+                        <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(198, 243, 107,0.08)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600 }}>
                           #{tag}
                         </span>
                       ))}

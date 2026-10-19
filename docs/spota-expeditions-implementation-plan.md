@@ -4,7 +4,7 @@
 |---|---|
 | **BRD** | `claude/spota-expeditions-brd.md` (v1.0) |
 | **Stack** | React 19 + Vite, Capacitor 8 (Android), Supabase (Postgres + Edge Functions + Storage) |
-| **Status** | v1.1 — Phase 0 code complete (field test + deploy pending) |
+| **Status** | v3.0 — Phases 0–3 live on Supabase; V2 (vouches, user routes, agency challenges) built, migration awaiting Run; beta + field tests pending |
 | **Date** | 13 Oct 2026 |
 | **Estimate** | 8 weeks MVP (1 FE + 1 BE/full-stack + PM/QA) |
 
@@ -270,38 +270,153 @@ SELECT cron.schedule('refresh-leaderboards','*/15 * * * *',
 - [x] Tests: 27 Vitest unit tests (`trackRecorder`, `expeditionService`, `exifUtils`); migration + RLS + RPC verified on Postgres 16 + PostGIS (idempotent re-run, hijack/foreign-folder/foreign-safe-trek/anon rejected, no self-promotion of tier/AP)
 - [x] Android permissions: the plugin's manifest merges in FOREGROUND_SERVICE, FOREGROUND_SERVICE_LOCATION and POST_NOTIFICATIONS (no ACCESS_BACKGROUND_LOCATION needed, because it uses a foreground service). App manifest keeps GPS `required=false` via `tools:replace`. Gradle build not yet run
 - [x] Migration + dev seed applied to Supabase project `jtyfkglqkklgmewyjpde` (13 Oct 2026). Verified: 3 tables with RLS on, 8 policies, profile cols, functions + guard trigger, private bucket, anon blocked from `submit_attempt`, pg_cron 1.6.4, 11 adventures
-- [ ] Minimal dev UI hook (Expedition mode in `SafeTrekView`) to drive the field test, moved up from Phase 1
+- [x] Expedition mode in `SafeTrekView` (13 Oct 2026): `ExpeditionPicker` (catalog grouped by state, auto-fills destination + map pin, AP preview, guided toggle), `ExpeditionTracker` (live km / climb / max alt / GPS points, foreground-only warning), `ExpeditionCompleteModal` (summit photo + EXIF hints → submit / discard / keep recording). Missed check-in forfeits the safety bonus; recording resumes after an app restart; offline queue auto-syncs on reconnect
+- [x] `src/lib/adventureCatalog.js` (catalog fetch + offline cache; decodes PostGIS EWKB, verified against the live API) and `src/lib/apFormula.js` (client-side AP preview, mirrors FR-4.1; server `award_ap()` in Phase 1 must match)
+- [x] Tests: 44 passing, including a full UI flow (pick → start → GPS fixes → photo → `submit_attempt`) on the real recorder/store stack
+- [ ] Android build on Windows (`npm install` → Gradle) + Aravalli field test
 - **Exit:** a 2 h test walk (Aravalli test loop) records a track offline and syncs it to `adventure_attempts.track`
 
-### Phase 1 — Verification + AP (Week 3–4)
-- [ ] `verify_attempt_geo` RPC + `verify-attempt` Edge Function
-- [ ] `award_ap()` + `compute_tier()` + ledger
-- [ ] `expeditionService.js` (start/complete/sync, idempotent)
-- [ ] SafeTrekView Expedition mode + summit photo
-- [ ] AdminView "Expedition Review" tab
-- **Exit:** a real trek gets verified with AP awarded; a spoofed track goes to pending/rejected
+### Phase 1 — Verification + AP — built 14 Oct 2026
+- [x] Verification in Postgres, not an Edge Function: `verify_attempt()` (PostGIS) runs automatically at the end of `submit_attempt()`, so the app gets verified / pending / rejected + AP in the same response. No deploy step
+  - Scoring per FR-3.2: geofence 35 · route 20 (≥60% of fixes within 500 m of the reference route, or a 1.5 km corridor around start→endpoint when no route is stored) · photo 20 (location + capture time; partial 10 / 5) · movement 15 · elevation 10 (5 if the device gave no altitude)
+  - **Enhancement:** any mock-location fix **or a failed movement check (vehicle speed / location jump)** caps the score at 74 → pending, so driving up a pass can never auto-verify
+- [x] `award_ap()` mirrors `apFormula.js` (FR-4.1): ledger entry with breakdown, `awarded_ap` on the attempt, profile `total_ap` + `tier` recomputed. One award per attempt
+- [x] `review_attempt()` (admins only, server-checked) and `appeal_attempt()` (owner, once, rejected → pending)
+- [x] AdminView "Expedition Review" tab: score breakdown per check, vehicle-speed / mock flags, signed summit-photo thumbnails, verify-and-award / reject with note
+- [x] Safe Trek result banner shows the verdict: "verified! +108 AP → See your rank", "under review", or "couldn't be verified, appeal from your profile"
+- [x] Tested on Postgres 16 + PostGIS: honest trek → 100 / verified / 108 AP; repeat → 49 AP; car-speed → pending; never reached endpoint → rejected; appeal once; non-admin review refused; internal functions not callable by users
+- **Exit:** met in tests; confirm on a real trek during the field test
 
-### Phase 2 — Leaderboards, tiers, profile (Week 5–6)
-- [ ] MVs + pg_cron refresh + `get_leaderboard` RPC
-- [ ] `LeaderboardView`, `ExpeditionsView`, `AdventureDetailView`
-- [ ] `TierBadge`, `RankShareCard`, `HomeLocationPicker`
-- [ ] ProfileView updates + public-board toggle
-- [ ] New badges in `badgeEngine.js`
-- [ ] Seed remaining 40 adventures
-- **Exit:** Home + Terrain boards at Global/India/State render in < 300 ms
+### Phase 2 — Leaderboards, tiers, profile — built 14 Oct 2026
+- [x] `get_leaderboard()` RPC: Home / Terrain lens × Global / India / State / **Region** × All-time / **Season** (current quarter, IST). Region boards and Seasons were V2 in the plan; pulled forward because they were cheap once the RPC existed
+  - Computed live from `ap_ledger` (no materialized views / pg_cron yet). Fine to ~100k ledger rows; switch to MVs (§2.8) if it gets slow
+  - Opted-out users hidden from others but see their own rank; ties go to whoever reached the total first; top 50 + you ±5 when you're outside it; anon can view
+  - Home lens defaults to the user's own home state / region; asks them to set it when missing
+- [x] `LeaderboardView` (/leaderboard): lens toggle, level tabs, season toggle, terrain state/region picker from the catalog, your-rank card + Share (Web Share / clipboard), offline cache per board
+- [x] `ExpeditionsView` (/expeditions): catalog with state + grade filters and AP on offer; Start → opens Safe Trek with the adventure pre-selected
+- [x] `TierBadge` + `tiers.js` (mirrors `compute_tier()`), `ExpeditionProfileCard` on Profile: AP, global rank, tier progress, home state + city, public-board toggle, recent expeditions with status + Appeal
+- [x] Fixed on the way: Profile's Admin Dashboard button used the old email heuristic; now uses `is_admin` like AdminView
+- [x] Rank share **image** card (canvas): shipped in Phase 3 (`rankCard.js`)
+- [x] Expedition Pioneer badges in `badgeEngine.js` (First Expedition, High Altitude, Winter Warrior, State Explorer): shipped in Phase 3
+- [ ] Seed remaining 40 adventures (needs the curated sheet: open item #2)
+- [x] `supabase_expeditions_phase1_2.sql` applied on Supabase (14 Oct 2026). Verified via the live API: get_leaderboard answers for all lenses/levels/windows (needs_scope when home missing); award_ap / verify_attempt not callable by clients; review_attempt and submit_attempt refused for anonymous callers
 
-### Phase 3 — Beta & launch (Week 7–8)
-- [ ] Closed beta: 50 trekkers, HP/UK routes
-- [ ] Tune verification thresholds from real data (false-reject rate)
-- [ ] Battery test on 3 low/mid Android devices
-- [ ] Analytics events (see §8)
-- [ ] Launch + share-card campaign
+### Phase 3 — Beta & launch (Week 7–8) — tooling built 14 Oct 2026
+**Built (code + migration `supabase_expeditions_phase3.sql`):**
+- [x] Analytics events (§8)
+  - Client `src/lib/analytics.js`: `track()` sends signed-in events only, and queues them offline (`spota_pending_events`) and flushes on reconnect.
+  - Server triggers log `attempt_verified/pending/rejected`, `appeal_submitted` and `tier_up`, so they can't be faked or lost.
+  - RLS: users can only insert their own events (name pattern + 4 KB limit). Only admins can read them.
+- [x] **Beta health** panel in Admin → Expeditions (`ExpeditionStatsPanel`), backed by the admin-only `expedition_stats(p_days)` RPC over 7/30/90 days. It shows:
+  - Auto-verify %, average score and score buckets.
+  - Per-check pass rate, weakest first. This is the tuning input for thresholds.
+  - Mock / vehicle flags, the review queue age and appeals.
+  - The funnel: started → completed → submitted → verified.
+  - Engagement: leaderboard views, shares, tier-ups and opt-outs.
+  - Per-adventure stats.
+- [x] **Live DB finding (14 Oct):** two legacy policies from `supabase_complete_schema.sql` were still on `analytics_events`. "Anyone can log analytics" let even anonymous visitors insert events, and "Only authenticated users can read analytics" let any signed-in user read all events. Both are now dropped by the Phase 3 migration. Admin's "simulate event" button now sends the admin's `user_id` so it passes the new rule.
+- [x] Phase 3 migration applied on Supabase (14 Oct 2026). Verified via the live API: anon calls to `expedition_stats` get permission denied; `get_leaderboard` is unaffected.
+- [x] Fixed: the Admin analytics tiles showed made-up baselines (`|| 142`, `|| 1084`) when there was no data. They now show real counts.
+- [x] Rank share **image** card (`src/lib/rankCard.js`), for the launch campaign.
+  - 1080×1350 canvas: "#N", board + window, AP, tier and @username.
+  - Shared through the native share sheet with the file, or downloaded as a fallback. Tracked as `rank_card_shared`.
+- [x] Pioneer badges (FR-6.2), from verified attempts:
+  - First Expedition.
+  - High Altitude: an adventure with max altitude ≥ 5,000 m.
+  - Winter Warrior: verified in the adventure's winter window.
+  - State Explorer: 5 distinct adventures in one state.
+- [x] **Battery saver** toggle in the Expedition picker: a GPS fix every 60 s instead of 30 s for multi-day treks. Shown on the tracker and logged with `expedition_started`, so the battery test can compare both modes.
+- [x] Tests: 97 passing. Lint clean, build OK.
+- [x] Migration tested on Postgres 16 + PostGIS:
+  - It applies twice.
+  - The triggers fire.
+  - Spoofed `user_id`, a bad event name and an oversized payload are all blocked.
+  - Non-admins are refused `expedition_stats`.
 
-### V2 (post-launch, ~6 weeks)
-- Region/valley boards, quarterly Seasons (`reached_at` + season filter)
-- Buddy/guide attestation (Ridge Runner+)
-- User-submitted routes → AdminView moderation
-- Agency-sponsored challenges via AgencyDashboard
+**Needs real people / devices (cannot be done in code):**
+- [ ] Closed beta: 50 trekkers, HP/UK routes. Needs the remaining 40 curated adventures (open item #2).
+- [ ] Tune verification thresholds from real data: watch the false-reject rate and per-check pass % in Beta health.
+- [ ] Battery test on 3 low/mid Android devices, 30 s vs Battery saver.
+- [ ] Android field test on the [DEV] Aravalli loop (Phase 0 exit).
+- [ ] Launch + share-card campaign.
+
+### V2 — Community & partners — built 16 Oct 2026
+Region/valley boards and Seasons already shipped in Phase 2. Migration `supabase_expeditions_v2.sql` runs after Phase 3 and is safe to re-run.
+
+**0. Agency partner flag (security fix found while building)**
+- `agency_profiles.verified_at` is set by the agency itself in the simulated checkout, and RLS lets any user insert their own agency row. So it can't be trusted for anything that affects scores or rewards.
+- New `partner_verified_at`: only an admin can set it, through `set_agency_partner()`.
+  - A `SECURITY INVOKER` guard trigger strips the column from inserts and updates made by app users.
+  - Admin → Expeditions → **Agency partners** lists agencies (`list_agencies_for_admin()`) with a toggle.
+- [x] Built and tested: the agency's own insert/update of the flag is stripped; non-admins are refused.
+
+**A. Buddy / guide vouches (attestation, D8)**
+- `attempt_attestations` table. Writes go only through RPCs; the two parties and admins can read rows.
+- `request_attestation(attempt, username, role)` has these rules:
+  - The trek is the caller's own, `pending` or `rejected`, and not decided by an admin.
+  - It was completed within 14 days.
+  - At most 3 requests per trek, and no self-vouching.
+  - A buddy must be Ridge Runner tier or higher; a guide must be a partner agency.
+- `respond_attestation(id, confirm)`:
+  - Re-checks eligibility and limits each attester to 10 confirmations per 30 days.
+  - Flags `co_tracked` when the attester recorded the same adventure within ±12 h.
+  - Flags `reciprocal` when the two users vouched for each other within 30 days; that confirmation earns no bonus.
+- Bonus: **+15 once per trek** (`attestation_bonus`).
+  - The D6 cap still applies, so mock GPS or a failed movement check stays at 74 or below and goes to manual review.
+  - If the new score reaches 75 or more, the trek is verified and `award_ap()` runs. The breakdown records `attestation {by, role, flags}`.
+- Profile card:
+  - A **Vouch** button on eligible treks opens an inline request form.
+  - Chips show each request's status: waiting / vouched / declined.
+  - A **Vouch requests** box lets you answer: "I was there" or decline.
+- The admin review card shows "Vouched by @x (role) · +15", plus a co-tracked hint when it applies.
+- [x] Tested on Postgres 16 + PostGIS:
+  - 65 → 80, verified, AP awarded.
+  - A vehicle track stays capped at 74.
+  - A second vouch adds nothing.
+  - Reciprocal vouches get no bonus.
+  - Tier, self, guide, admin-reviewed, duplicate and direct-insert cases are refused.
+  - Users can only see their own attestation rows.
+
+**B. User-submitted routes**
+- `adventure_submissions` table, readable by its owner and by admins.
+- `submit_adventure(...)`:
+  - Validates every field. These limits are mirrored client-side in `validateRoute()`.
+  - Allows at most 5 pending submissions per user.
+  - Rejects an endpoint within 300 m of an active adventure or of another pending suggestion.
+- `review_adventure_submission(id, decision, note, coords_verified, radius_m)` is admin-only. On approval it creates the `adventures` row: unique slug, radius 50–1000 m, `coords_verified` as chosen.
+- **Suggest** tab on /expeditions:
+  - A form with "I'm here now" (GPS) and "From a summit photo" (EXIF) to fill the endpoint.
+  - A "Your suggestions" list with status and the reviewer's note.
+- Admin → Expeditions → **Route suggestions** queue: map link, radius, "Coordinates checked", Add to catalog / Reject.
+- Server events `route_approved` / `route_rejected`.
+- [x] Tested: duplicate endpoint, duplicate pending, bad grade, anon and non-admin review all refused; approval creates the adventure.
+
+**C. Agency challenges**
+- `challenges` table (scope: any / state / region / specific adventures, min grade, treks needed, window of at most 181 days) and `challenge_participants`.
+- `create_challenge` is for partner agencies or admins, with at most 5 live per agency.
+- Other RPCs: `set_challenge_active`, `join_challenge(id, join)`, `get_challenges()` (public list plus the caller's progress) and `get_my_challenges()` (agency view with each participant's progress).
+- Progress counts **distinct** verified adventures in scope, completed inside the window.
+- **Challenges** tab on /expeditions:
+  - Each card shows the agency, days left, scope, reward and joined count.
+  - Join / Leave, and a progress bar once joined.
+  - The list is cached offline (`spota_challenges_cache`).
+- AgencyDashboard → **Challenges** tab:
+  - Create form and a pause/resume control.
+  - A table of joined trekkers with progress and completion.
+  - Non-partners see how to get partner status.
+- [x] Tested:
+  - A non-partner can't create a challenge; the required count can't exceed the adventures picked; windows over 181 days are rejected.
+  - A user can't pause someone else's challenge.
+  - Direct inserts are blocked; anon can list but not join.
+  - Progress reads 1/1 after a verified Kullu trek.
+
+**App:** `communityService.js`, `ExpeditionVouches.jsx`, `ChallengesList.jsx`, `SuggestRouteForm.jsx`, `RouteSubmissionsPanel.jsx` (route queue + agency partners), `AgencyChallengesPanel.jsx`. 115 tests (18 new), lint clean, build OK. Walkthrough screenshots taken: no page errors, and a vouch-form overflow on narrow profile cards was fixed.
+
+**Still open in V2**
+- [ ] Apply `supabase_expeditions_v2.sql` on Supabase (loaded in the SQL editor 16 Oct, awaiting Run)
+- [ ] Grant partner status to the first real agency once it's been checked
+- [ ] Notifications (push/email) for vouch requests and challenge completion. Requests are currently only visible in the Profile card.
+- [ ] The agency dashboard's existing layout overflows on phones (756 px wide). This predates V2; the Challenges tab itself fits.
 
 ---
 
@@ -315,6 +430,10 @@ SELECT cron.schedule('refresh-leaderboards','*/15 * * * *',
 | Field | 3 real treks (G1, G3, G4) on Android, airplane mode throughout |
 
 ## 8. Analytics events
+_V2 adds: client `attestation_requested`, `attestation_given`, `challenge_joined`, `challenge_left`, `challenge_created`, `route_submitted`; server `attestation_confirmed`, `route_approved`, `route_rejected`._
+
+_Implemented in Phase 3. Client events: `expedition_started {adventure_id, source, guided, low_power}`, `expedition_completed {delivery, server_status, missed_checkin}`, `expedition_discarded`, `expedition_catalog_start`, `leaderboard_viewed`, `rank_card_shared`, `leaderboard_opt_in/out`, `home_location_set`. Server-trigger events: `attempt_*`, `appeal_submitted`, `tier_up`._
+
 `expedition_started`, `expedition_completed`, `attempt_verified`, `attempt_pending`, `attempt_rejected`, `appeal_submitted`, `leaderboard_viewed {lens, level}`, `tier_up {tier}`, `rank_card_shared`, `leaderboard_opt_out`.
 
 ## 9. Open items
@@ -335,5 +454,9 @@ SELECT cron.schedule('refresh-leaderboards','*/15 * * * *',
 | 1.2 | 13 Oct 2026 | Background-geolocation plugin approved + installed (v1.2.26), Android synced, GPS feature kept optional. |
 | 1.3 | 13 Oct 2026 | Migration hardened: adds `profiles.is_admin` if missing; guard trigger also blocks users setting `is_admin` (the existing profile UPDATE policy has no column restriction, so P0's "users can't write is_admin" assumption was false). Seed sets `search_path` for PostGIS. Migration loaded in the Supabase SQL editor; run by the owner. |
 | 1.4 | 13 Oct 2026 | Migration + dev seed live on Supabase and verified (11 adventures). Remaining Phase 0 work: Expedition-mode UI in SafeTrekView, Android build, Aravalli field test. |
+| 1.5 | 13 Oct 2026 | Expedition mode UI shipped in SafeTrekView + catalog loader + AP preview formula (pulled forward from Phase 1/2). 44 tests. Remaining Phase 0: Android build + field test. |
+| 2.0 | 14 Oct 2026 | Phase 1 (in-database verification, award_ap, admin review, appeals) and Phase 2 (get_leaderboard with home/terrain × global/country/state/region × all-time/season, LeaderboardView, ExpeditionsView, tiers, profile card) built. Enhancement: failed movement check caps at pending. Region boards + Seasons pulled forward from V2. 87 tests. |
+| 2.1 | 14 Oct 2026 | Phase 3 launch tooling: analytics events (client queue + server triggers, RLS), admin Beta-health panel + `expedition_stats()` RPC, rank share image card, 4 Pioneer badges, Battery-saver mode. Removed fake Admin analytics baselines. Dropped 2 legacy open analytics policies found on the live DB. Migration applied. 97 tests. Beta, battery and field tests still need real users/devices. |
+| 3.0 | 16 Oct 2026 | V2 built: buddy/guide vouches (+15 once, D6 cap kept, anti-collusion limits), user-submitted routes with admin approval, agency challenges with progress from verified treks. Security fix: admin-only `partner_verified_at` because agencies set `verified_at` themselves. 115 tests. Migration awaiting Run. |
 
 > The authoritative schema is `supabase_expeditions_setup.sql` in the repo. The SQL in §2 is the design sketch.

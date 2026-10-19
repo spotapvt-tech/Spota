@@ -11,7 +11,7 @@
 .celebrate-gem-icon {
   font-size: 72px;
   animation: gem-drop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  filter: drop-shadow(0 8px 24px rgba(108, 140, 116, 0.45));
+  filter: drop-shadow(0 8px 24px rgba(198, 243, 107, 0.45));
 }
 
 @keyframes gem-drop {
@@ -86,8 +86,8 @@
 }
 
 .celebrate-rep-banner {
-  background: rgba(108, 140, 116, 0.1);
-  border: 1px solid rgba(108, 140, 116, 0.2);
+  background: rgba(198, 243, 107, 0.1);
+  border: 1px solid rgba(198, 243, 107, 0.2);
   border-radius: var(--radius-full);
   padding: 10px 20px;
   font-size: var(--font-size-sm);
@@ -119,14 +119,14 @@
 
 .celebrate-btn.primary {
   background: var(--color-accent);
-  color: white;
-  box-shadow: 0 4px 14px rgba(108, 140, 116, 0.35);
+  color: var(--color-on-accent);
+  box-shadow: 0 4px 14px rgba(198, 243, 107, 0.35);
 }
 
 .celebrate-btn.primary:hover {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(108, 140, 116, 0.4);
+  box-shadow: 0 8px 20px rgba(198, 243, 107, 0.4);
 }
 
 .celebrate-btn.secondary {

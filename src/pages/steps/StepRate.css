@@ -43,12 +43,12 @@
 
 .rate-preset-chip:hover {
   border-color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.08);
+  background: rgba(198, 243, 107, 0.08);
 }
 
 .rate-preset-chip.active {
   border-color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.14);
+  background: rgba(198, 243, 107, 0.14);
 }
 
 .rate-preset-emoji {
@@ -124,13 +124,13 @@
 
 .rate-emoji-btn:hover {
   border-color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.1);
+  background: rgba(198, 243, 107, 0.1);
   transform: scale(1.1);
 }
 
 .rate-emoji-btn.selected {
   border-color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.18);
+  background: rgba(198, 243, 107, 0.18);
   transform: scale(1.15);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.2);
+  box-shadow: 0 0 0 3px rgba(198, 243, 107, 0.2);
 }

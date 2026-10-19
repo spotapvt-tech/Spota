@@ -166,7 +166,10 @@ export async function syncAttempt(clientAttemptId) {
     const updated = await store.updateAttempt(clientAttemptId, {
       status: 'submitted',
       serverId: data?.id ?? null,
+      // Phase 1: submit_attempt verifies immediately → verified | pending | rejected
       serverStatus: data?.status ?? 'submitted',
+      awardedAp: data?.awarded_ap ?? null,
+      verificationScore: data?.verification_score ?? null,
       submittedAt: new Date().toISOString(),
       lastError: null
     });

@@ -10,7 +10,8 @@
 
 .step-header h2 {
   font-size: var(--font-size-2xl);
-  font-weight: 700;
+  font-weight: 800;
+ 
   letter-spacing: var(--tracking-tighter);
   line-height: 1.15;
   color: var(--color-text-primary);
@@ -46,17 +47,17 @@
 
 .capture-btn.primary {
   background: var(--color-accent);
-  color: white;
+  color: var(--color-on-accent);
   padding: 22px 24px;
   border-radius: var(--radius-lg);
   font-size: 18px;
-  box-shadow: 0 4px 16px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 4px 16px rgba(198, 243, 107, 0.3);
 }
 
 .capture-btn.primary:hover {
   background: var(--color-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(108, 140, 116, 0.4);
+  box-shadow: 0 8px 24px rgba(198, 243, 107, 0.4);
 }
 
 .capture-btn.secondary {
@@ -183,7 +184,7 @@
 .filter-chip.active,
 .filter-chip:hover {
   border-color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(198, 243, 107, 0.12);
   color: var(--color-accent);
 }
 

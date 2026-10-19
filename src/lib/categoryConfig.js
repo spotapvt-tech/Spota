@@ -1,18 +1,22 @@
+// Discovery categories. `emoji` is kept for legacy surfaces (share cards,
+// notifications); new UI renders `icon` (a lucide-react icon name, see
+// components/ui/CategoryGlyph.jsx) on a tinted tile using `color`.
+// Colours are tuned for the dark "Night Topo" map — each is legible on #121915.
 export const categories = [
-  { id: 'cafe', label: 'Cafe', emoji: '☕', color: '#6C8C74' },
-  { id: 'viewpoint', label: 'Viewpoint', emoji: '🌅', color: '#E07A5F' },
-  { id: 'street-art', label: 'Street Art', emoji: '🎨', color: '#DDA15E' },
-  { id: 'event', label: 'Event', emoji: '🎫', color: '#4A90E2' },
-  { id: 'trail', label: 'Trail', emoji: '🥾', color: '#3A5A40' },
-  { id: 'campsite', label: 'Campsite', emoji: '⛺', color: '#A3B18A' },
-  { id: 'waterfall', label: 'Waterfall', emoji: '💦', color: '#588157' },
-  { id: 'mountain', label: 'Mountain', emoji: '🏔️', color: '#344E41' },
-  { id: 'beach', label: 'Beach', emoji: '🏖️', color: '#E9C46A' },
-  { id: 'lake', label: 'Lake', emoji: '🌊', color: '#264653' },
-  { id: 'forest', label: 'Forest', emoji: '🌲', color: '#2A9D8F' },
-  { id: 'cave', label: 'Cave', emoji: '🕳️', color: '#F4A261' }
+  { id: 'trail', label: 'Trail', emoji: '🥾', icon: 'Footprints', color: '#C6F36B' },
+  { id: 'mountain', label: 'Peak', emoji: '🏔️', icon: 'Mountain', color: '#E9EDE2' },
+  { id: 'viewpoint', label: 'Viewpoint', emoji: '🌅', icon: 'Binoculars', color: '#FF9E6B' },
+  { id: 'waterfall', label: 'Waterfall', emoji: '💦', icon: 'Droplets', color: '#7FD6FF' },
+  { id: 'lake', label: 'Lake', emoji: '🌊', icon: 'Waves', color: '#5BB8E8' },
+  { id: 'forest', label: 'Forest', emoji: '🌲', icon: 'TreePine', color: '#5FD39A' },
+  { id: 'campsite', label: 'Campsite', emoji: '⛺', icon: 'Tent', color: '#F2C14E' },
+  { id: 'cave', label: 'Cave', emoji: '🕳️', icon: 'Flashlight', color: '#C9A27E' },
+  { id: 'beach', label: 'Beach', emoji: '🏖️', icon: 'Sun', color: '#FFD166' },
+  { id: 'cafe', label: 'Cafe', emoji: '☕', icon: 'Coffee', color: '#D9A47A' },
+  { id: 'street-art', label: 'Street Art', emoji: '🎨', icon: 'Palette', color: '#FF7AB6' },
+  { id: 'event', label: 'Event', emoji: '🎫', icon: 'Ticket', color: '#B79CFF' }
 ];
 
 export const getCategoryById = (id) => {
-  return categories.find(cat => cat.id === id) || { id: 'other', label: 'Other', emoji: '💎', color: '#6C8C74' };
+  return categories.find(cat => cat.id === id) || { id: 'other', label: 'Spot', emoji: '💎', icon: 'MapPin', color: '#C6F36B' };
 };

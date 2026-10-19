@@ -2,10 +2,11 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { supabase } from '../lib/supabaseClient';
-import { LogOut, Award, CheckCircle, Heart, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft, Grid3x3, Bookmark } from 'lucide-react';
+import { LogOut, Award, CheckCircle, Heart, Gem, Shield, ShieldAlert, Trash2, TrendingUp, ArrowLeft, Grid3x3, Bookmark, ChevronRight } from 'lucide-react';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import { getActiveTrekLocal } from '../lib/safeTrekTimer';
 import BadgeDisplay from '../components/BadgeDisplay';
+import ExpeditionProfileCard from '../components/ExpeditionProfileCard';
 import './ProfileView.css';
 
 export default function ProfileView() {
@@ -173,10 +174,16 @@ export default function ProfileView() {
     }
   }, [currentUser, targetUserId, isOwnProfile, location.state]);
 
-  const handleDeleteSpot = async (e, spotId) => {
+  const [pendingDelete, setPendingDelete] = useState(null); // spot awaiting delete confirmation
+  const [notice, setNotice] = useState(null); // { tone: 'ok' | 'error', text }
+
+  const requestDeleteSpot = (e, spot) => {
     e.stopPropagation();
-    if (!confirm('Are you sure you want to delete this gem? It will be removed from all feeds and maps.')) return;
-    
+    setPendingDelete(spot);
+  };
+
+  const handleDeleteSpot = async (spotId) => {
+    setPendingDelete(null);
     try {
       const { error } = await supabase
         .from('spots')
@@ -190,11 +197,12 @@ export default function ProfileView() {
         detail: { id: spotId, status: 'deleted' }
       }));
       window.dispatchEvent(new Event('spota_saves_updated')); // refresh ProfileView lists
-      alert('Gem deleted successfully.');
+      setNotice({ tone: 'ok', text: 'SPOTA removed from the map.' });
     } catch (err) {
       console.error('Error deleting spot from profile:', err);
-      alert('Failed to delete gem: ' + err.message);
+      setNotice({ tone: 'error', text: `Couldn't delete: ${err.message || 'network error'}` });
     }
+    setTimeout(() => setNotice(null), 3500);
   };
 
   useEffect(() => {
@@ -222,7 +230,8 @@ export default function ProfileView() {
   const savedGemsCount = savedGems.length;
   const totalReputation = (myGemsCount * 10) + (isOwnProfile ? savedGemsCount * 5 : 0);
   const isVerified = totalReputation >= 50;
-  const isAdmin = isOwnProfile && (currentUser.email?.endsWith('@spota.local') || currentUser.email?.includes('admin'));
+  // Same server-set flag AdminView checks (profiles.is_admin), not the old email heuristic
+  const isAdmin = isOwnProfile && currentUser?.user_metadata?.is_admin === true;
 
   // Initials for avatar
   const username = profileUser?.username || 'Explorer';
@@ -235,278 +244,194 @@ export default function ProfileView() {
       ? new Date(profileUser.created_at).toLocaleDateString([], { month: 'long', year: 'numeric' })
       : 'Explorer';
 
-  return (
-    <div className="profile-container animate-fade-in">
-      <div className="profile-card glass-panel">
-        {isOwnProfile ? (
-          <button className="logout-btn-top" onClick={() => setShowLogoutConfirm(true)} title="Sign Out">
-            <LogOut size={20} />
-          </button>
-        ) : (
-          <button className="logout-btn-top" style={{ left: '16px', right: 'auto' }} onClick={() => navigate(-1)} title="Back">
-            <ArrowLeft size={20} />
-          </button>
-        )}
+  const tierLabel = agency ? 'Agency partner' : isVerified ? 'Verified explorer' : 'Explorer';
+  const grid = !isOwnProfile || activeTab === 'my-gems' ? myGems : savedGems;
 
-        <div className="avatar-large">
-          {profileUser?.avatar_url ? (
-            <img src={profileUser.avatar_url} alt={username} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+  return (
+    <div className="pf animate-fade-in">
+      {/* ---------- Identity ---------- */}
+      <header className="pf-hero">
+        <div className="pf-hero__bar">
+          {isOwnProfile ? (
+            <span className="sp-eyebrow">Explorer record</span>
           ) : (
-            initials
+            <button className="sp-icon-btn sp-icon-btn--filled" onClick={() => navigate(-1)} aria-label="Back">
+              <ArrowLeft size={18} />
+            </button>
+          )}
+          {isOwnProfile && (
+            <button className="sp-icon-btn sp-icon-btn--filled" onClick={() => setShowLogoutConfirm(true)} aria-label="Sign out" title="Sign out">
+              <LogOut size={17} />
+            </button>
           )}
         </div>
 
-        <div className="profile-info">
-          <div className="username-row">
-            <h2>{username}</h2>
-            {agency && (
-              <span className="verified-badge agency" title={`Verified Agency: ${agency.company_name}`} style={{ color: '#8e44ad' }}>
-                <CheckCircle size={18} fill="currentColor" color="var(--color-bg-primary)" />
-              </span>
-            )}
-            {isVerified && !agency && (
-              <span className="verified-badge" title="Verified Contributor">
-                <CheckCircle size={18} fill="currentColor" color="var(--color-bg-primary)" />
-              </span>
-            )}
-            {profileUser?.isGuest && (
-              <span style={{ fontSize: '10px', background: 'rgba(108,140,116,0.15)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '9999px', fontWeight: 600 }}>GUEST</span>
-            )}
+        <div className="pf-id">
+          <div className={`pf-avatar ${isVerified || agency ? 'is-verified' : ''}`}>
+            {profileUser?.avatar_url ? <img src={profileUser.avatar_url} alt="" /> : <span>{initials}</span>}
           </div>
-          <span className="joined-date">Joined {joinedDate}</span>
-        </div>
-
-        <div className="reputation-scorecard">
-          <div className="score-stat">
-            <span className="score-num">{totalReputation}</span>
-            <span className="score-label">Reputation Points</span>
-          </div>
-          <div className="score-stat">
-            <span className="score-num" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <Award size={18} color={agency ? '#8e44ad' : isVerified ? 'var(--color-accent)' : 'var(--color-text-secondary)'} />
-              {agency ? 'Agency Partner' : isVerified ? 'Verified' : 'Explorer'}
-            </span>
-            <span className="score-label">Contributor Rank</span>
-          </div>
-        </div>
-
-        {profileUser && <BadgeDisplay user={profileUser} />}
-
-        {isOwnProfile && currentUser && (
-          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '10px', marginTop: '16px' }}>
-            {!currentUser.isGuest && (
-              <>
-                <button 
-                  className="submit-auth-btn" 
-                  style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(142, 68, 173, 0.12)', color: '#8e44ad', border: 'none' }} 
-                  onClick={() => navigate('/agency-dashboard')}
-                >
-                  <Award size={16} />
-                  {agency ? 'Agency Portal' : 'List Your Agency'}
-                </button>
-                <button 
-                  className="submit-auth-btn" 
-                  style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(108, 140, 116, 0.12)', color: 'var(--color-accent)', border: 'none' }} 
-                  onClick={() => navigate('/profile/analytics')}
-                >
-                  <TrendingUp size={16} />
-                  Creator Analytics
-                </button>
-              </>
-            )}
-            <button 
-              className="submit-auth-btn" 
-              style={{ margin: 0, gap: '8px', height: 'auto', display: 'inline-flex', backgroundColor: 'rgba(108, 140, 116, 0.12)', color: 'var(--color-accent)', border: 'none' }} 
-              onClick={() => navigate('/safe-trek')}
-            >
-              <Shield size={16} />
-              Safe Trek Mode
-            </button>
-          </div>
-        )}
-
-        {isOwnProfile && isAdmin && (
-          <button 
-            className="submit-auth-btn" 
-            style={{ marginTop: '16px', gap: '8px', height: 'auto', display: 'inline-flex' }} 
-            onClick={() => navigate('/admin')}
-          >
-            <Shield size={16} />
-            Admin Dashboard
-          </button>
-        )}
-
-        {isOwnProfile && activeTrek && (
-          <div 
-            className="active-trek-banner-profile glass-panel animate-pulse" 
-            style={{ 
-              marginTop: '16px', 
-              width: '100%', 
-              padding: '12px', 
-              borderRadius: 'var(--radius-md)', 
-              border: activeTrek.status === 'overdue' ? '1px solid rgba(224, 122, 95, 0.5)' : '1px solid rgba(108, 140, 116, 0.3)', 
-              background: activeTrek.status === 'overdue' ? 'rgba(224, 122, 95, 0.15)' : 'rgba(108, 140, 116, 0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              cursor: 'pointer'
-            }}
-            onClick={() => navigate('/safe-trek')}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <ShieldAlert size={18} color={activeTrek.status === 'overdue' ? '#e07a5f' : 'var(--color-accent)'} />
-              <div style={{ textAlign: 'left' }}>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: activeTrek.status === 'overdue' ? '#e07a5f' : 'var(--color-accent)', display: 'block', lineHeight: 1.2 }}>
-                  {activeTrek.status === 'overdue' ? 'TREK OVERDUE ALERT' : 'ACTIVE TREK RUNNING'}
-                </span>
-                <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)', display: 'block', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '180px' }}>
-                  Destination: {activeTrek.destination_name}
-                </span>
-              </div>
+          <div className="pf-id__text">
+            <h1 className="pf-name">
+              {username}
+              {(agency || isVerified) && (
+                <CheckCircle size={18} className="pf-verified" aria-label={agency ? `Verified agency: ${agency.company_name}` : 'Verified contributor'} />
+              )}
+            </h1>
+            <div className="pf-sub">
+              <span className={`pf-rank ${agency ? 'is-agency' : ''}`}><Award size={13} /> {tierLabel}</span>
+              {profileUser?.isGuest ? <span className="pf-guest">Guest</span> : <span>Since {joinedDate}</span>}
             </div>
-            <span style={{ fontSize: '10px', fontWeight: 600, color: activeTrek.status === 'overdue' ? '#e07a5f' : 'var(--color-accent)', background: activeTrek.status === 'overdue' ? 'rgba(224, 122, 95, 0.12)' : 'rgba(108, 140, 116, 0.12)', padding: '2px 8px', borderRadius: '4px' }}>VIEW</span>
           </div>
-        )}
-      </div>
-
-      {isOwnProfile ? (
-        <div className="profile-tabs">
-          <button
-            className={`tab-btn ${activeTab === 'my-gems' ? 'active' : ''}`}
-            onClick={() => setActiveTab('my-gems')}
-          >
-            <Grid3x3 size={18} strokeWidth={activeTab === 'my-gems' ? 2.25 : 1.75} />
-            <span>Gems ({myGemsCount})</span>
-          </button>
-          <button
-            className={`tab-btn ${activeTab === 'saved-gems' ? 'active' : ''}`}
-            onClick={() => setActiveTab('saved-gems')}
-          >
-            <Bookmark size={18} strokeWidth={activeTab === 'saved-gems' ? 2.25 : 1.75} />
-            <span>Saved ({savedGemsCount})</span>
-          </button>
         </div>
-      ) : (
-        <div className="profile-tabs">
-          <div className="tab-btn active" style={{ cursor: 'default' }}>
-            <Grid3x3 size={18} strokeWidth={2.25} />
-            <span>Gems Dropped ({myGemsCount})</span>
-          </div>
+
+        <dl className="pf-stats">
+          <div><dt>Dropped</dt><dd className="sp-mono">{myGemsCount}</dd></div>
+          {isOwnProfile && <div><dt>Saved</dt><dd className="sp-mono">{savedGemsCount}</dd></div>}
+          <div><dt>Reputation</dt><dd className="sp-mono">{totalReputation}</dd></div>
+        </dl>
+        {isOwnProfile && !isVerified && !agency && (
+          <p className="pf-next">
+            <span className="sp-mono">{Math.max(0, 50 - totalReputation)}</span> reputation to <strong>Verified explorer</strong> — every drop is worth 10.
+          </p>
+        )}
+      </header>
+
+      {/* ---------- Live trek ---------- */}
+      {isOwnProfile && activeTrek && (
+        <button className={`pf-trek ${activeTrek.status === 'overdue' ? 'is-overdue' : ''}`} onClick={() => navigate('/safe-trek')}>
+          <ShieldAlert size={20} />
+          <span className="pf-trek__text">
+            <strong>{activeTrek.status === 'overdue' ? 'Check-in overdue' : 'Safe Trek running'}</strong>
+            <small>{activeTrek.destination_name}</small>
+          </span>
+          <span className="pf-trek__cta">Open</span>
+        </button>
+      )}
+
+      {/* ---------- Guest upgrade ---------- */}
+      {isOwnProfile && currentUser?.isGuest && (
+        <div className="pf-guest-card">
+          <strong>Make this record permanent</strong>
+          <p>Guest drops live on this device only. Create an account to keep your SPOTAs, earn Adventure Points and appear on the rankings.</p>
+          <button className="sp-btn sp-btn--primary sp-btn--sm" onClick={signOut}>Create account</button>
         </div>
       )}
 
-      <div className="tab-content">
-        {loading ? (
-          <p style={{ textAlign: 'center', color: 'var(--color-text-secondary)', marginTop: '20px' }}>Loading list...</p>
-        ) : !isOwnProfile || activeTab === 'my-gems' ? (
-          myGems.length === 0 ? (
-            <div className="empty-state glass-panel">
-              <Gem size={32} strokeWidth={1.5} />
-              <p>No gems dropped yet</p>
-              {isOwnProfile && <span>Tap "Add" in the navigation bar to drop your first spot!</span>}
-            </div>
-          ) : (
-            <div className="ig-grid">
-              {myGems.map(spot => (
-                <div
-                  key={spot.id}
-                  className="ig-tile"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View ${spot.title}`}
-                  onClick={() => setSelectedSpot(spot)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSpot(spot); } }}
-                >
-                  {spot.image_url ? (
-                    <img src={spot.image_url} alt={spot.title} className="ig-tile-image" loading="lazy" />
-                  ) : (
-                    <div className="ig-tile-image ig-tile-fallback">
-                      <Gem size={24} strokeWidth={1.5} />
-                    </div>
-                  )}
-                  <div className="ig-tile-overlay">
-                    <span className="ig-tile-title">{spot.title}</span>
-                  </div>
-                  {isOwnProfile && (
-                    <button
-                      className="ig-tile-delete"
-                      onClick={(e) => handleDeleteSpot(e, spot.id)}
-                      title="Delete Gem"
-                    >
-                      <Trash2 size={13} />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          )
-        ) : (
-          savedGems.length === 0 ? (
-            <div className="empty-state glass-panel">
-              <Heart size={32} strokeWidth={1.5} />
-              <p>No saved gems yet</p>
-              <span>Save cool spots from the Map or Feed to keep them here.</span>
-            </div>
-          ) : (
-            <div className="ig-grid">
-              {savedGems.map(spot => (
-                <div
-                  key={spot.id}
-                  className="ig-tile"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View ${spot.title}`}
-                  onClick={() => setSelectedSpot(spot)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSpot(spot); } }}
-                >
-                  {spot.image_url ? (
-                    <img src={spot.image_url} alt={spot.title} className="ig-tile-image" loading="lazy" />
-                  ) : (
-                    <div className="ig-tile-image ig-tile-fallback">
-                      <Heart size={24} strokeWidth={1.5} />
-                    </div>
-                  )}
-                  <div className="ig-tile-overlay">
-                    <span className="ig-tile-title">{spot.title}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )
+      {/* ---------- Expeditions + badges (existing components) ---------- */}
+      {isOwnProfile && currentUser && !currentUser.isGuest && (
+        <section className="pf-section"><ExpeditionProfileCard userId={currentUser.id} /></section>
+      )}
+      {profileUser && <section className="pf-section"><BadgeDisplay user={profileUser} /></section>}
+
+      {/* ---------- Toolkit ---------- */}
+      {isOwnProfile && currentUser && (
+        <nav className="pf-menu" aria-label="Profile tools">
+          <button onClick={() => navigate('/safe-trek')}><Shield size={18} /><span>Safe Trek mode</span><ChevronRight size={16} /></button>
+          {!currentUser.isGuest && (
+            <>
+              <button onClick={() => navigate('/profile/analytics')}><TrendingUp size={18} /><span>Creator analytics</span><ChevronRight size={16} /></button>
+              <button onClick={() => navigate('/agency-dashboard')}><Award size={18} /><span>{agency ? 'Agency portal' : 'List your agency'}</span><ChevronRight size={16} /></button>
+            </>
+          )}
+          {isAdmin && (
+            <button onClick={() => navigate('/admin')}><Shield size={18} /><span>Admin dashboard</span><ChevronRight size={16} /></button>
+          )}
+        </nav>
+      )}
+
+      {/* ---------- Collection ---------- */}
+      <div className="pf-tabs" role="tablist">
+        <button role="tab" aria-selected={!isOwnProfile || activeTab === 'my-gems'} className={!isOwnProfile || activeTab === 'my-gems' ? 'is-on' : ''} onClick={() => setActiveTab('my-gems')}>
+          <Grid3x3 size={16} /> {isOwnProfile ? 'Dropped' : 'SPOTAs dropped'} <span className="sp-mono">{myGemsCount}</span>
+        </button>
+        {isOwnProfile && (
+          <button role="tab" aria-selected={activeTab === 'saved-gems'} className={activeTab === 'saved-gems' ? 'is-on' : ''} onClick={() => setActiveTab('saved-gems')}>
+            <Bookmark size={16} /> Saved <span className="sp-mono">{savedGemsCount}</span>
+          </button>
         )}
       </div>
+
+      <div className="pf-grid-wrap">
+        {loading ? (
+          <div className="pf-grid">{[0, 1, 2, 3, 4, 5].map((i) => <div key={i} className="sp-skeleton pf-tile" />)}</div>
+        ) : grid.length === 0 ? (
+          <div className="sp-state">
+            <div className="sp-state__icon">{!isOwnProfile || activeTab === 'my-gems' ? <Gem size={22} /> : <Heart size={22} />}</div>
+            {!isOwnProfile || activeTab === 'my-gems' ? (
+              <>
+                <h3>{isOwnProfile ? 'Your map is blank — for now' : 'No SPOTAs yet'}</h3>
+                {isOwnProfile && <p>Found a place worth the walk? Drop it so other explorers can find it too.</p>}
+                {isOwnProfile && <button className="sp-btn sp-btn--primary sp-btn--sm" onClick={() => navigate('/add')}>Drop your first SPOTA</button>}
+              </>
+            ) : (
+              <>
+                <h3>Nothing saved yet</h3>
+                <p>Tap Save on any SPOTA to keep it here for your next trip.</p>
+                <button className="sp-btn sp-btn--secondary sp-btn--sm" onClick={() => navigate('/explore')}>Browse the map</button>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="pf-grid">
+            {grid.map((spot) => (
+              <div
+                key={spot.id}
+                className="pf-tile"
+                role="button"
+                tabIndex={0}
+                aria-label={`View ${spot.title}`}
+                onClick={() => setSelectedSpot(spot)}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedSpot(spot); } }}
+              >
+                {spot.image_url
+                  ? <img src={spot.image_url} alt="" loading="lazy" />
+                  : <span className="pf-tile__empty"><Gem size={22} strokeWidth={1.5} /></span>}
+                <span className="pf-tile__title">{spot.title}</span>
+                {spot.status === 'pending' && <span className="pf-tile__status">In review</span>}
+                {isOwnProfile && activeTab === 'my-gems' && (
+                  <button className="pf-tile__delete" onClick={(e) => requestDeleteSpot(e, spot)} aria-label={`Delete ${spot.title}`}>
+                    <Trash2 size={13} />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {notice && <div className={`pf-notice ${notice.tone === 'error' ? 'is-error' : ''}`} role="status">{notice.text}</div>}
 
       {selectedSpot && (
         <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
       )}
 
+      {pendingDelete && (
+        <div className="sp-sheet-backdrop" onClick={() => setPendingDelete(null)}>
+          <div className="sp-sheet" role="alertdialog" aria-label="Delete SPOTA" onClick={(e) => e.stopPropagation()}>
+            <div className="sp-sheet__grabber" />
+            <h3 className="pf-sheet-title">Delete “{pendingDelete.title}”?</h3>
+            <p className="pf-sheet-text">It will be removed from the map and every feed. This can&apos;t be undone.</p>
+            <div className="pf-sheet-actions">
+              <button className="sp-btn sp-btn--secondary" onClick={() => setPendingDelete(null)}>Keep it</button>
+              <button className="sp-btn sp-btn--danger" onClick={() => handleDeleteSpot(pendingDelete.id)}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showLogoutConfirm && (
-        <div className="logout-modal-backdrop" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-          <div className="logout-confirm-modal glass-panel animate-fade-in" style={{ padding: '24px', borderRadius: 'var(--radius-md)', maxWidth: '360px', width: '100%', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h3 style={{ margin: 0, fontSize: 'var(--font-size-lg)', color: 'var(--color-text-primary)' }}>🚪 Log Out?</h3>
-            <p style={{ margin: 0, fontSize: 'var(--font-size-sm)', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
-              Are you sure you want to log out of Spota? You will need to log back in to drop and save gems.
+        <div className="sp-sheet-backdrop" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="sp-sheet" role="alertdialog" aria-label="Sign out" onClick={(e) => e.stopPropagation()}>
+            <div className="sp-sheet__grabber" />
+            <h3 className="pf-sheet-title">Sign out of Spota?</h3>
+            <p className="pf-sheet-text">
+              {currentUser?.isGuest
+                ? 'Guest drops stay on this device, but you will need an account to keep exploring.'
+                : 'You will need to sign back in to drop and save SPOTAs.'}
             </p>
-            <div className="logout-modal-actions" style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
-              <button 
-                type="button" 
-                onClick={() => setShowLogoutConfirm(false)} 
-                className="submit-trip-btn" 
-                style={{ flex: 1, margin: 0, backgroundColor: 'rgba(44, 53, 49, 0.08)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}
-              >
-                Cancel
-              </button>
-              <button 
-                type="button" 
-                onClick={() => {
-                  setShowLogoutConfirm(false);
-                  signOut();
-                }} 
-                className="submit-trip-btn" 
-                style={{ flex: 1, margin: 0, backgroundColor: 'var(--color-live)', color: 'white' }}
-              >
-                Log Out
-              </button>
+            <div className="pf-sheet-actions">
+              <button className="sp-btn sp-btn--secondary" onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+              <button className="sp-btn sp-btn--danger" onClick={() => { setShowLogoutConfirm(false); signOut(); }}>Sign out</button>
             </div>
           </div>
         </div>

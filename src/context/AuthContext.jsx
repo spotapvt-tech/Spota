@@ -215,32 +215,34 @@ export function AuthProvider({ children }) {
   }, []);
 
   if (loading) {
+    // Branded splash (also the first paint inside the Capacitor shell).
     return (
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        width: '100vw',
-        backgroundColor: '#F7F9F6',
-        color: '#2C3531',
-        fontFamily: "'Outfit', sans-serif"
-      }}>
-        <div className="pulse-loader" style={{
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
-          backgroundColor: '#6C8C74',
-          animation: 'pulse 1.5s infinite ease-in-out'
-        }} />
-        <span style={{ marginTop: '16px', fontSize: '14px', fontWeight: 500, opacity: 0.8 }}>Loading Spota...</span>
+      <div
+        role="status"
+        aria-label="Loading Spota"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '18px',
+          height: '100dvh',
+          width: '100%',
+          backgroundColor: '#0D1B16',
+          color: '#F5F5EF',
+        }}
+      >
+        <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="#F5F5EF" strokeWidth="2.6" />
+          <circle cx="12" cy="12" r="3.4" fill="#C6F36B" className="spota-splash-dot" />
+        </svg>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#87928A' }}>
+          Finding your bearings
+        </span>
         <style>{`
-          @keyframes pulse {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(0.8); opacity: 0.5; }
-          }
+          .spota-splash-dot { transform-origin: 12px 12px; animation: spota-splash 1.4s ease-in-out infinite; }
+          @keyframes spota-splash { 0%, 100% { transform: scale(0.75); opacity: .6; } 50% { transform: scale(1.15); opacity: 1; } }
+          @media (prefers-reduced-motion: reduce) { .spota-splash-dot { animation: none; } }
         `}</style>
       </div>
     );

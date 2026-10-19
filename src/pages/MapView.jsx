@@ -1,7 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import { GoogleMap, Circle, InfoWindow } from '@react-google-maps/api';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { GoogleMap, Circle } from '@react-google-maps/api';
+import {
+  Search, Camera, Sparkles, Download, WifiOff, MapPin, LocateFixed, List, Map as MapIcon,
+  SlidersHorizontal, X, Navigation, ArrowUpRight, Flame, Clock, RefreshCw,
+} from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
-import { Search, Camera, Sparkles, Download, WifiOff, MapPin } from 'lucide-react';
 import { haversineDistance, adjustOverlappingCoordinates } from '../lib/utils';
 import { searchPlaces } from '../lib/geocoding';
 import SpotDetailsModal from '../components/SpotDetailsModal';
@@ -9,25 +13,38 @@ import ARView from './ARView';
 import AIVibeMatcher from '../components/AIVibeMatcher';
 import OfflineModal from '../components/OfflineModal';
 import useOfflineSpots from '../hooks/useOfflineSpots';
-import { categories } from '../lib/categoryConfig';
+import { spotPopularity } from '../hooks/useSpots';
+import { categories, getCategoryById } from '../lib/categoryConfig';
+import { formatDistance } from '../lib/format';
 import { useSpotaGoogleMaps, DEFAULT_MAP_OPTIONS } from '../lib/googleMaps';
 import GemMarkerOverlay from '../components/map/GemMarkerOverlay';
+import SpotMarker from '../components/ui/SpotMarker';
+import CategoryGlyph, { CategoryIcon } from '../components/ui/CategoryGlyph';
 import './MapView.css';
 
+const RANGES = ['All', '1', '5', '10', '25'];
+
 export default function MapView() {
-  const { isLoaded } = useSpotaGoogleMaps();
+  const { isLoaded, loadError } = useSpotaGoogleMaps();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const incoming = location.state || {};
+
   const [spots, setSpots] = useState([]);
+  const [fetchState, setFetchState] = useState('loading'); // loading | ready | error
   const [center, setCenter] = useState([28.6139, 77.2090]); // Default Delhi, India
   const [userLocation, setUserLocation] = useState(null);
-  const [selectedRange, setSelectedRange] = useState('5'); // default 5 km, options: 'All', 1, 5, 10, 25
+  const [geoStatus, setGeoStatus] = useState('idle'); // idle | locating | granted | denied | unavailable
+  const [selectedRange, setSelectedRange] = useState(incoming.focusSpotId ? 'All' : '5');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSpot, setSelectedSpot] = useState(null);
+  const [selectedSpot, setSelectedSpot] = useState(null); // full details modal
+  const [activeSpotId, setActiveSpotId] = useState(incoming.focusSpotId ?? null); // preview sheet
   const [showAR, setShowAR] = useState(false);
   const [showAiMatcher, setShowAiMatcher] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [openPopupSpotId, setOpenPopupSpotId] = useState(null);
-  const [showUserPopup, setShowUserPopup] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(incoming.category || 'all');
+  const [viewMode, setViewMode] = useState('map'); // map | list
 
   // Place search — jump the map to an area, state, or place name (as
   // distinct from filtering the pins already on screen by title/tag below)
@@ -36,65 +53,81 @@ export default function MapView() {
   const [showPlaceDropdown, setShowPlaceDropdown] = useState(false);
   const placeAbortRef = useRef(null);
   const searchContainerRef = useRef(null);
-
   const mapRef = useRef(null);
+  const focusAppliedRef = useRef(false);
+  // A deep link ("Take me there" from Home) owns the initial camera; GPS
+  // must not yank the map away from it.
+  const skipAutoCenterRef = useRef(Boolean(incoming.focusSpotId));
 
   const { isOffline, offlineSpots, refreshCache } = useOfflineSpots();
 
-  // Fetch spots on mount
+  // Clear router state so a refresh / back doesn't re-apply the deep link.
   useEffect(() => {
-    async function fetchSpots() {
-      try {
-        const { data, error } = await supabase.from('spots').select('*').neq('status', 'deleted');
-        if (error) throw error;
+    if (location.state) navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate]);
 
-        if (data && data.length > 0) {
-          setSpots(data);
-          // Default center on the most recently added spot
-          setCenter([data[data.length - 1].latitude, data[data.length - 1].longitude]);
-        }
-      } catch (error) {
-        console.error('Error fetching map spots:', error);
+  const fetchSpots = useCallback(async () => {
+    setFetchState('loading');
+    try {
+      const { data, error } = await supabase.from('spots').select('*').neq('status', 'deleted');
+      if (error) throw error;
+      setSpots(data || []);
+      setFetchState('ready');
+      if (data && data.length > 0 && !skipAutoCenterRef.current) {
+        // Default center on the most recently added spot (until GPS answers)
+        setCenter((c) => (c[0] === 28.6139 && c[1] === 77.2090 ? [data[data.length - 1].latitude, data[data.length - 1].longitude] : c));
       }
+    } catch (error) {
+      console.error('Error fetching map spots:', error);
+      setFetchState('error');
     }
+  }, []);
 
-    if (!isOffline) {
-      fetchSpots();
-    }
+  const locate = useCallback((recenter = true) => {
+    if (!('geolocation' in navigator)) { setGeoStatus('unavailable'); return; }
+    setGeoStatus('locating');
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const latLng = [position.coords.latitude, position.coords.longitude];
+        setUserLocation(latLng);
+        setGeoStatus('granted');
+        if (recenter && !skipAutoCenterRef.current) setCenter(latLng);
+      },
+      (err) => setGeoStatus(err && err.code === 1 ? 'denied' : 'unavailable'),
+      { timeout: 12000, maximumAge: 60000 }
+    );
+  }, []);
 
-    // Center on user's browser location if available
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const latLng = [position.coords.latitude, position.coords.longitude];
-          setCenter(latLng);
-          setUserLocation(latLng);
-        },
-        (err) => console.log('Geolocation centered bypassed:', err)
-      );
-    }
-  }, [isOffline]);
+  // Fetch spots + center on the user (the map is an explicit "where am I" surface)
+  useEffect(() => {
+    const t = setTimeout(() => {
+      if (!isOffline) fetchSpots();
+      locate(true);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [isOffline, fetchSpots, locate]);
 
   // Center map on last offline spot if offline mode becomes active
   useEffect(() => {
     if (isOffline && offlineSpots.length > 0) {
-      setTimeout(() => {
+      const t = setTimeout(() => {
         setCenter([offlineSpots[offlineSpots.length - 1].latitude, offlineSpots[offlineSpots.length - 1].longitude]);
       }, 0);
+      return () => clearTimeout(t);
     }
+    return undefined;
   }, [isOffline, offlineSpots]);
 
-  // Pan the map whenever `center` changes (mirrors the old Leaflet MapCenter helper)
+  // Pan the map whenever `center` changes
   useEffect(() => {
     if (center && mapRef.current) {
       mapRef.current.panTo({ lat: center[0], lng: center[1] });
     }
   }, [center]);
 
-  // Debounced place search — matches areas, states, cities, and named
-  // places (not just spots already on the map)
+  // Debounced place search — matches areas, states, cities, and named places
   useEffect(() => {
-    if (searchQuery.trim().length < 3) return; // results are hidden while the query is short (see render)
+    if (searchQuery.trim().length < 3) return undefined;
     const t = setTimeout(async () => {
       if (placeAbortRef.current) placeAbortRef.current.abort();
       placeAbortRef.current = new AbortController();
@@ -125,331 +158,351 @@ export default function MapView() {
     const lng = parseFloat(item.lon);
     if (isNaN(lat) || isNaN(lng)) return;
     setCenter([lat, lng]);
+    setSelectedRange('All');
     if (mapRef.current) mapRef.current.setZoom(13);
-    // Clear the text filter so pins near the searched place aren't hidden
-    // by a title/tag match against the full place name.
     setSearchQuery('');
     setPlaceResults([]);
     setShowPlaceDropdown(false);
   };
 
-  // Listen to realtime or local updates to update likes and shares instantly on map markers
+  // Live reactions / shares from SpotDetailsModal
   useEffect(() => {
     const handleSpotUpdate = (e) => {
       const { id, reactions, share_count } = e.detail;
-      setSpots((prevSpots) =>
-        prevSpots.map((spot) =>
-          spot.id === id
-            ? {
-                ...spot,
-                reactions: reactions !== undefined ? reactions : spot.reactions,
-                share_count: share_count !== undefined ? share_count : spot.share_count
-              }
-            : spot
-        )
-      );
-
-      // Also update currently selected spot details if open
-      setSelectedSpot((current) => {
-        if (current && current.id === id) {
-          return {
-            ...current,
-            reactions: reactions !== undefined ? reactions : current.reactions,
-            share_count: share_count !== undefined ? share_count : current.share_count
-          };
-        }
-        return current;
-      });
+      const patch = (s) => (s && s.id === id
+        ? { ...s, reactions: reactions !== undefined ? reactions : s.reactions, share_count: share_count !== undefined ? share_count : s.share_count }
+        : s);
+      setSpots((prev) => prev.map(patch));
+      setSelectedSpot(patch);
     };
-
     window.addEventListener('spota_spot_updated', handleSpotUpdate);
     return () => window.removeEventListener('spota_spot_updated', handleSpotUpdate);
   }, []);
 
-  // Compute popularity score
-  const getPopularity = (spot) => {
-    let reactionCount = 0;
-    if (spot.reactions) {
-      reactionCount = Object.values(spot.reactions).reduce((a, b) => a + b, 0);
-    }
-    return (reactionCount * 2) + ((spot.share_count || 0) * 3);
-  };
-
-  // Get reference coordinates for range calculations (handles remote testing fallback)
-  const getReferenceCoords = () => {
+  // Reference point for range filtering (falls back to map centre when the
+  // device is far away — e.g. browsing another state)
+  const referenceCoords = useMemo(() => {
     let coords = userLocation || center;
     if (userLocation && center) {
-      const distFromCenter = haversineDistance(userLocation[0], userLocation[1], center[0], center[1]);
-      if (distFromCenter > 100) {
-        coords = center;
-      }
+      const d = haversineDistance(userLocation[0], userLocation[1], center[0], center[1]);
+      if (d > 100) coords = center;
     }
     return coords;
+  }, [userLocation, center]);
+
+  const displaySpots = useMemo(
+    () => adjustOverlappingCoordinates(isOffline ? offlineSpots : spots),
+    [isOffline, offlineSpots, spots]
+  );
+
+  const filteredSpots = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+    const cleanQuery = query.replace(/#/g, '');
+    return displaySpots
+      .filter((spot) => spot.status !== 'deleted' && spot.status !== 'flagged')
+      .map((spot) => ({
+        ...spot,
+        _km: referenceCoords ? haversineDistance(referenceCoords[0], referenceCoords[1], spot.latitude, spot.longitude) : null,
+      }))
+      .filter((spot) => selectedRange === 'All' || spot._km == null || spot._km <= Number(selectedRange))
+      .filter((spot) => selectedCategory === 'all' || spot.category === selectedCategory)
+      .filter((spot) => {
+        if (!query) return true;
+        const tagMatch = Array.isArray(spot.tags) && spot.tags.some((tag) => tag.toLowerCase().includes(cleanQuery));
+        return (
+          spot.title?.toLowerCase().includes(query) ||
+          spot.description?.toLowerCase().includes(query) ||
+          spot.category?.toLowerCase().includes(query) ||
+          tagMatch
+        );
+      })
+      .sort((a, b) => (a._km ?? 0) - (b._km ?? 0));
+  }, [displaySpots, referenceCoords, selectedRange, selectedCategory, searchQuery]);
+
+  const activeSpot = useMemo(() => {
+    if (activeSpotId == null) return null;
+    const s = displaySpots.find((x) => x.id === activeSpotId);
+    if (!s) return null;
+    return {
+      ...s,
+      _km: userLocation ? haversineDistance(userLocation[0], userLocation[1], s.latitude, s.longitude) : null,
+    };
+  }, [activeSpotId, displaySpots, userLocation]);
+
+  // Deep link from Home ("Take me there"): centre on the spot once loaded.
+  useEffect(() => {
+    if (focusAppliedRef.current || activeSpotId == null) return;
+    const s = displaySpots.find((x) => x.id === activeSpotId);
+    if (!s) return;
+    focusAppliedRef.current = true;
+    const t = setTimeout(() => {
+      setCenter([s.latitude, s.longitude]);
+      if (mapRef.current) mapRef.current.setZoom(14);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [activeSpotId, displaySpots]);
+
+  const selectOnMap = (spot) => {
+    setActiveSpotId(spot.id);
+    setViewMode('map');
+    setCenter([spot.latitude, spot.longitude]);
   };
 
-  const displaySpots = adjustOverlappingCoordinates(isOffline ? offlineSpots : spots);
-
-  // Filter map pins based on search query, range distance, and selected category
-  const filteredSpots = displaySpots.filter((spot) => {
-    // Show all spots except deleted or flagged ones
-    if (spot.status === 'deleted' || spot.status === 'flagged') return false;
-
-    // 1. Range proximity filter
-    if (selectedRange !== 'All') {
-      const refCoords = getReferenceCoords();
-      if (refCoords) {
-        const distance = haversineDistance(refCoords[0], refCoords[1], spot.latitude, spot.longitude);
-        if (distance > Number(selectedRange)) return false;
-      }
+  const recenterOnMe = () => {
+    if (userLocation) {
+      setCenter([userLocation[0], userLocation[1]]);
+      if (mapRef.current) mapRef.current.setZoom(14);
+    } else {
+      skipAutoCenterRef.current = false;
+      locate(true);
     }
+  };
 
-    // 2. Category filter
-    if (selectedCategory !== 'all') {
-      if (spot.category !== selectedCategory) return false;
-    }
-
-    // 3. Search query filter
-    const query = searchQuery.toLowerCase().trim();
-    if (!query) return true;
-    const cleanQuery = query.replace(/#/g, '');
-    const tagMatch = spot.tags && Array.isArray(spot.tags) && spot.tags.some(tag => tag.toLowerCase().includes(cleanQuery));
-    return (
-      spot.title?.toLowerCase().includes(query) ||
-      spot.description?.toLowerCase().includes(query) ||
-      spot.category?.toLowerCase().includes(query) ||
-      tagMatch
-    );
-  });
-
-  const referenceCoords = getReferenceCoords();
+  const mapUnavailable = Boolean(loadError) || (!isLoaded && !navigator.onLine);
+  const effectiveView = mapUnavailable ? 'list' : viewMode;
 
   return (
-    <div className="map-container-wrapper">
-      {/* Offline Status Banner */}
-      {isOffline && (
-        <div className="offline-banner animate-fade-in">
-          <WifiOff size={14} />
-          <span>Offline Mode — Caching Active</span>
-        </div>
-      )}
-
-      {/* AR Mode Trigger Button */}
-      <button
-        className="map-ar-trigger-btn glass-panel animate-fade-in"
-        onClick={() => setShowAR(true)}
-        title="Open AR Finder"
-      >
-        <Camera size={22} />
-      </button>
-
-      {/* Offline Download Trigger Button */}
-      {!isOffline && (
-        <button
-          className="map-download-trigger-btn glass-panel animate-fade-in"
-          onClick={() => setShowOfflineModal(true)}
-          title="Download Map Area Offline"
-        >
-          <Download size={22} />
-        </button>
-      )}
-
-      {/* Floating Explore Nearby AR CTA */}
-      <button
-        className="map-explore-cta glass-panel animate-pulse-glow"
-        onClick={() => setShowAR(true)}
-        title="Explore Nearby in Augmented Reality"
-      >
-        <Camera size={18} className="cta-icon" />
-        <span>Explore Nearby (AR)</span>
-      </button>
-
-      {/* Vibe & Spot Search Overlay */}
-      <div className="map-search-overlay" ref={searchContainerRef}>
-        <Search size={18} className="map-search-icon" />
-        <input
-          type="text"
-          placeholder="Search an area, state, place, or your spots..."
-          className="map-search-input"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onFocus={() => placeResults.length > 0 && setShowPlaceDropdown(true)}
-        />
-        <button
-          type="button"
-          className="map-ai-search-trigger"
-          onClick={() => setShowAiMatcher(true)}
-          title="Ask Spota Vibe AI"
-        >
-          <Sparkles size={18} />
-        </button>
-
-        {showPlaceDropdown && searchQuery.trim().length >= 3 && (placeResults.length > 0 || isSearchingPlaces) && (
-          <div className="map-search-dropdown glass-panel">
-            {isSearchingPlaces ? (
-              <div className="map-search-loading">Searching places… 🗺️</div>
-            ) : (
-              placeResults.map((item, idx) => {
-                const parts = (item.display_name || '').split(',');
-                return (
-                  <div key={item.place_id || idx} className="map-search-result" onClick={() => handleSelectPlace(item)}>
-                    <MapPin size={14} className="map-result-icon" />
-                    <div>
-                      <div className="map-result-main">{parts[0]}</div>
-                      {parts[1] && <div className="map-result-sub">{parts.slice(1, 3).join(', ')}</div>}
-                    </div>
-                  </div>
-                );
-              })
+    <div className={`explore ${effectiveView === 'list' ? 'is-list' : ''}`}>
+      {/* ---------- Map canvas ---------- */}
+      <div className="explore-map" aria-hidden={effectiveView === 'list'}>
+        {!isLoaded && !loadError && <div className="explore-map__placeholder"><span className="sp-eyebrow">Loading terrain…</span></div>}
+        {isLoaded && (
+          <GoogleMap
+            mapContainerClassName="full-screen-map"
+            center={{ lat: center[0], lng: center[1] }}
+            zoom={13}
+            options={DEFAULT_MAP_OPTIONS}
+            onLoad={(map) => { mapRef.current = map; }}
+            onClick={() => setActiveSpotId(null)}
+          >
+            {userLocation && (
+              <GemMarkerOverlay position={{ lat: userLocation[0], lng: userLocation[1] }} width={18} height={18} zIndex={5}>
+                <div className="user-location-dot" title="You are here" />
+              </GemMarkerOverlay>
             )}
-          </div>
+
+            {selectedRange !== 'All' && referenceCoords && (
+              <Circle
+                center={{ lat: referenceCoords[0], lng: referenceCoords[1] }}
+                radius={Number(selectedRange) * 1000}
+                options={{
+                  fillColor: '#C6F36B',
+                  fillOpacity: 0.04,
+                  strokeColor: '#C6F36B',
+                  strokeOpacity: 0.45,
+                  strokeWeight: 1.2,
+                  clickable: false,
+                }}
+              />
+            )}
+
+            {filteredSpots.map((spot) => (
+              <GemMarkerOverlay
+                key={spot.id}
+                position={{ lat: spot.latitude, lng: spot.longitude }}
+                width={40}
+                height={48}
+                zIndex={spot.id === activeSpotId ? 20 : 1}
+                onClick={(e) => { e?.stopPropagation?.(); setActiveSpotId(spot.id); }}
+              >
+                <SpotMarker
+                  category={spot.category}
+                  selected={spot.id === activeSpotId}
+                  trending={spotPopularity(spot) >= 5}
+                  pending={spot.status === 'pending'}
+                  label={spot.title}
+                />
+              </GemMarkerOverlay>
+            ))}
+          </GoogleMap>
         )}
       </div>
 
-      {/* Range Filter Overlay */}
-      <div className="map-range-overlay">
-        <span className="range-label">Range:</span>
-        <div className="range-chips">
-          {['All', '1', '5', '10', '25'].map((rangeVal) => (
-            <button
-              key={rangeVal}
-              className={`range-chip ${selectedRange === rangeVal ? 'active' : ''}`}
-              onClick={() => {
-                setSelectedRange(rangeVal);
-              }}
-            >
-              {rangeVal === 'All' ? 'All' : `${rangeVal} km`}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* ---------- Top controls ---------- */}
+      <div className="explore-top">
+        {isOffline && (
+          <div className="explore-offline" role="status">
+            <WifiOff size={13} /> Offline — showing downloaded zones
+          </div>
+        )}
 
-      {/* Category Filter Chips Overlay */}
-      <div className="map-category-overlay">
-        <div className="category-chips">
+        <div className="explore-search" ref={searchContainerRef}>
+          <Search size={18} className="explore-search__icon" aria-hidden="true" />
+          <input
+            type="search"
+            enterKeyHint="search"
+            aria-label="Search places or SPOTAs"
+            placeholder="Search a place, trail or #tag"
+            className="explore-search__input"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onFocus={() => placeResults.length > 0 && setShowPlaceDropdown(true)}
+          />
+          {searchQuery && (
+            <button type="button" className="explore-search__clear" onClick={() => setSearchQuery('')} aria-label="Clear search">
+              <X size={16} />
+            </button>
+          )}
+          <button type="button" className="explore-search__ai" onClick={() => setShowAiMatcher(true)} aria-label="Ask Spota AI for a match" title="Vibe match">
+            <Sparkles size={17} />
+          </button>
+
+          {showPlaceDropdown && searchQuery.trim().length >= 3 && (placeResults.length > 0 || isSearchingPlaces) && (
+            <div className="explore-dropdown" role="listbox">
+              {isSearchingPlaces ? (
+                <div className="explore-dropdown__loading"><span className="explore-spinner" /> Searching places…</div>
+              ) : (
+                placeResults.map((item, idx) => {
+                  const parts = (item.display_name || '').split(',');
+                  return (
+                    <button key={item.place_id || idx} className="explore-dropdown__row" onClick={() => handleSelectPlace(item)} role="option">
+                      <MapPin size={15} />
+                      <span>
+                        <strong>{parts[0]}</strong>
+                        {parts[1] && <small>{parts.slice(1, 3).join(', ')}</small>}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="explore-chips sp-rail" role="toolbar" aria-label="Filter by category">
           <button
-            className={`category-chip ${selectedCategory === 'all' ? 'active' : ''}`}
-            onClick={() => setSelectedCategory('all')}
+            className="sp-chip explore-filter-btn"
+            onClick={() => setShowFilters(true)}
+            aria-label="Distance filter"
           >
-            💎 All
+            <SlidersHorizontal size={14} />
+            {selectedRange === 'All' ? 'Any distance' : `≤ ${selectedRange} km`}
+          </button>
+          <button className="sp-chip" aria-pressed={selectedCategory === 'all'} onClick={() => setSelectedCategory('all')}>
+            All
           </button>
           {categories.map((cat) => (
             <button
               key={cat.id}
-              className={`category-chip ${selectedCategory === cat.id ? 'active' : ''}`}
-              onClick={() => setSelectedCategory(cat.id)}
-              style={{
-                '--cat-color': cat.color
-              }}
+              className="sp-chip"
+              aria-pressed={selectedCategory === cat.id}
+              onClick={() => setSelectedCategory(selectedCategory === cat.id ? 'all' : cat.id)}
+              style={{ '--cat-color': cat.color }}
             >
-              <span>{cat.emoji}</span>
-              <span>{cat.label}</span>
+              <span className="explore-chip-icon"><CategoryIcon category={cat.id} size={14} /></span>
+              {cat.label}
             </button>
           ))}
         </div>
       </div>
 
-      {isLoaded && (
-        <GoogleMap
-          mapContainerClassName="full-screen-map"
-          center={{ lat: center[0], lng: center[1] }}
-          zoom={13}
-          options={DEFAULT_MAP_OPTIONS}
-          onLoad={(map) => { mapRef.current = map; }}
-        >
-          {/* User Location Pulse Marker */}
-          {userLocation && (
-            <>
-              <GemMarkerOverlay
-                position={{ lat: userLocation[0], lng: userLocation[1] }}
-                width={18}
-                height={18}
-                zIndex={5}
-                onClick={() => setShowUserPopup(true)}
-              >
-                <div className="user-location-dot" />
-              </GemMarkerOverlay>
-              {showUserPopup && (
-                <InfoWindow
-                  position={{ lat: userLocation[0], lng: userLocation[1] }}
-                  onCloseClick={() => setShowUserPopup(false)}
-                >
-                  <div style={{ color: '#2C3531', fontWeight: 600 }}>Your Location</div>
-                </InfoWindow>
-              )}
-            </>
+      {/* ---------- Side controls ---------- */}
+      {effectiveView === 'map' && (
+        <div className={`explore-fabs ${activeSpot ? 'is-raised' : ''}`}>
+          <button className="explore-fab" onClick={recenterOnMe} aria-label="Center on my location" title="My location">
+            <LocateFixed size={20} className={geoStatus === 'locating' ? 'animate-pulse' : ''} />
+          </button>
+          <button className="explore-fab" onClick={() => setShowAR(true)} aria-label="Open AR finder" title="AR finder">
+            <Camera size={20} />
+          </button>
+          {!isOffline && (
+            <button className="explore-fab" onClick={() => setShowOfflineModal(true)} aria-label="Download this area for offline use" title="Save area offline">
+              <Download size={20} />
+            </button>
           )}
-
-          {/* Visual Range Circle Overlay */}
-          {selectedRange !== 'All' && referenceCoords && (
-            <Circle
-              center={{ lat: referenceCoords[0], lng: referenceCoords[1] }}
-              radius={Number(selectedRange) * 1000}
-              options={{
-                fillColor: '#6C8C74',
-                fillOpacity: 0.08,
-                strokeColor: '#6C8C74',
-                strokeWeight: 1.5,
-                clickable: false,
-              }}
-            />
-          )}
-
-          {filteredSpots.map((spot) => {
-            const popularity = getPopularity(spot);
-            const isTrending = popularity >= 5;
-            const isPending = spot.status === 'pending';
-            const position = { lat: spot.latitude, lng: spot.longitude };
-
-            return (
-              <div key={spot.id}>
-                <GemMarkerOverlay
-                  position={position}
-                  width={32}
-                  height={32}
-                  onClick={() => setOpenPopupSpotId(spot.id)}
-                >
-                  <div className={`marker-gem-pin ${isTrending ? 'trending' : ''} ${isPending ? 'pending' : ''}`}>
-                    {isPending ? '⏳' : (isTrending ? '🔥' : '💎')}
-                  </div>
-                </GemMarkerOverlay>
-
-                {openPopupSpotId === spot.id && (
-                  <InfoWindow position={position} onCloseClick={() => setOpenPopupSpotId(null)}>
-                    <div className="custom-popup">
-                      {isPending && <span className="popup-pending-tag" style={{ color: '#E07A5F', fontWeight: '700', fontSize: '10px', textTransform: 'uppercase', marginBottom: '2px', display: 'block' }}>⏳ Pending Review</span>}
-                      {isTrending && !isPending && <span className="popup-trending-tag">🔥 Trending</span>}
-                      {spot.image_url && (
-                        <img src={spot.image_url} alt={spot.title} className="popup-image-mini" />
-                      )}
-                      <h3>{spot.title}</h3>
-                      <p>{spot.description || spot.category}</p>
-                      {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
-                        <div className="popup-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', margin: '4px 0 8px 0' }}>
-                          {spot.tags.map((tag, idx) => (
-                            <span key={idx} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontSize: '9px', fontWeight: 600 }}>
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      <button
-                        className="popup-details-btn"
-                        onClick={() => setSelectedSpot(spot)}
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </InfoWindow>
-                )}
-              </div>
-            );
-          })}
-        </GoogleMap>
+        </div>
       )}
 
-      {selectedSpot && (
-        <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
+      {/* ---------- Location denied hint ---------- */}
+      {geoStatus === 'denied' && effectiveView === 'map' && !activeSpot && (
+        <div className="explore-hint" role="status">
+          <LocateFixed size={14} /> Location is off — distances use the map centre. Enable it in device settings.
+        </div>
       )}
+
+      {/* ---------- List view ---------- */}
+      {effectiveView === 'list' && (
+        <section className="explore-list" aria-label="SPOTAs list">
+          {mapUnavailable && (
+            <div className="explore-list__notice"><WifiOff size={14} /> Map unavailable right now — showing the list instead.</div>
+          )}
+          {fetchState === 'loading' && !isOffline && filteredSpots.length === 0 ? (
+            [0, 1, 2, 3].map((i) => <div key={i} className="sp-skeleton explore-list__skel" />)
+          ) : fetchState === 'error' && !isOffline ? (
+            <div className="sp-state">
+              <div className="sp-state__icon"><WifiOff size={22} /></div>
+              <h3>Couldn&apos;t load SPOTAs</h3>
+              <p>Check your connection and try again.</p>
+              <button className="sp-btn sp-btn--secondary sp-btn--sm" onClick={fetchSpots}><RefreshCw size={14} /> Retry</button>
+            </div>
+          ) : filteredSpots.length === 0 ? (
+            <EmptyResults onReset={() => { setSelectedCategory('all'); setSelectedRange('All'); setSearchQuery(''); }} />
+          ) : (
+            <ul>
+              {filteredSpots.map((spot) => (
+                <li key={spot.id}>
+                  <ListRow spot={spot} onOpen={() => setSelectedSpot(spot)} onMap={mapUnavailable ? null : () => selectOnMap(spot)} />
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {/* ---------- Bottom: preview sheet or results bar ---------- */}
+      {effectiveView === 'map' && activeSpot ? (
+        <SpotPreviewSheet
+          spot={activeSpot}
+          onClose={() => setActiveSpotId(null)}
+          onOpen={() => setSelectedSpot(activeSpot)}
+        />
+      ) : (
+        <div className="explore-bar">
+          <span className="explore-bar__count">
+            {fetchState === 'loading' && !isOffline && spots.length === 0
+              ? <span className="sp-mono">Scanning…</span>
+              : <><strong className="sp-mono">{filteredSpots.length}</strong> {filteredSpots.length === 1 ? 'SPOTA' : 'SPOTAs'}{selectedRange !== 'All' ? ` within ${selectedRange} km` : ''}</>}
+          </span>
+          {!mapUnavailable && (
+            <button className="explore-bar__toggle" onClick={() => setViewMode(effectiveView === 'map' ? 'list' : 'map')}>
+              {effectiveView === 'map' ? <><List size={16} /> List</> : <><MapIcon size={16} /> Map</>}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Empty overlay on the map itself */}
+      {effectiveView === 'map' && fetchState === 'ready' && filteredSpots.length === 0 && !activeSpot && (
+        <div className="explore-empty-float">
+          <EmptyResults compact onReset={() => { setSelectedCategory('all'); setSelectedRange('All'); setSearchQuery(''); }} />
+        </div>
+      )}
+
+      {/* ---------- Distance filter sheet ---------- */}
+      {showFilters && (
+        <div className="sp-sheet-backdrop" onClick={() => setShowFilters(false)}>
+          <div className="sp-sheet" role="dialog" aria-label="Distance" onClick={(e) => e.stopPropagation()}>
+            <div className="sp-sheet__grabber" />
+            <div className="explore-sheet-head">
+              <h3>How far will you go?</h3>
+              <button className="sp-icon-btn" onClick={() => setShowFilters(false)} aria-label="Close"><X size={18} /></button>
+            </div>
+            <p className="explore-sheet-sub">Measured from {userLocation ? 'your location' : 'the map centre'}.</p>
+            <div className="explore-seg" role="radiogroup" aria-label="Distance">
+              {RANGES.map((r) => (
+                <button key={r} role="radio" aria-checked={selectedRange === r} className={selectedRange === r ? 'is-on' : ''} onClick={() => setSelectedRange(r)}>
+                  {r === 'All' ? 'Any' : `${r} km`}
+                </button>
+              ))}
+            </div>
+            <button className="sp-btn sp-btn--primary sp-btn--block" style={{ marginTop: 20 }} onClick={() => setShowFilters(false)}>
+              Show {filteredSpots.length} {filteredSpots.length === 1 ? 'SPOTA' : 'SPOTAs'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {selectedSpot && <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />}
 
       {showAiMatcher && (
         <AIVibeMatcher
@@ -478,11 +531,91 @@ export default function MapView() {
           center={center}
           spots={spots}
           onClose={() => setShowOfflineModal(false)}
-          onSuccess={() => {
-            refreshCache();
-          }}
+          onSuccess={() => refreshCache()}
         />
       )}
+    </div>
+  );
+}
+
+function directionsUrl(spot) {
+  return `https://www.google.com/maps/dir/?api=1&destination=${spot.latitude},${spot.longitude}`;
+}
+
+function SpotPreviewSheet({ spot, onClose, onOpen }) {
+  const cat = getCategoryById(spot.category);
+  const hot = spotPopularity(spot) >= 5;
+  const pending = spot.status === 'pending';
+  return (
+    <article className="explore-preview" aria-label={`${spot.title} preview`}>
+      <button className="explore-preview__close" onClick={onClose} aria-label="Close preview"><X size={16} /></button>
+      <button className="explore-preview__main" onClick={onOpen}>
+        {spot.image_url
+          ? <img src={spot.image_url} alt="" className="explore-preview__img" />
+          : <span className="explore-preview__img explore-preview__img--empty"><CategoryIcon category={spot.category} size={28} /></span>}
+        <span className="explore-preview__body">
+          <span className="explore-preview__meta">
+            <span style={{ color: cat.color }}><CategoryIcon category={spot.category} size={12} /> {cat.label}</span>
+            {spot._km != null && <span className="sp-mono">{formatDistance(spot._km)} away</span>}
+          </span>
+          <strong className="explore-preview__title">{spot.title}</strong>
+          {pending
+            ? <span className="explore-preview__flag explore-preview__flag--pending"><Clock size={12} /> Awaiting community review</span>
+            : hot
+              ? <span className="explore-preview__flag"><Flame size={12} /> Getting lots of love</span>
+              : spot.description
+                ? <span className="explore-preview__desc">{spot.description}</span>
+                : null}
+        </span>
+      </button>
+      <div className="explore-preview__actions">
+        <button className="sp-btn sp-btn--primary sp-btn--sm" onClick={onOpen}>
+          View SPOTA <ArrowUpRight size={15} />
+        </button>
+        <a className="sp-btn sp-btn--secondary sp-btn--sm" href={directionsUrl(spot)} target="_blank" rel="noopener noreferrer">
+          <Navigation size={15} /> Directions
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function ListRow({ spot, onOpen, onMap }) {
+  const cat = getCategoryById(spot.category);
+  return (
+    <div className="explore-row">
+      <button className="explore-row__main" onClick={onOpen}>
+        {spot.image_url
+          ? <img src={spot.image_url} alt="" loading="lazy" className="explore-row__img" />
+          : <CategoryGlyph category={spot.category} size={64} className="explore-row__img" />}
+        <span className="explore-row__body">
+          <span className="explore-row__cat" style={{ color: cat.color }}><CategoryIcon category={spot.category} size={12} /> {cat.label}</span>
+          <strong>{spot.title}</strong>
+          <span className="explore-row__desc">{spot.status === 'pending' ? 'Awaiting community review' : (spot.description || spot.address || '')}</span>
+        </span>
+      </button>
+      <span className="explore-row__side">
+        {spot._km != null && <span className="sp-mono">{formatDistance(spot._km)}</span>}
+        {onMap && (
+          <button className="sp-icon-btn sp-icon-btn--filled" onClick={onMap} aria-label={`Show ${spot.title} on map`}>
+            <MapPin size={16} />
+          </button>
+        )}
+      </span>
+    </div>
+  );
+}
+
+function EmptyResults({ onReset, compact = false }) {
+  return (
+    <div className={`sp-state ${compact ? 'explore-empty--compact' : ''}`}>
+      {!compact && <div className="sp-state__icon"><Search size={22} /></div>}
+      <h3>Nothing out here — yet</h3>
+      <p>Widen the distance or clear filters. Or be the first to drop a SPOTA here.</p>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button className="sp-btn sp-btn--secondary sp-btn--sm" onClick={onReset}>Clear filters</button>
+        <Link className="sp-btn sp-btn--primary sp-btn--sm" to="/add">Drop one</Link>
+      </div>
     </div>
   );
 }

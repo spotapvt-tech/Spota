@@ -61,7 +61,7 @@ export default function StepName({
   return (
     <div className="step-name wizard-step">
       <div className="step-header">
-        <h2>Name Your Gem 🏷️</h2>
+        <h2>Name this place</h2>
         <p>Give this place its identity.</p>
       </div>
 

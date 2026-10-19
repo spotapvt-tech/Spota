@@ -1,0 +1,97 @@
+/* Shared Google Maps chrome for every map in the app (Explore, StepPin,
+   SafeTrek, TripBoard, TripPackagePreview). Imported by GemMarkerOverlay. */
+
+/* Dark InfoWindows (Google's default is white, which hid our light text) */
+.gm-style .gm-style-iw-c {
+  background: var(--bg-overlay) !important;
+  color: var(--text-strong);
+  border: 1px solid var(--line) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-lg) !important;
+  padding: 12px !important;
+}
+.gm-style .gm-style-iw-d { overflow: visible !important; }
+.gm-style .gm-style-iw-tc::after { background: var(--bg-overlay) !important; }
+.gm-style .gm-style-iw-chr button span { background-color: var(--text-muted) !important; }
+.gm-style { font-family: var(--font-family-base) !important; }
+
+.custom-popup h3 {
+  margin: 0 0 4px 0;
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
+.custom-popup p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+.popup-image-mini {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+}
+.popup-details-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 8px;
+  margin-top: 10px;
+  background-color: var(--color-accent);
+  color: var(--color-on-accent) !important;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+.popup-details-btn:hover {
+  background-color: var(--color-accent-hover);
+}
+.popup-trending-tag {
+  color: var(--color-live);
+  font-weight: 700;
+  font-size: 10px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+  display: block;
+  letter-spacing: 0.5px;
+}
+.marker-gem-pin {
+  width: 32px;
+  height: 32px;
+  background: var(--color-bg-primary);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  box-shadow: var(--shadow-md);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast);
+  cursor: pointer;
+  animation: markerFloat 3s ease-in-out infinite;
+}
+.marker-gem-pin:hover {
+  transform: scale(1.15) translateY(-3px) !important;
+  box-shadow: var(--shadow-lg);
+  border-color: var(--color-live);
+}
+.marker-gem-pin.trending {
+  border-color: var(--color-live);
+  box-shadow: 0 0 8px rgba(255, 106, 77, 0.4), var(--shadow-md);
+}
+.marker-gem-pin.trending:hover {
+  box-shadow: 0 0 12px rgba(255, 106, 77, 0.6), var(--shadow-lg);
+}
+.marker-gem-pin.pending {
+  border-color: var(--color-text-secondary) !important;
+  opacity: 0.65;
+}
+
+@keyframes markerFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}

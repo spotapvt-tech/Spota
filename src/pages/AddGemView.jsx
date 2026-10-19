@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { X, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { checkBadges } from '../lib/badgeEngine';
 import { analyzeImageColor } from '../lib/imageUtils';
@@ -16,18 +16,22 @@ import StepPin from './steps/StepPin';
 import StepName from './steps/StepName';
 import StepRate from './steps/StepRate';
 import StepVibe from './steps/StepVibe';
+import StepReview from './steps/StepReview';
 import StepCelebrate from './steps/StepCelebrate';
 
 import './AddGemView.css';
 
 // Validation: what's needed to advance from each step
+const TOTAL_STEPS = 6; // 1 Capture · 2 Pin · 3 Name · 4 Rate · 5 Vibe · 6 Review — 7 is the celebration
+
 function stepValid(step, state) {
-  const { photoFile, location, gemName, category, description } = state;
+  const { photoFile, location, gemName, category, description, safetyAck } = state;
   if (step === 1) return !!photoFile;
   if (step === 2) return !!(location?.lat && location?.lng);
   if (step === 3) return !!(gemName?.trim() && category);
   if (step === 4) return true; // vibe ratings always valid
   if (step === 5) return !!(description?.trim());
+  if (step === 6) return !!(description?.trim()) && !!safetyAck;
   return true;
 }
 
@@ -66,6 +70,10 @@ export default function AddGemView() {
   const [description, setDescription] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
 
+  // Step 6 — Review
+  const [safetyAck, setSafetyAck] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
   // Color profile from photo (used for AI suggestions)
   const [colorProfile, setColorProfile] = useState(null);
 
@@ -98,7 +106,7 @@ export default function AddGemView() {
     if (location?.placeName && !gemName) setGemName(location.placeName);
   }
 
-  const state = { photoFile, location, gemName, category, description };
+  const state = { photoFile, location, gemName, category, description, safetyAck };
 
   const handleNext = () => {
     if (stepValid(wizardStep, state)) setWizardStep(s => s + 1);
@@ -111,7 +119,7 @@ export default function AddGemView() {
   // discarding an in-progress gem and leaving the wizard entirely.
   // Returns true if the press/tap was consumed (stay on this screen).
   const consumeBackPress = () => {
-    if (wizardStep > 1 && wizardStep <= 5) {
+    if (wizardStep > 1 && wizardStep <= TOTAL_STEPS) {
       handleBack();
       return true;
     }
@@ -137,8 +145,9 @@ export default function AddGemView() {
   }, [wizardStep, photoFile]);
 
   const handleSubmit = async () => {
-    if (!stepValid(5, state)) return;
+    if (!stepValid(TOTAL_STEPS, state)) return;
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       const result = await dropGem({
         imageFile: photoFile,
@@ -161,10 +170,10 @@ export default function AddGemView() {
         // Trigger badge check
         setTimeout(() => { if (user) checkBadges(user); }, 600);
       }
-      setWizardStep(6);
+      setWizardStep(TOTAL_STEPS + 1);
     } catch (err) {
       console.error('Drop gem error:', err);
-      alert(`Could not drop gem: ${err.message}`);
+      setSubmitError(err?.message || 'Something went wrong. Your details are still here — try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -179,12 +188,12 @@ export default function AddGemView() {
     gradient.addColorStop(0, '#2C3531'); gradient.addColorStop(1, '#111714');
     ctx.fillStyle = gradient; ctx.fillRect(0, 0, 800, 1200);
 
-    ctx.fillStyle = '#FFFFFF'; ctx.font = "bold 32px 'Outfit', sans-serif";
+    ctx.fillStyle = '#FFFFFF'; ctx.font = "bold 32px 'Archivo Variable', sans-serif";
     ctx.textAlign = 'center'; ctx.fillText('💎 S P O T A', 400, 80);
 
     const drawDetails = () => {
       ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'left';
-      ctx.font = "bold 38px 'Outfit', sans-serif";
+      ctx.font = "bold 38px 'Archivo Variable', sans-serif";
       ctx.fillText(droppedGem.title || 'New Gem', 120, 685, 560);
 
       const catInfo = getCategoryById(droppedGem.category);
@@ -192,10 +201,10 @@ export default function AddGemView() {
       ctx.fillStyle = catInfo.color;
       const pillW = ctx.measureText(catText).width + 24;
       ctx.beginPath(); ctx.roundRect(120, 715, pillW, 32, 16); ctx.fill();
-      ctx.fillStyle = '#FFFFFF'; ctx.font = "bold 13px 'Outfit', sans-serif";
+      ctx.fillStyle = '#FFFFFF'; ctx.font = "bold 13px 'Archivo Variable', sans-serif";
       ctx.fillText(catText, 132, 736);
 
-      ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = "italic 20px 'Outfit', sans-serif";
+      ctx.fillStyle = 'rgba(255,255,255,0.8)'; ctx.font = "italic 20px 'Archivo Variable', sans-serif";
       const words = `"${droppedGem.description || ''}"`.split(' ');
       let line = ''; let lY = 790;
       for (const word of words) {
@@ -239,6 +248,7 @@ export default function AddGemView() {
     setGemName(''); setCategory('cafe');
     setVibeRatings({ cozy:3, insta_worthy:3, lively:3, zen:3, workspace:3 });
     setDescription(''); setSelectedTags([]);
+    setSafetyAck(false); setSubmitError(null);
     setColorProfile(null); setDroppedGem(null);
   };
 
@@ -256,25 +266,31 @@ export default function AddGemView() {
     vibeRatings, setVibeRatings,
     // Step 5
     selectedTags, setSelectedTags,
+    // Step 6
+    safetyAck, setSafetyAck, onEditStep: setWizardStep,
   };
+
+  const inWizard = wizardStep <= TOTAL_STEPS;
 
   return (
     <div className="add-gem-wizard-shell">
-      {wizardStep <= 5 && (
+      {inWizard && (
         <div className="wizard-header-row">
           <button
             type="button"
             className="wizard-header-back-btn"
             onClick={handleHeaderBack}
-            aria-label="Back"
+            aria-label={wizardStep > 1 ? 'Previous step' : 'Close'}
           >
-            <ArrowLeft size={20} />
+            <X size={20} />
           </button>
+          <span className="wizard-header-title">Drop a SPOTA</span>
+          <span className="wizard-header-count sp-mono">{wizardStep}/{TOTAL_STEPS}</span>
         </div>
       )}
 
-      {wizardStep <= 5 && (
-        <GemWizardProgress currentStep={wizardStep} totalSteps={5} />
+      {inWizard && (
+        <GemWizardProgress currentStep={wizardStep} totalSteps={TOTAL_STEPS} />
       )}
 
       <div className="wizard-step-content">
@@ -283,18 +299,26 @@ export default function AddGemView() {
         {wizardStep === 3 && <StepName {...stepProps} />}
         {wizardStep === 4 && <StepRate {...stepProps} />}
         {wizardStep === 5 && <StepVibe {...stepProps} />}
-        {wizardStep === 6 && (
+        {wizardStep === 6 && <StepReview {...stepProps} />}
+        {wizardStep === TOTAL_STEPS + 1 && (
           <StepCelebrate
             gem={droppedGem}
             onShareCard={handleShareCard}
             onDropAnother={handleDropAnother}
           />
         )}
+        {submitError && inWizard && (
+          <div className="wizard-error" role="alert">
+            <AlertTriangle size={16} />
+            <span><strong>Couldn&apos;t publish.</strong> {submitError}</span>
+          </div>
+        )}
       </div>
 
-      {wizardStep <= 5 && (
+      {inWizard && (
         <GemWizardCTA
           step={wizardStep}
+          totalSteps={TOTAL_STEPS}
           onBack={handleBack}
           onNext={handleNext}
           canAdvance={stepValid(wizardStep, state)}
