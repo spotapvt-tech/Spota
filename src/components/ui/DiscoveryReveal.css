@@ -1,0 +1,95 @@
+/* Discovery reveal — ~650 ms total: a brief hold (anticipation), the emblem
+   springs in, one lime ring + glow, a ring of particles, then copy settles.
+   Transform/opacity only (the glow is a one-shot box-shadow on a 72px tile). */
+
+.dr {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-modal) + 10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--gutter);
+  background: rgba(4, 7, 5, 0.62);
+  animation: sp-fade-in 200ms var(--ease-out) both;
+}
+.dr__card {
+  width: min(100%, 340px);
+  padding: 28px 20px 20px;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  animation: dr-card-in var(--dur-sheet) var(--ease-settle) both;
+}
+@keyframes dr-card-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+.dr__emblem { position: relative; width: 120px; height: 96px; display: grid; place-items: center; margin-bottom: 4px; }
+.dr__tile {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--accent-ink);
+  /* 0–180 ms: hold small (anticipation); then spring to full size */
+  animation: dr-tile 560ms var(--ease-settle) both, dr-glow 640ms var(--ease-out) 180ms 1 both;
+}
+@keyframes dr-tile {
+  0% { opacity: 0; transform: scale(0.55); }
+  30% { opacity: 1; transform: scale(0.6); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes dr-glow {
+  0% { box-shadow: 0 0 0 0 rgba(198, 243, 107, 0.55); }
+  100% { box-shadow: 0 0 36px 14px rgba(198, 243, 107, 0); }
+}
+
+.dr__ring {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: dr-ring 640ms var(--ease-out) 180ms 1 both;
+}
+.dr__ring--late { animation-delay: 300ms; border-width: 1px; }
+@keyframes dr-ring {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.1); }
+}
+
+.dr__particles { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
+.dr__particles i {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  animation: dr-particle 620ms var(--ease-out) 220ms 1 both;
+}
+@keyframes dr-particle {
+  0% { opacity: 1; transform: rotate(var(--a)) translateY(-30px) scale(1); }
+  100% { opacity: 0; transform: rotate(var(--a)) translateY(-62px) scale(0.4); }
+}
+
+.dr__kicker { color: var(--accent); animation: sp-rise-in var(--dur-ui) var(--ease-out) 260ms both; }
+.dr__title { font-size: var(--font-size-xl); animation: sp-rise-in var(--dur-ui) var(--ease-out) 300ms both; }
+.dr__detail { font-size: var(--font-size-sm); color: var(--text-body); margin-bottom: 8px; animation: sp-rise-in var(--dur-ui) var(--ease-out) 340ms both; }
+.dr .sp-btn { margin-top: 4px; }
+
+/* Reduced motion: same content, no movement, no particles or rings */
+@media (prefers-reduced-motion: reduce) {
+  .dr__ring, .dr__particles { display: none; }
+  .dr__tile, .dr__card, .dr__kicker, .dr__title, .dr__detail { animation: none; }
+}

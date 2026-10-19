@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { haversineDistance, adjustOverlappingCoordinates } from '../lib/utils';
+import useSheetDrag from '../hooks/useSheetDrag';
 import { searchPlaces } from '../lib/geocoding';
 import SpotDetailsModal from '../components/SpotDetailsModal';
 import ARView from './ARView';
@@ -43,6 +44,7 @@ export default function MapView() {
   const [showAiMatcher, setShowAiMatcher] = useState(false);
   const [showOfflineModal, setShowOfflineModal] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const { sheetRef: filterSheetRef, handleProps: filterHandleProps } = useSheetDrag(() => setShowFilters(false));
   const [selectedCategory, setSelectedCategory] = useState(incoming.category || 'all');
   const [viewMode, setViewMode] = useState('map'); // map | list
 
@@ -219,6 +221,19 @@ export default function MapView() {
       .sort((a, b) => (a._km ?? 0) - (b._km ?? 0));
   }, [displaySpots, referenceCoords, selectedRange, selectedCategory, searchQuery]);
 
+  // Only the single closest approved SPOTA within 300 m of the explorer gets the
+  // "nearby" pulse: motion guides attention to one place, not every pin.
+  const nearbySpotId = useMemo(() => {
+    if (!userLocation) return null;
+    let best = null;
+    for (const s of filteredSpots) {
+      if (s.status === 'pending') continue;
+      const km = haversineDistance(userLocation[0], userLocation[1], s.latitude, s.longitude);
+      if (km <= 0.3 && (!best || km < best.km)) best = { id: s.id, km };
+    }
+    return best ? best.id : null;
+  }, [filteredSpots, userLocation]);
+
   const activeSpot = useMemo(() => {
     if (activeSpotId == null) return null;
     const s = displaySpots.find((x) => x.id === activeSpotId);
@@ -309,6 +324,7 @@ export default function MapView() {
                   category={spot.category}
                   selected={spot.id === activeSpotId}
                   trending={spotPopularity(spot) >= 5}
+                  nearby={spot.id === nearbySpotId}
                   pending={spot.status === 'pending'}
                   label={spot.title}
                 />
@@ -326,7 +342,7 @@ export default function MapView() {
           </div>
         )}
 
-        <div className="explore-search" ref={searchContainerRef}>
+        <div className="explore-search sp-glass" ref={searchContainerRef}>
           <Search size={18} className="explore-search__icon" aria-hidden="true" />
           <input
             type="search"
@@ -348,7 +364,7 @@ export default function MapView() {
           </button>
 
           {showPlaceDropdown && searchQuery.trim().length >= 3 && (placeResults.length > 0 || isSearchingPlaces) && (
-            <div className="explore-dropdown" role="listbox">
+            <div className="explore-dropdown sp-glass sp-glass--thick" role="listbox">
               {isSearchingPlaces ? (
                 <div className="explore-dropdown__loading"><span className="explore-spinner" /> Searching places…</div>
               ) : (
@@ -399,14 +415,14 @@ export default function MapView() {
       {/* ---------- Side controls ---------- */}
       {effectiveView === 'map' && (
         <div className={`explore-fabs ${activeSpot ? 'is-raised' : ''}`}>
-          <button className="explore-fab" onClick={recenterOnMe} aria-label="Center on my location" title="My location">
+          <button className="explore-fab sp-glass" onClick={recenterOnMe} aria-label="Center on my location" title="My location">
             <LocateFixed size={20} className={geoStatus === 'locating' ? 'animate-pulse' : ''} />
           </button>
-          <button className="explore-fab" onClick={() => setShowAR(true)} aria-label="Open AR finder" title="AR finder">
+          <button className="explore-fab sp-glass" onClick={() => setShowAR(true)} aria-label="Open AR finder" title="AR finder">
             <Camera size={20} />
           </button>
           {!isOffline && (
-            <button className="explore-fab" onClick={() => setShowOfflineModal(true)} aria-label="Download this area for offline use" title="Save area offline">
+            <button className="explore-fab sp-glass" onClick={() => setShowOfflineModal(true)} aria-label="Download this area for offline use" title="Save area offline">
               <Download size={20} />
             </button>
           )}
@@ -415,7 +431,7 @@ export default function MapView() {
 
       {/* ---------- Location denied hint ---------- */}
       {geoStatus === 'denied' && effectiveView === 'map' && !activeSpot && (
-        <div className="explore-hint" role="status">
+        <div className="explore-hint sp-glass" role="status">
           <LocateFixed size={14} /> Location is off — distances use the map centre. Enable it in device settings.
         </div>
       )}
@@ -457,7 +473,7 @@ export default function MapView() {
           onOpen={() => setSelectedSpot(activeSpot)}
         />
       ) : (
-        <div className="explore-bar">
+        <div className="explore-bar sp-glass">
           <span className="explore-bar__count">
             {fetchState === 'loading' && !isOffline && spots.length === 0
               ? <span className="sp-mono">Scanning…</span>
@@ -473,7 +489,7 @@ export default function MapView() {
 
       {/* Empty overlay on the map itself */}
       {effectiveView === 'map' && fetchState === 'ready' && filteredSpots.length === 0 && !activeSpot && (
-        <div className="explore-empty-float">
+        <div className="explore-empty-float sp-glass sp-glass--thick">
           <EmptyResults compact onReset={() => { setSelectedCategory('all'); setSelectedRange('All'); setSearchQuery(''); }} />
         </div>
       )}
@@ -481,8 +497,8 @@ export default function MapView() {
       {/* ---------- Distance filter sheet ---------- */}
       {showFilters && (
         <div className="sp-sheet-backdrop" onClick={() => setShowFilters(false)}>
-          <div className="sp-sheet" role="dialog" aria-label="Distance" onClick={(e) => e.stopPropagation()}>
-            <div className="sp-sheet__grabber" />
+          <div className="sp-sheet sp-glass sp-glass--thick" ref={filterSheetRef} role="dialog" aria-label="Distance" onClick={(e) => e.stopPropagation()}>
+            <div className="sp-sheet__grabber" {...filterHandleProps} />
             <div className="explore-sheet-head">
               <h3>How far will you go?</h3>
               <button className="sp-icon-btn" onClick={() => setShowFilters(false)} aria-label="Close"><X size={18} /></button>
@@ -543,11 +559,13 @@ function directionsUrl(spot) {
 }
 
 function SpotPreviewSheet({ spot, onClose, onOpen }) {
+  const { sheetRef, handleProps } = useSheetDrag(onClose);
   const cat = getCategoryById(spot.category);
   const hot = spotPopularity(spot) >= 5;
   const pending = spot.status === 'pending';
   return (
-    <article className="explore-preview" aria-label={`${spot.title} preview`}>
+    <article className="explore-preview sp-glass sp-glass--thick" ref={sheetRef} aria-label={`${spot.title} preview`}>
+      <div className="sp-sheet__grabber explore-preview__grabber" {...handleProps} />
       <button className="explore-preview__close" onClick={onClose} aria-label="Close preview"><X size={16} /></button>
       <button className="explore-preview__main" onClick={onOpen}>
         {spot.image_url

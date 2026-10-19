@@ -78,3 +78,10 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Liquid Glass & Motion (SPOTA 2.0)
+
+- Glass is for **floating chrome only** (bottom nav, map controls, previews, sheets, menus, discovery overlay): add `sp-glass` (+ `--thin`/`--thick`). Never put it on forms or long copy, and don't nest glass in glass. Blur is progressive enhancement — it falls back to opaque `--glass-solid` without `backdrop-filter` or under `prefers-reduced-transparency`.
+- Motion tokens live in `src/index.css` (`--dur-micro/ui/sheet/reward`, `--stagger`, `--ease-sheet`, `--ease-settle`). Animate `transform`/`opacity` only; `prefers-reduced-motion` is handled globally.
+- Bottom sheets drag-to-dismiss through `src/hooks/useSheetDrag.js` (attach `handleProps` to `.sp-sheet__grabber` only so map pan/zoom and sheet scroll are untouched).
+- `components/ui/DiscoveryReveal.jsx` must only be opened after the backend confirms success (currently: server-verified expedition summit in `SafeTrekView`).

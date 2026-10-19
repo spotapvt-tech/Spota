@@ -147,6 +147,28 @@
   --transition-fast: 0.14s var(--ease-out);
   --transition-normal: 0.28s var(--ease-out);
 
+  /* Motion scale — micro 120–200 · ui 200–320 · sheet 280–420 · reward 400–800 */
+  --dur-micro: 140ms;
+  --dur-ui: 260ms;
+  --dur-sheet: 360ms;
+  --dur-reward: 640ms;
+  --stagger: 45ms;
+  --ease-sheet: cubic-bezier(0.32, 0.72, 0, 1);   /* iOS-style deceleration */
+  --ease-settle: cubic-bezier(0.34, 1.32, 0.64, 1); /* gentle overshoot spring */
+  --press-scale: 0.96;
+
+  /* Liquid glass — translucent fills over the map/content, never over text-heavy
+     reading surfaces. --glass-solid is the opaque fallback (no backdrop-filter,
+     or "reduce transparency" is on). */
+  --glass-thin: rgba(20, 42, 34, 0.55);
+  --glass-regular: rgba(20, 42, 34, 0.72);
+  --glass-thick: rgba(13, 27, 22, 0.86);
+  --glass-solid: var(--ink-800);
+  --glass-blur: 18px;
+  --glass-edge: rgba(245, 245, 239, 0.14);
+  --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
+  --glass-highlight: inset 0 1px 0 rgba(245, 245, 239, 0.1);
+
   /* ---- Layers --------------------------------------------------------- */
   --z-nav: 100;
   --z-overlay: 200;
@@ -485,19 +507,31 @@ img { max-width: 100%; }
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--bg-overlay);
-  border-top: 1px solid var(--line);
+  background: var(--glass-solid);
+  border-top: 1px solid var(--glass-edge);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   padding: 8px var(--gutter) calc(16px + var(--safe-bottom));
-  animation: sp-sheet-up 0.32s var(--ease-out) both;
-  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.5);
+  animation: sp-sheet-up var(--dur-sheet) var(--ease-sheet) both;
+  box-shadow: var(--glass-highlight), 0 -12px 40px rgba(0, 0, 0, 0.5);
+  touch-action: pan-y;
 }
+/* 28px-tall touch target around a 4px visual handle (drag-to-dismiss lives here) */
 .sp-sheet__grabber {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  margin: -6px 0 0;
+}
+.sp-sheet__grabber::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 12px;
   width: 36px;
   height: 4px;
+  margin-left: -18px;
   border-radius: var(--radius-full);
   background: var(--line-strong);
-  margin: 0 auto 12px;
 }
 
 /* Location / category glyph — a rounded-square "map tile" holding an icon */
@@ -575,6 +609,20 @@ img { max-width: 100%; }
   color: var(--text-strong);
 }
 
+/* Wordmark eye: iris looks up-right, centre, left; lid blinks once per loop */
+.sp-eye__iris { animation: sp-eye-look 7s ease-in-out infinite; }
+.sp-eye__lid { transform-box: fill-box; transform-origin: center; animation: sp-eye-blink 7s ease-in-out infinite; }
+@keyframes sp-eye-look {
+  0%, 8%, 100% { transform: translate(8px, -1.5px); }
+  30%, 42% { transform: translate(0, 0); }
+  55%, 70% { transform: translate(-8px, 1px); }
+  88% { transform: translate(8px, -1.5px); }
+}
+@keyframes sp-eye-blink {
+  0%, 76%, 82%, 100% { transform: scaleY(1); }
+  79% { transform: scaleY(0.06); }
+}
+
 /* Shared sign-in CTA used by guest gates (Trips, Creator analytics). The
    class predates the design system and was never defined anywhere. */
 .submit-auth-btn {
@@ -592,3 +640,70 @@ img { max-width: 100%; }
   font-size: var(--font-size-sm);
 }
 .submit-auth-btn:hover { background: var(--accent-hover); }
+
+/* ==========================================================================
+   Liquid glass + motion primitives
+   --------------------------------------------------------------------------
+   Use .sp-glass only on floating chrome that sits over the map or scrolling
+   content (nav, map controls, previews, sheets, menus). Forms, long copy and
+   cards stay on solid --bg-* surfaces. Blur is progressive enhancement: with
+   no backdrop-filter support, or prefers-reduced-transparency, the surface
+   falls back to the opaque --glass-solid. Don't nest glass inside glass.
+   ========================================================================== */
+
+.sp-glass {
+  --glass-bg: var(--glass-regular);
+  background: var(--glass-solid);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-highlight), var(--glass-shadow);
+}
+.sp-glass--thin { --glass-bg: var(--glass-thin); }
+.sp-glass--thick { --glass-bg: var(--glass-thick); }
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .sp-glass {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.5);
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .sp-glass {
+    background: var(--glass-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+
+/* Tactile press — transform only, so it never triggers layout */
+.sp-btn, .sp-icon-btn, .sp-chip, .explore-fab, .explore-bar__toggle, .nav-item, .nav-drop {
+  transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out),
+    border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+}
+.sp-btn:active:not(:disabled), .sp-icon-btn:active:not(:disabled), .sp-chip:active, .explore-fab:active, .explore-bar__toggle:active {
+  transform: scale(var(--press-scale));
+}
+.sp-btn--primary:active:not(:disabled) { background: var(--pressed); }
+.sp-btn:focus-visible, .sp-icon-btn:focus-visible, .sp-chip:focus-visible, .explore-fab:focus-visible, .nav-item:focus-visible, .nav-drop:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Entrance — first 8 children rise in a short stagger (mount only, opacity +
+   translate, so a long list never re-animates while scrolling). */
+@keyframes sp-rise-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.sp-stagger > * { animation: sp-rise-in var(--dur-ui) var(--ease-out) both; }
+.sp-stagger > *:nth-child(2) { animation-delay: calc(var(--stagger) * 1); }
+.sp-stagger > *:nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+.sp-stagger > *:nth-child(4) { animation-delay: calc(var(--stagger) * 3); }
+.sp-stagger > *:nth-child(5) { animation-delay: calc(var(--stagger) * 4); }
+.sp-stagger > *:nth-child(6) { animation-delay: calc(var(--stagger) * 5); }
+.sp-stagger > *:nth-child(7) { animation-delay: calc(var(--stagger) * 6); }
+.sp-stagger > *:nth-child(n + 8) { animation-delay: calc(var(--stagger) * 7); }
+
+/* Spring-settled sheet entrance (floating previews, menus) */
+@keyframes sp-sheet-settle {
+  0% { opacity: 0; transform: translateY(28px) scale(0.98); }
+  60% { opacity: 1; }
+  100% { opacity: 1; transform: none; }
+}

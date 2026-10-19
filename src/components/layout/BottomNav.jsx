@@ -41,7 +41,7 @@ export default function BottomNav() {
   const inAdventures = ADVENTURE_PATHS.some((p) => path.startsWith(p));
 
   return (
-    <nav className="bottom-nav" aria-label="Primary">
+    <nav className="bottom-nav sp-glass sp-glass--thick" aria-label="Primary">
       <Tab to="/" icon={House} label="Home" end />
       <Tab to="/explore" icon={Map} label="Explore" />
       <NavLink to="/add" className="nav-drop" aria-label="Drop a SPOTA">

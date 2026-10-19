@@ -26,6 +26,7 @@ import { checkBadges } from '../lib/badgeEngine';
 import ExpeditionPicker from '../components/ExpeditionPicker';
 import ExpeditionTracker from '../components/ExpeditionTracker';
 import ExpeditionCompleteModal from '../components/ExpeditionCompleteModal';
+import DiscoveryReveal from '../components/ui/DiscoveryReveal';
 import { fetchAdventures } from '../lib/adventureCatalog';
 import { track, flushEvents, registerAnalyticsAutoFlush } from '../lib/analytics';
 import {
@@ -78,6 +79,7 @@ export default function SafeTrekView() {
   const [lowPower, setLowPower] = useState(false); // battery saver: 60 s GPS sampling
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [expeditionResult, setExpeditionResult] = useState(null);
+  const [discovery, setDiscovery] = useState(null); // set only after the server verifies a summit
   const [expeditionError, setExpeditionError] = useState(null);
 
   const adventures = adventuresState ?? [];
@@ -528,6 +530,10 @@ export default function SafeTrekView() {
       awardedAp: result.attempt?.awardedAp ?? null,
       error: result.error || null
     });
+    // Celebrate only when the server has actually verified the attempt
+    if (result.status === 'submitted' && result.attempt?.serverStatus === 'verified') {
+      setDiscovery({ name: exp.adventureName, awardedAp: result.attempt?.awardedAp ?? 0 });
+    }
     await finishSafeTrek({ silent: true });
   };
 
@@ -947,6 +953,16 @@ export default function SafeTrekView() {
           isOverdue={isOverdue}
         />
       )}
+
+      <DiscoveryReveal
+        open={Boolean(discovery)}
+        kicker="Summit verified"
+        title={discovery?.name}
+        detail={discovery ? `+${discovery.awardedAp} AP` : null}
+        actionLabel="View leaderboard"
+        onAction={() => { setDiscovery(null); navigate('/leaderboard'); }}
+        onClose={() => setDiscovery(null)}
+      />
 
       {showCompleteModal && activeTrek?.expedition && (
         <ExpeditionCompleteModal

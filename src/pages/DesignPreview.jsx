@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Check, AlertTriangle, XCircle, Trophy, Flame, Compass, Lock, MapPin, Search, Mountain } from 'lucide-react';
 import CategoryGlyph from '../components/ui/CategoryGlyph';
+import DiscoveryReveal from '../components/ui/DiscoveryReveal';
 import './DesignPreview.css';
 
 // Dev-only style specimen: renders the same product surfaces under each
@@ -153,6 +154,7 @@ function Specimen({ id }) {
 
 export default function DesignPreview() {
   const [view, setView] = useState('all');
+  const [reveal, setReveal] = useState(false); // specimen only: replays the animation, no backend involved
   const ids = view === 'all' ? Object.keys(DIRECTIONS) : [view];
   return (
     <main className="dpv">
@@ -163,7 +165,9 @@ export default function DesignPreview() {
             {v === 'all' ? 'Compare' : v.toUpperCase()}
           </button>
         ))}
+        <button className="sp-chip" onClick={() => setReveal(true)}>Replay discovery</button>
       </nav>
+      <DiscoveryReveal open={reveal} kicker="Specimen" title="Mistfall Gorge" detail="+50 AP" onClose={() => setReveal(false)} />
       <div className="dpv__grid">{ids.map((id) => <Specimen key={id} id={id} />)}</div>
     </main>
   );

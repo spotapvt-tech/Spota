@@ -263,9 +263,9 @@ export default function ChatView() {
 
         {/* Chats List */}
         {loading ? (
-          <div className="chat-loader">
-            <Loader2 className="animate-spin" size={28} />
-            <span>Loading conversations...</span>
+          <div className="chat-loader" role="status" aria-busy="true">
+            {[0, 1, 2, 3].map((i) => <div key={i} className="sp-skeleton" style={{ height: 64, width: "100%", borderRadius: "var(--radius-md)" }} />)}
+            <span className="sp-visually-hidden">Loading conversations</span>
           </div>
         ) : chats.length === 0 ? (
           <div className="empty-chats">
