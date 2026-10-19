@@ -1,6 +1,6 @@
 import { useId } from 'react';
 
-// SPOTA wordmark: wide Archivo caps with the "O" drawn as an almond eye whose
+// SPOTA wordmark: Sora ExtraBold caps with the "O" drawn as an almond eye whose
 // iris looks around and blinks (animation in index.css, off under
 // reduced-motion). Inline SVG so it renders without fonts.
 export default function Wordmark({ size = 20, className = '' }) {

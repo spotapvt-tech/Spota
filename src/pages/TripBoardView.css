@@ -55,7 +55,7 @@
 }
 
 .destination-tag {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-accent);
   font-weight: 600;
 }
@@ -127,7 +127,7 @@
   color: var(--color-on-accent);
   padding: 6px 12px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -149,7 +149,8 @@
 }
 
 .members-title {
-  font-size: 11px;
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   color: var(--color-text-secondary);
 }
@@ -169,7 +170,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   margin-left: -8px;
   overflow: hidden;
@@ -273,7 +274,7 @@
 }
 
 .item-cat {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-accent);
   font-weight: 600;
   text-transform: uppercase;
@@ -323,7 +324,7 @@
 }
 
 .remove-btn {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
   opacity: 0.6;
   padding: 0 4px;
@@ -356,7 +357,7 @@
 
 .trip-gem-pin .pin-votes {
   transform: rotate(45deg);
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   color: var(--color-accent);
   white-space: nowrap;
@@ -414,7 +415,7 @@
 
 .drawer-close {
   background: none;
-  font-size: 24px;
+  font-size: var(--font-size-h3);
   color: var(--color-text-secondary);
 }
 
@@ -474,7 +475,7 @@
 }
 
 .avail-info p {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   margin: 0;
   white-space: nowrap;
@@ -487,7 +488,7 @@
   color: var(--color-accent);
   padding: 6px 12px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   white-space: nowrap;
 }

@@ -27,7 +27,7 @@
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-weight: 900;
+  font-weight: var(--fw-black);
   font-size: 1.6rem;
   color: var(--text-strong);
   box-shadow: 0 0 0 1px var(--line-strong);
@@ -59,7 +59,7 @@
 .pf-rank.is-agency { background: rgba(183, 156, 255, 0.14); color: #B79CFF; }
 .pf-guest {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 3px 7px;
@@ -78,8 +78,8 @@
 }
 .pf-stats > div { padding: 10px 12px; }
 .pf-stats > div + div { border-left: 1px solid var(--line); }
-.pf-stats dt { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
-.pf-stats dd { font-size: 1.375rem; font-weight: 600; color: var(--text-strong); margin-top: 2px; }
+.pf-stats dt { font-family: var(--font-mono); font-size: var(--font-size-2xs); letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+.pf-stats dd { font-size: var(--font-size-xl); font-weight: 600; color: var(--text-strong); margin-top: 2px; }
 .pf-next { margin-top: 10px; font-size: var(--font-size-xs); color: var(--text-muted); }
 .pf-next .sp-mono { color: var(--accent); }
 
@@ -101,7 +101,7 @@
 .pf-trek__text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 .pf-trek__text strong { font-size: var(--font-size-sm); }
 .pf-trek__text small { font-size: var(--font-size-xs); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.pf-trek__cta { font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+.pf-trek__cta { font-family: var(--font-mono); font-size: var(--font-size-2xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
 
 .pf-guest-card {
   margin: 16px var(--gutter) 0;
@@ -163,7 +163,7 @@
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
 }
-.pf-tabs button .sp-mono { font-size: 11px; color: var(--text-faint); }
+.pf-tabs button .sp-mono { font-size: var(--font-size-2xs); color: var(--text-faint); }
 .pf-tabs button.is-on { color: var(--text-strong); border-bottom-color: var(--accent); }
 .pf-tabs button:active { transform: none; }
 
@@ -180,12 +180,13 @@
 .pf-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .pf-tile__empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: var(--text-faint); background: var(--topo-texture) center / 160px, var(--bg-raised); }
 .pf-tile__title {
+  font-family: var(--font-display);
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
   padding: 18px 6px 6px;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   color: var(--text-strong);
   background: linear-gradient(180deg, transparent, rgba(7, 11, 9, 0.88));
@@ -202,7 +203,7 @@
   background: var(--warning);
   color: var(--ink-950);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   text-transform: uppercase;
 }

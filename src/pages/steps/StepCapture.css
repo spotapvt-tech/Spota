@@ -50,7 +50,7 @@
   color: var(--color-on-accent);
   padding: 22px 24px;
   border-radius: var(--radius-lg);
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   box-shadow: 0 4px 16px rgba(198, 243, 107, 0.3);
 }
 

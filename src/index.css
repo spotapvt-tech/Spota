@@ -109,12 +109,30 @@
   --font-size-md: 1.0625rem;  /* 17 */
   --font-size-lg: 1.125rem;   /* 18 */
   --font-size-xl: 1.375rem;   /* 22 */
-  --font-size-2xl: 1.75rem;   /* 28 */
-  --font-size-3xl: 2.25rem;   /* 36 */
+  --font-size-lead: 1.25rem;  /* 20 */
+  --font-size-h3: 1.5rem;     /* 24 */
+  --font-size-2xl: clamp(1.5rem, 6.5vw, 1.75rem);   /* 24 -> 28, screen titles */
+  --font-size-3xl: clamp(1.875rem, 8.5vw, 2.25rem); /* 30 -> 36, hero headings */
+  --font-size-4xl: clamp(2.25rem, 11vw, 3rem);      /* 36 -> 48, display / big numerals */
+
+  /* Weights. Sora tops out at 800; Inter carries UI at 500-700. */
+  --fw-regular: 400;
+  --fw-medium: 500;
+  --fw-semibold: 600;
+  --fw-bold: 700;
+  --fw-black: 800;
+
+  /* Line height */
+  --lh-display: 1.1;
+  --lh-title: 1.2;
+  --lh-snug: 1.3;
+  --lh-body: 1.5;
 
   --tracking-tight: -0.01em;
   --tracking-tighter: -0.025em;
   --tracking-caps: 0.12em;
+  --tracking-display: -0.03em;   /* Sora runs wide: tighten big sizes */
+  --tracking-wordmark: 0.08em;
 
   /* ---- Space (4pt) ---------------------------------------------------- */
   --space-1: 4px;
@@ -213,10 +231,22 @@ body {
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
+  font-weight: var(--fw-bold);
   letter-spacing: var(--tracking-tight);
-  line-height: 1.15;
+  line-height: var(--lh-title);
   color: var(--text-strong);
 }
+h1 { font-size: var(--font-size-2xl); letter-spacing: var(--tracking-tighter); line-height: var(--lh-display); }
+h2 { font-size: var(--font-size-xl); }
+h3 { font-size: var(--font-size-lg); }
+h4 { font-size: var(--font-size-base); }
+
+/* Inter for interface text; stop the browser faking weights we don't ship */
+body { font-optical-sizing: auto; font-synthesis: none; }
+button, .sp-btn, .sp-chip { letter-spacing: 0.005em; }
+
+/* Space Grotesk "instrument" numerals: coordinates, distances, stats */
+.sp-mono, .sp-coords { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: 0.01em; }
 
 ::selection { background: var(--accent); color: var(--accent-ink); }
 
@@ -349,9 +379,9 @@ img { max-width: 100%; }
 
 .sp-display {
   font-family: var(--font-display);
-  font-weight: 800;
-  letter-spacing: var(--tracking-tighter);
-  line-height: 1.05;
+  font-weight: var(--fw-black);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--lh-display);
 }
 
 /* Buttons */
@@ -586,7 +616,7 @@ img { max-width: 100%; }
 .toast-body { flex: 1; min-width: 0; }
 .toast-badge {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   text-transform: uppercase;
   color: var(--accent);
@@ -596,15 +626,15 @@ img { max-width: 100%; }
 }
 .toast-title { font-size: var(--font-size-sm); font-weight: 700; color: var(--text-strong); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .toast-desc { font-size: var(--font-size-xs); color: var(--text-muted); margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.toast-close { color: var(--text-muted); font-size: 14px; padding: 4px; }
+.toast-close { color: var(--text-muted); font-size: var(--font-size-sm); padding: 4px; }
 
 /* Wordmark */
 .sp-wordmark {
   display: inline-flex;
   align-items: center;
   font-family: var(--font-display);
-  font-weight: 900;
-  letter-spacing: 0.02em;
+  font-weight: var(--fw-black);
+  letter-spacing: var(--tracking-wordmark);
   line-height: 1;
   color: var(--text-strong);
 }

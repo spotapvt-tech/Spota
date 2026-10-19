@@ -52,11 +52,11 @@
 }
 
 .rate-preset-emoji {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
 }
 
 .rate-preset-label {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   color: var(--color-text-secondary);
   text-transform: uppercase;
@@ -110,7 +110,7 @@
   flex: 1;
   aspect-ratio: 1;
   max-width: 56px;
-  font-size: 20px;
+  font-size: var(--font-size-lead);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-bg-secondary);

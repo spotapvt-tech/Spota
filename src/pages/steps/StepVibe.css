@@ -133,7 +133,7 @@
 
 .vibe-char-count {
   align-self: flex-end;
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   opacity: 0.5;
 }
@@ -239,7 +239,7 @@
   border: none;
   color: var(--color-accent);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   line-height: 1;
   padding: 0;
   opacity: 0.7;

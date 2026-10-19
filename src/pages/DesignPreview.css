@@ -46,7 +46,7 @@
 }
 
 .dp__head { display: flex; justify-content: space-between; align-items: center; }
-.dp__wordmark { font-size: 20px; }
+.dp__wordmark { font-size: var(--font-size-lead); }
 .dp__note { font-size: var(--font-size-xs); color: var(--text-muted); }
 .dp__title { font-family: var(--font-display); font-weight: 700; font-size: var(--font-size-2xl); line-height: 1.12; letter-spacing: -0.02em; color: var(--text-strong); }
 .dp__body { font-size: var(--font-size-base); line-height: 1.5; color: var(--text-body); }

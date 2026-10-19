@@ -17,14 +17,14 @@
   border-radius: var(--radius-xs);
   color: var(--ink-950);
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 .review-card__body { padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .review-row { display: flex; gap: 10px; align-items: flex-start; }
-.review-row h3 { flex: 1; font-size: 1.25rem; font-weight: 800; }
+.review-row h3 { flex: 1; font-size: var(--font-size-lead); font-weight: 800; }
 .review-row p { flex: 1; font-size: var(--font-size-sm); color: var(--text-body); line-height: 1.5; }
 .review-edit {
   width: 30px;
@@ -51,7 +51,7 @@
 }
 .review-loc > svg { color: var(--accent); flex-shrink: 0; }
 .review-loc span { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.review-loc small { font-size: 11px; color: var(--text-faint); }
+.review-loc small { font-size: var(--font-size-2xs); color: var(--text-faint); }
 
 .review-visibility { border-radius: var(--radius-md); border: 1px solid var(--line); padding: 14px; background: var(--bg-raised); }
 .review-visibility__row { display: flex; gap: 12px; }

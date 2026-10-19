@@ -34,7 +34,7 @@
   left: 20px;
   background: none;
   border: none;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--color-text-secondary, var(--color-accent));
   cursor: pointer;
@@ -52,7 +52,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   letter-spacing: 2px;
   color: var(--violet-400);
@@ -70,7 +70,7 @@
 }
 
 .paywall-header p {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   color: var(--color-text-secondary, #606864);
   max-width: 600px;
   margin: 0 auto;
@@ -113,7 +113,7 @@
   transform: translateX(-50%);
   background: var(--violet-400);
   color: var(--text-strong);
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   letter-spacing: 1px;
   padding: 4px 12px;
@@ -121,7 +121,7 @@
 }
 
 .plan-card h3 {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   font-weight: 700;
   margin: 0 0 16px 0;
 }
@@ -137,12 +137,12 @@
 }
 
 .price-period {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
 
 .plan-desc {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   line-height: 1.4;
   margin-bottom: 24px;
@@ -162,7 +162,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-primary);
   font-weight: 500;
 }
@@ -173,7 +173,7 @@
   border: none;
   border-radius: var(--radius-md, 12px);
   color: var(--text-strong);
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 700;
   cursor: pointer;
   margin-top: auto;
@@ -223,7 +223,7 @@
 }
 
 .checkout-header h3 {
-  font-size: 20px;
+  font-size: var(--font-size-lead);
   font-weight: 700;
   margin: 0;
 }
@@ -231,13 +231,14 @@
 .close-checkout {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-size-h3);
   cursor: pointer;
   color: var(--color-text-secondary);
 }
 
 .checkout-section-title {
-  font-size: 13px;
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-text-secondary);
   letter-spacing: 1px;
@@ -255,7 +256,7 @@
   color: var(--text-strong);
   border: none;
   border-radius: var(--radius-md, 12px);
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 700;
   cursor: pointer;
   margin-top: 24px;
@@ -270,7 +271,7 @@
 .stripe-secure-msg {
   display: block;
   text-align: center;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   margin-top: 10px;
 }
@@ -289,7 +290,7 @@
 }
 
 .agency-header h2 {
-  font-size: 24px;
+  font-size: var(--font-size-h3);
   font-weight: 800;
   margin: 0 0 4px 0;
 }
@@ -298,7 +299,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   color: var(--violet-400);
 }
@@ -325,7 +326,7 @@
   border: none;
   padding: 10px 18px;
   border-radius: var(--radius-md, 12px);
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -368,14 +369,15 @@
 }
 
 .metric-title {
-  font-size: 12px;
+  font-family: var(--font-display);
+  font-size: var(--font-size-xs);
   font-weight: 700;
   color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
 .metric-val {
-  font-size: 24px;
+  font-size: var(--font-size-h3);
   font-weight: 800;
   color: var(--color-text-primary);
 }
@@ -396,7 +398,7 @@
   background: none;
   border: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   font-weight: 700;
   padding: 10px 16px;
   color: var(--color-text-secondary);
@@ -436,13 +438,13 @@
 }
 
 .table-caption-bar h3 {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   margin: 0;
 }
 
 .com-banner {
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
 }
 
@@ -454,7 +456,7 @@
 
 .agency-table th {
   padding: 12px 16px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-text-secondary);
@@ -463,12 +465,13 @@
 
 .agency-table td {
   padding: 16px;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   border-bottom: 1px solid rgba(0, 0, 0, 0.03);
   vertical-align: middle;
 }
 
 .trip-cell-title {
+  font-family: var(--font-display);
   font-weight: 700;
   color: var(--color-text-primary);
 }
@@ -480,9 +483,9 @@
 }
 
 .code-pill {
-  font-family: monospace;
+  font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   background: rgba(0, 0, 0, 0.06);
   padding: 4px 8px;
   border-radius: 4px;
@@ -499,7 +502,7 @@
 .row-action-btn {
   padding: 6px 12px;
   border: none;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   border-radius: 6px;
   cursor: pointer;
@@ -528,20 +531,20 @@
 }
 
 .itinerary-config-header h3 {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   margin: 0;
 }
 
 .config-label {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   color: var(--color-text-secondary);
   text-transform: uppercase;
 }
 
 .config-selector label {
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-text-secondary);
 }
@@ -570,14 +573,14 @@
 }
 
 .empty-itinerary-state p {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 700;
   margin: 12px 0 6px 0;
   color: var(--color-text-primary);
 }
 
 .empty-itinerary-state span {
-  font-size: 13px;
+  font-size: var(--font-size-sm);
   max-width: 500px;
   display: block;
   margin: 0 auto;
@@ -599,6 +602,7 @@
 }
 
 .spot-card-title {
+  font-family: var(--font-display);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -608,13 +612,13 @@
 }
 
 .spot-card-title h4 {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   font-weight: 700;
   margin: 0;
 }
 
 .spot-card-cat {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   text-transform: uppercase;
   background: rgba(198, 243, 107, 0.15);
@@ -645,7 +649,7 @@
   color: var(--text-strong);
   border: none;
   font-weight: 700;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   border-radius: 10px;
   cursor: pointer;
 }
@@ -657,7 +661,7 @@
 /* Source badge tags */
 .source-tag {
   display: inline-block;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   text-transform: uppercase;
   padding: 3px 8px;
@@ -687,6 +691,7 @@
 }
 
 .checkout-section-title {
+  font-family: var(--font-display);
   margin-top: 24px;
 }
 
@@ -705,13 +710,13 @@
 }
 
 .empty-dashboard-state h4 {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   font-weight: 700;
   margin: 0 0 8px 0;
 }
 
 .empty-dashboard-state p {
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   color: var(--color-text-secondary);
   max-width: 420px;
   margin: 0 0 20px 0;
@@ -747,11 +752,11 @@
   }
 
   .paywall-header h1 {
-    font-size: 24px;
+    font-size: var(--font-size-h3);
   }
 
   .paywall-header p {
-    font-size: 14px;
+    font-size: var(--font-size-sm);
   }
 
   .plans-grid {
@@ -828,11 +833,12 @@
   }
 
   .metric-title {
-    font-size: 9px;
+    font-family: var(--font-display);
+    font-size: var(--font-size-2xs);
   }
 
   .metric-val {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .agency-tabs {
@@ -853,7 +859,7 @@
   .agency-tabs .tab-btn {
     flex: 0 0 auto;
     padding: 8px 14px;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .dashboard-trips-table {
@@ -868,17 +874,17 @@
   }
 
   .table-caption-bar h3 {
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .com-banner {
-    font-size: 11px;
+    font-size: var(--font-size-2xs);
   }
 
   .agency-table th,
   .agency-table td {
     padding: 10px 12px;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
   }
 
   .itinerary-config-header {
@@ -917,6 +923,6 @@
 
   .row-action-btn {
     padding: 6px 10px;
-    font-size: 11px;
+    font-size: var(--font-size-2xs);
   }
 }

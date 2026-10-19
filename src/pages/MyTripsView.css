@@ -191,7 +191,7 @@
 }
 
 .role-tag {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   background-color: rgba(198, 243, 107, 0.1);
   color: var(--color-accent);
@@ -256,7 +256,7 @@
 .modal-close {
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: var(--font-size-h3);
   color: var(--color-text-secondary);
   cursor: pointer;
   display: flex;
@@ -372,7 +372,7 @@
 .chip-btn {
   padding: 6px 14px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);

@@ -15,6 +15,7 @@
 }
 
 .lb-title {
+  font-family: var(--font-display);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -112,7 +113,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   margin: 0 0 12px;
 }
@@ -123,7 +124,7 @@
   padding: 0;
   color: var(--color-accent);
   font-weight: 600;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   cursor: pointer;
 }
 
@@ -139,7 +140,7 @@
   justify-content: space-between;
   gap: 8px;
   padding: 8px 16px 10px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -208,7 +209,7 @@
 }
 
 .lb-ap {
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   color: var(--color-text-secondary);
   white-space: nowrap;
 }
@@ -273,7 +274,7 @@
 }
 
 .lb-me > div { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-.lb-me-label { font-size: 12px; color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.lb-me-label { font-size: var(--font-size-xs); color: var(--color-text-secondary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
 .lb-me-rank { font-size: var(--font-size-xl); color: var(--color-text-primary); }
 .lb-me-ap { font-size: var(--font-size-sm); color: var(--color-text-secondary); }
 
@@ -306,13 +307,13 @@
   margin: 0 0 2px;
 }
 
-.exp-card-where { font-size: 12px; color: var(--color-text-secondary); }
+.exp-card-where { font-size: var(--font-size-xs); color: var(--color-text-secondary); }
 
 .exp-grade {
   flex-shrink: 0;
   padding: 3px 9px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
   font-weight: 700;
   background: rgba(198, 243, 107, 0.14);
   color: var(--color-accent);
