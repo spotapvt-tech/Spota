@@ -11,7 +11,7 @@
   padding: 14px var(--gutter) 20px;
   background:
     var(--topo-texture) 60% 20% / 300px,
-    linear-gradient(180deg, rgba(195, 210, 159, 0.07), rgba(195, 210, 159, 0) 70%);
+    linear-gradient(180deg, rgba(62, 107, 79, 0.07), rgba(62, 107, 79, 0) 70%);
   border-bottom: 1px solid var(--line-subtle);
 }
 .pf-hero__bar { display: flex; justify-content: space-between; align-items: center; min-height: 40px; }
@@ -74,7 +74,7 @@
   margin-top: 20px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: rgba(10, 15, 13, 0.4);
+  background: rgba(255, 255, 255, 0.78);
 }
 .pf-stats > div { padding: 10px 12px; }
 .pf-stats > div + div { border-left: 1px solid var(--line); }
@@ -217,7 +217,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(7, 11, 9, 0.7);
+  background: rgba(255, 255, 255, 0.78);
   color: var(--text-strong);
 }
 .pf-tile__delete:hover { background: var(--danger); color: var(--ink-950); }

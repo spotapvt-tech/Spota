@@ -91,7 +91,7 @@
 
 .feed-search-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.15);
+  box-shadow: 0 0 0 3px rgba(62, 107, 79, 0.15);
 }
 
 .search-icon-inside {
@@ -192,6 +192,6 @@
 
 .ai-search-trigger:hover {
   transform: scale(1.1);
-  background-color: rgba(195, 210, 159, 0.12);
+  background-color: rgba(62, 107, 79, 0.12);
   color: var(--color-accent-hover);
 }

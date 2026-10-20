@@ -234,7 +234,7 @@ export function AuthProvider({ children }) {
       >
         <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden="true">
           <circle cx="12" cy="12" r="9" fill="none" stroke="#F5F5EF" strokeWidth="2.6" />
-          <circle cx="12" cy="12" r="3.4" fill="#C3D29F" className="spota-splash-dot" />
+          <circle cx="12" cy="12" r="3.4" fill="#3E6B4F" className="spota-splash-dot" />
         </svg>
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#87928A' }}>
           Finding your bearings

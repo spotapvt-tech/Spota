@@ -23,15 +23,15 @@
 .dp[data-dir='a'] {
   --bg-canvas: #0D1B16; --bg-raised: #142A22; --bg-overlay: #1A342A; --bg-hover: #20402F;
   --text-strong: #F5F5EF; --text-body: #D3D8CF; --text-muted: #89968C;
-  --line: rgba(245, 245, 239, 0.12); --line-strong: rgba(245, 245, 239, 0.24); --line-subtle: rgba(245, 245, 239, 0.07);
-  --accent: #C3D29F; --accent-hover: #D9E4BC; --accent-ink: #0D1B16;
-  --shadow-accent: 0 8px 24px rgba(195, 210, 159, 0.2);
+  --line: rgba(23, 52, 42, 0.12); --line-strong: rgba(23, 52, 42, 0.24); --line-subtle: rgba(23, 52, 42, 0.07);
+  --accent: #3E6B4F; --accent-hover: #5E8A6A; --accent-ink: #0D1B16;
+  --shadow-accent: 0 8px 24px rgba(62, 107, 79, 0.2);
   --dp-ink: #0D1B16; --dp-reward: #F2C14E;
 }
 .dp[data-dir='b'] {
   --bg-canvas: #171717; --bg-raised: #202020; --bg-overlay: #2A2A2A; --bg-hover: #353535;
   --text-strong: #FFFFFF; --text-body: #D4D4D4; --text-muted: #A6A6A6;
-  --line: rgba(255, 255, 255, 0.12); --line-strong: rgba(255, 255, 255, 0.24); --line-subtle: rgba(255, 255, 255, 0.07);
+  --line: rgba(23, 52, 42, 0.12); --line-strong: rgba(23, 52, 42, 0.24); --line-subtle: rgba(23, 52, 42, 0.07);
   --accent: #FF6B35; --accent-hover: #FF8559; --accent-ink: #171717;
   --shadow-accent: 0 8px 24px rgba(255, 107, 53, 0.25);
   --dp-ink: #171717; --dp-reward: #F2C14E;

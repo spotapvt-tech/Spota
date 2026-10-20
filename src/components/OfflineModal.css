@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(4px);
   z-index: 1500;
   display: flex;
@@ -96,7 +96,7 @@
 }
 
 .radius-chip:hover {
-  background: rgba(195, 210, 159, 0.08);
+  background: rgba(62, 107, 79, 0.08);
 }
 
 .radius-chip.active {
@@ -117,7 +117,7 @@
   color: var(--color-bg-primary);
   font-weight: 600;
   font-size: var(--font-size-sm);
-  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.2);
+  box-shadow: 0 4px 12px rgba(62, 107, 79, 0.2);
   margin-top: 8px;
 }
 

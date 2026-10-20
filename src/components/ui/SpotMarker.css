@@ -32,7 +32,7 @@
   width: 8px;
   height: 4px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.78);
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--mk) 60%, transparent);
 }
 .spot-marker__hot {

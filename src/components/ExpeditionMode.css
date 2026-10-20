@@ -215,7 +215,7 @@
   align-items: center;
   justify-content: center;
   padding: 16px;
-  background: rgba(18, 20, 19, 0.55);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(4px);
 }
 
@@ -333,14 +333,14 @@
   border-radius: 999px;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  background: rgba(195, 210, 159, 0.14);
+  background: rgba(62, 107, 79, 0.14);
   color: var(--color-accent);
   white-space: nowrap;
 }
 
 .tier-sm .tier-badge { padding: 1px 7px; font-size: var(--font-size-2xs); font-weight: 600; }
 
-.tier-trailblazer      { background: rgba(195, 210, 159, 0.18); }
+.tier-trailblazer      { background: rgba(62, 107, 79, 0.18); }
 .tier-ridge_runner     { background: rgba(95, 130, 170, 0.15); color: #4f7aa6; }
 .tier-summiteer        { background: rgba(244, 162, 97, 0.16); color: var(--warning); }
 .tier-expedition_legend { background: rgba(224, 122, 95, 0.16); color: var(--danger); }
@@ -507,7 +507,7 @@
   font-weight: 600;
 }
 
-.status-verified  { background: rgba(195, 210, 159, 0.15); color: var(--color-accent) !important; }
+.status-verified  { background: rgba(62, 107, 79, 0.15); color: var(--color-accent) !important; }
 .status-pending,
 .status-submitted { background: rgba(244, 162, 97, 0.15); color: var(--warning) !important; }
 .status-rejected  { background: rgba(224, 122, 95, 0.15); color: var(--danger) !important; }
@@ -553,7 +553,7 @@
 
 .review-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .review-checks li { display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding: 4px 8px; border-radius: var(--radius-sm); }
-.review-checks li.ok      { background: rgba(195, 210, 159, 0.1); }
+.review-checks li.ok      { background: rgba(62, 107, 79, 0.1); }
 .review-checks li.partial { background: rgba(244, 162, 97, 0.1); }
 .review-checks li.fail    { background: rgba(224, 122, 95, 0.1); }
 
@@ -686,7 +686,7 @@
   background: var(--color-surface); border: 1px solid var(--color-border);
   color: var(--color-text-secondary) !important;
 }
-.vouch-chip.is-confirmed { background: rgba(195, 210, 159, 0.15); color: var(--color-accent) !important; border-color: transparent; }
+.vouch-chip.is-confirmed { background: rgba(62, 107, 79, 0.15); color: var(--color-accent) !important; border-color: transparent; }
 .vouch-chip.is-declined { text-decoration: line-through; }
 
 .vouch-incoming {
@@ -713,7 +713,7 @@
 .chal-logo { width: 36px; height: 36px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
 .chal-logo-fallback {
   display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(195, 210, 159, 0.15); color: var(--color-accent);
+  background: rgba(62, 107, 79, 0.15); color: var(--color-accent);
 }
 .chal-desc { margin: 0; font-size: var(--font-size-sm); color: var(--color-text-primary); line-height: 1.45; }
 .chal-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: var(--font-size-xs); color: var(--color-text-secondary); }

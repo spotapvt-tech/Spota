@@ -37,7 +37,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  background: linear-gradient(180deg, rgba(15, 21, 18, 0.92) 0%, rgba(15, 21, 18, 0.6) 70%, rgba(15, 21, 18, 0) 100%);
+  background: linear-gradient(180deg, rgba(246, 251, 247, 0.92) 0%, rgba(246, 251, 247, 0.6) 70%, rgba(246, 251, 247, 0) 100%);
   pointer-events: none;
 }
 .explore.is-list .explore-top { background: var(--bg-canvas); border-bottom: 1px solid var(--line-subtle); }

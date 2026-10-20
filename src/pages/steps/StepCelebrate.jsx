@@ -29,8 +29,8 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
         const duration = 3000;
         const end = Date.now() + duration;
         const frame = () => {
-          confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#C3D29F','#FF6A4D','#DDA15E'] });
-          confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#C3D29F','#FF6A4D','#DDA15E'] });
+          confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#3E6B4F','#FF6A4D','#DDA15E'] });
+          confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#3E6B4F','#FF6A4D','#DDA15E'] });
           if (Date.now() < end) requestAnimationFrame(frame);
         };
         frame();
@@ -44,7 +44,7 @@ export default function StepCelebrate({ gem, onShareCard, onDropAnother }) {
     animateCount(0, targetCount, 1400, setGemCount);
   }, []);
 
-  const catInfo = gem ? getCategoryById(gem.category) : { emoji: '💎', label: 'Gem', color: '#C3D29F' };
+  const catInfo = gem ? getCategoryById(gem.category) : { emoji: '💎', label: 'Gem', color: '#3E6B4F' };
 
   return (
     <div className="step-celebrate">

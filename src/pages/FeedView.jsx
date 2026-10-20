@@ -263,7 +263,7 @@ export default function FeedView() {
                   {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
                     <div className="spot-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '6px' }}>
                       {spot.tags.map((tag, idx) => (
-                        <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(195, 210, 159,0.08)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600 }}>
+                        <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(62, 107, 79,0.08)', color: 'var(--color-accent)', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600 }}>
                           #{tag}
                         </span>
                       ))}

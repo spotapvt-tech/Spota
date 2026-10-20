@@ -7,9 +7,9 @@
   text-align: left;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 0 16px rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(23, 52, 42, 0.08);
+  box-shadow: inset 0 0 16px rgba(23, 52, 42, 0.02);
 }
 
 .badge-shelf-header {
@@ -57,28 +57,28 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(23, 52, 42, 0.04);
   text-align: center;
   position: relative;
 }
 
 .badge-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.62);
+  border-color: rgba(23, 52, 42, 0.12);
   transform: translateY(-3px);
 }
 
 /* Earned vs Locked states */
 .badge-card.earned {
-  background: radial-gradient(circle at center, rgba(195, 210, 159, 0.1) 0%, rgba(255,255,255,0.02) 100%);
-  border-color: rgba(195, 210, 159, 0.25);
-  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.05);
+  background: radial-gradient(circle at center, rgba(62, 107, 79, 0.1) 0%, rgba(23, 52, 42, 0.02) 100%);
+  border-color: rgba(62, 107, 79, 0.25);
+  box-shadow: 0 4px 12px rgba(62, 107, 79, 0.05);
 }
 
 .badge-card.earned:hover {
   border-color: var(--color-accent);
-  box-shadow: 0 8px 20px rgba(195, 210, 159, 0.15), inset 0 0 8px rgba(195, 210, 159, 0.1);
+  box-shadow: 0 8px 20px rgba(62, 107, 79, 0.15), inset 0 0 8px rgba(62, 107, 79, 0.1);
 }
 
 .badge-card.locked {
@@ -98,7 +98,7 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-full);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.62);
   margin-bottom: 5px;
   font-size: var(--font-size-lg);
   transition: transform 0.3s ease;
@@ -109,17 +109,17 @@
 }
 
 .badge-card.earned .badge-emoji-wrapper {
-  background: linear-gradient(135deg, rgba(195, 210, 159, 0.2) 0%, rgba(131, 197, 190, 0.2) 100%);
-  box-shadow: 0 0 12px rgba(195, 210, 159, 0.15);
+  background: linear-gradient(135deg, rgba(62, 107, 79, 0.2) 0%, rgba(131, 197, 190, 0.2) 100%);
+  box-shadow: 0 0 12px rgba(62, 107, 79, 0.15);
 }
 
 .badge-lock-overlay {
   position: absolute;
   bottom: -1px;
   right: -1px;
-  background: rgba(245, 245, 239, 0.9);
+  background: rgba(255, 255, 255, 0.62);
   color: var(--color-text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(23, 52, 42, 0.15);
   border-radius: var(--radius-full);
   padding: 2px;
   width: 14px;
@@ -146,7 +146,7 @@
 .badge-progress-bar-container {
   width: 80%;
   height: 3px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.62);
   border-radius: var(--radius-full);
   margin-top: 4px;
   overflow: hidden;
@@ -175,7 +175,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.65);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
@@ -187,9 +187,9 @@
 /* Detail Modal Content */
 .badge-detail-modal {
   position: relative;
-  background: rgba(26, 30, 28, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(23, 52, 42, 0.1);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5), inset 0 0 16px rgba(23, 52, 42, 0.02);
   border-radius: var(--radius-lg);
   max-width: 380px;
   width: 100%;
@@ -223,8 +223,8 @@
   width: 90px;
   height: 90px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(195, 210, 159, 0.15) 0%, rgba(224, 122, 95, 0.05) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(62, 107, 79, 0.15) 0%, rgba(224, 122, 95, 0.05) 100%);
+  border: 1px solid rgba(23, 52, 42, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -271,7 +271,7 @@
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-accent);
-  background: rgba(195, 210, 159, 0.12);
+  background: rgba(62, 107, 79, 0.12);
   padding: 6px 16px;
   border-radius: var(--radius-full);
   letter-spacing: 0.5px;
@@ -294,13 +294,13 @@
   transition: all 0.2s ease;
   width: 100%;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.2);
+  box-shadow: 0 4px 12px rgba(62, 107, 79, 0.2);
 }
 
 .badge-share-btn:hover {
   background: #597560;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(195, 210, 159, 0.3);
+  box-shadow: 0 6px 16px rgba(62, 107, 79, 0.3);
 }
 
 .badge-status-locked {
@@ -308,8 +308,8 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(23, 52, 42, 0.05);
   border-radius: var(--radius-md);
   padding: 16px;
 }
@@ -327,7 +327,7 @@
 .large-progress-track {
   width: 100%;
   height: 8px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.62);
   border-radius: var(--radius-full);
   margin-bottom: 12px;
   overflow: hidden;

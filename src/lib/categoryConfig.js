@@ -3,7 +3,7 @@
 // components/ui/CategoryGlyph.jsx) on a tinted tile using `color`.
 // Colours are tuned for the dark "Night Topo" map — each is legible on #121915.
 export const categories = [
-  { id: 'trail', label: 'Trail', emoji: '🥾', icon: 'Footprints', color: '#C3D29F' },
+  { id: 'trail', label: 'Trail', emoji: '🥾', icon: 'Footprints', color: '#3E6B4F' },
   { id: 'mountain', label: 'Peak', emoji: '🏔️', icon: 'Mountain', color: '#E9EDE2' },
   { id: 'viewpoint', label: 'Viewpoint', emoji: '🌅', icon: 'Binoculars', color: '#FF9E6B' },
   { id: 'waterfall', label: 'Waterfall', emoji: '💦', icon: 'Droplets', color: '#7FD6FF' },
@@ -18,5 +18,5 @@ export const categories = [
 ];
 
 export const getCategoryById = (id) => {
-  return categories.find(cat => cat.id === id) || { id: 'other', label: 'Spot', emoji: '💎', icon: 'MapPin', color: '#C3D29F' };
+  return categories.find(cat => cat.id === id) || { id: 'other', label: 'Spot', emoji: '💎', icon: 'MapPin', color: '#3E6B4F' };
 };

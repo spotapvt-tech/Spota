@@ -41,7 +41,7 @@
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-accent);
-  background-color: rgba(195, 210, 159, 0.12);
+  background-color: rgba(62, 107, 79, 0.12);
   padding: 3px 8px;
   border-radius: var(--radius-full);
 }
@@ -59,7 +59,7 @@
   padding: 10px;
   border-radius: var(--radius-sm);
   background-color: var(--color-bg-primary);
-  border: 1px solid rgba(245, 245, 239, 0.04);
+  border: 1px solid rgba(23, 52, 42, 0.04);
 }
 
 .tile-icon-wrapper {
@@ -87,7 +87,7 @@
 }
 
 .tile-icon-wrapper.reactions {
-  background-color: rgba(195, 210, 159, 0.1);
+  background-color: rgba(62, 107, 79, 0.1);
   color: var(--color-accent);
 }
 

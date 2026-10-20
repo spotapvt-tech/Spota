@@ -21,31 +21,31 @@ export function useSpotaGoogleMaps() {
   });
 }
 
-// "Night Topo" basemap — matches the app's dark ink surfaces (src/index.css).
-// Terrain/park greens stay faintly visible so trails, forests and water read
-// as the hero; roads recede; POI noise is hidden so SPOTA markers own the map.
+// Light mint basemap — matches the app's frosted-glass surfaces (src/index.css).
+// Parks and water carry soft green/blue; roads recede; POI noise is hidden so
+// SPOTA markers own the map.
 export const MAP_STYLE = [
-  { elementType: 'geometry', stylers: [{ color: '#121915' }] },
+  { elementType: 'geometry', stylers: [{ color: '#EEF6F0' }] },
   { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#87928a' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#0f1512' }, { weight: 3 }] },
-  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#2a362f' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#4C6A59' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#F6FBF7' }, { weight: 3 }] },
+  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#C5DCCB' }] },
   { featureType: 'administrative.land_parcel', stylers: [{ visibility: 'off' }] },
-  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#cbd2c8' }] },
-  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#141c17' }] },
-  { featureType: 'landscape.natural.terrain', elementType: 'geometry', stylers: [{ color: '#18221c' }] },
+  { featureType: 'administrative.locality', elementType: 'labels.text.fill', stylers: [{ color: '#2E4F40' }] },
+  { featureType: 'landscape.natural', elementType: 'geometry', stylers: [{ color: '#E6F2E9' }] },
+  { featureType: 'landscape.natural.terrain', elementType: 'geometry', stylers: [{ color: '#DCEBE0' }] },
   { featureType: 'poi', elementType: 'labels', stylers: [{ visibility: 'off' }] },
-  { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#151d18' }] },
-  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#18261d' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#212b25' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#18201b' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#6f7a73' }] },
+  { featureType: 'poi', elementType: 'geometry', stylers: [{ color: '#E2EFE6' }] },
+  { featureType: 'poi.park', elementType: 'geometry', stylers: [{ color: '#CFE7D6' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#FFFFFF' }] },
+  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#DCEBE0' }] },
+  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#6B8878' }] },
   { featureType: 'road.arterial', elementType: 'labels', stylers: [{ visibility: 'simplified' }] },
-  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#2b362f' }] },
+  { featureType: 'road.highway', elementType: 'geometry', stylers: [{ color: '#F6FBF7' }] },
   { featureType: 'road.local', elementType: 'labels', stylers: [{ visibility: 'off' }] },
   { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#0b1a22' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4f6b78' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#BFDDE0' }] },
+  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#4F7F86' }] },
 ];
 
 export const DEFAULT_MAP_OPTIONS = {
@@ -54,5 +54,5 @@ export const DEFAULT_MAP_OPTIONS = {
   zoomControl: false,
   clickableIcons: false,
   gestureHandling: 'greedy',
-  backgroundColor: '#121915',
+  backgroundColor: '#EEF6F0',
 };

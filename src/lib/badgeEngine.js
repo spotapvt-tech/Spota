@@ -339,7 +339,7 @@ export function triggerBadgeCelebration(badges) {
     '#FF6A4D', // Terracotta
     '#F4A261', // Gold/Sand
     '#83C5BE', // Teal
-    '#C3D29F', // Sage Green
+    '#3E6B4F', // Sage Green
     '#E9C46A', // Bright Yellow
     '#9B5DE5', // Vivid Purple
     '#FF6B6B'  // Rose Pink
@@ -428,7 +428,7 @@ export function triggerBadgeCelebration(badges) {
   alertBox.style.zIndex = '999999';
   alertBox.style.backgroundColor = 'rgba(28, 38, 32, 0.95)';
   alertBox.style.backdropFilter = 'blur(12px)';
-  alertBox.style.border = '1px solid rgba(195, 210, 159, 0.4)';
+  alertBox.style.border = '1px solid rgba(62, 107, 79, 0.4)';
   alertBox.style.borderRadius = '16px';
   alertBox.style.padding = '16px 24px';
   alertBox.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 12px rgba(255,255,255,0.05)';
@@ -445,7 +445,7 @@ export function triggerBadgeCelebration(badges) {
   const title = document.createElement('div');
   title.style.fontSize = '12px';
   title.style.letterSpacing = '2px';
-  title.style.color = 'var(--color-accent, #C3D29F)';
+  title.style.color = 'var(--color-accent, #3E6B4F)';
   title.style.fontWeight = '700';
   title.innerText = '🏆 BADGE UNLOCKED!';
 

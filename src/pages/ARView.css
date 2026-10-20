@@ -27,7 +27,7 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(23, 52, 42, 0.6);
   padding: 40px;
   text-align: center;
   font-family: var(--font-family-base);
@@ -52,8 +52,8 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(23, 52, 42, 0.15);
   color: var(--text-strong);
   display: flex;
   align-items: center;
@@ -64,7 +64,7 @@
 }
 
 .ar-close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.62);
   transform: scale(1.05);
 }
 
@@ -84,9 +84,9 @@
 
 .hud-heading {
   font-family: var(--font-display);
-  background: rgba(245, 245, 239, 0.75);
+  background: rgba(255, 255, 255, 0.62);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(23, 52, 42, 0.1);
   color: var(--text-strong);
   padding: 6px 14px;
   border-radius: var(--radius-full);
@@ -103,7 +103,7 @@
 }
 
 .hud-helper {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(23, 52, 42, 0.5);
   font-size: var(--font-size-2xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -132,9 +132,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(245, 245, 239, 0.65);
+  background: rgba(255, 255, 255, 0.62);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(23, 52, 42, 0.2);
   padding: 8px 14px;
   border-radius: var(--radius-md);
   color: var(--text-strong);
@@ -145,8 +145,8 @@
 }
 
 .ar-marker-card:hover {
-  background: rgba(195, 210, 159, 0.75);
-  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(62, 107, 79, 0.75);
+  border-color: rgba(23, 52, 42, 0.4);
   transform: translateY(-4px);
 }
 
@@ -163,7 +163,7 @@
 
 .ar-marker-details span {
   font-size: var(--font-size-2xs);
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(23, 52, 42, 0.6);
 }
 
 .ar-no-spots {
@@ -171,11 +171,11 @@
   bottom: 120px;
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.65);
+  color: rgba(23, 52, 42, 0.65);
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
   font-weight: 500;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.78);
   padding: 8px 18px;
   border-radius: var(--radius-full);
 }

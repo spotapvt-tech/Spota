@@ -59,7 +59,7 @@
 }
 
 .admin-tab-btn:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.62);
   color: var(--color-text-primary);
 }
 
@@ -283,7 +283,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.62);
   transition: .3s;
 }
 
@@ -326,7 +326,7 @@
 
 /* Config Boxes */
 .config-group-box {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(255, 255, 255, 0.62);
   border: 1px solid var(--color-border);
   padding: 16px;
   border-radius: var(--radius-md);
@@ -392,7 +392,7 @@
   accent-color: var(--success);
   height: 6px;
   border-radius: 3px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.62);
   cursor: pointer;
 }
 
@@ -416,7 +416,7 @@
 }
 
 .input-col input {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.62);
   border: 1px solid var(--color-border);
   padding: 10px;
   border-radius: var(--radius-sm);
@@ -547,7 +547,7 @@
 
 .bar-track {
   height: 12px;
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.62);
   border-radius: 6px;
   overflow: hidden;
 }

@@ -55,7 +55,7 @@
 .creator-reputation-card {
   padding: 24px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, rgba(195, 210, 159, 0.08) 0%, rgba(221, 161, 94, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(62, 107, 79, 0.08) 0%, rgba(221, 161, 94, 0.05) 100%);
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
@@ -82,7 +82,7 @@
   font-weight: 800;
   margin: 0;
   color: var(--color-accent);
-  text-shadow: 0 2px 4px rgba(195, 210, 159, 0.15);
+  text-shadow: 0 2px 4px rgba(62, 107, 79, 0.15);
 }
 
 .reputation-help-text {
@@ -165,7 +165,7 @@
   font-size: var(--font-size-sm);
   font-weight: 800;
   color: var(--color-accent);
-  background-color: rgba(195, 210, 159, 0.1);
+  background-color: rgba(62, 107, 79, 0.1);
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -184,7 +184,7 @@
 }
 
 .rank-thumbnail.placeholder {
-  background-color: rgba(195, 210, 159,0.1);
+  background-color: rgba(62, 107, 79,0.1);
   display: flex;
   align-items: center;
   justify-content: center;

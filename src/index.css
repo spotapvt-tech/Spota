@@ -11,27 +11,27 @@
    ========================================================================== */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
   /* ---- Raw palette ---------------------------------------------------- */
-  --ink-1000: #07120E;
-  --ink-950: #09130F;
-  --ink-900: #0D1B16;
-  --ink-850: #142A22;
-  --ink-800: #1A342A;
-  --ink-750: #20402F;
-  --ink-700: #2B3E33;
-  --ink-600: #3A4F42;
-  --ink-500: #56685D;
+  --ink-1000: #FFFFFF;
+  --ink-950: #F4FBF6;
+  --ink-900: #EAF5EC;
+  --ink-850: #FBFEFC;
+  --ink-800: #F1F9F3;
+  --ink-750: #DCEEE1;
+  --ink-700: #CFE5D5;
+  --ink-600: #B5D2BD;
+  --ink-500: #8FB29B;
 
-  --bone-50: #F5F5EF;
-  --bone-200: #D3D8CF;
-  --bone-300: #A3AFA6;
-  --bone-400: #89968C;
+  --bone-50: #17342A;
+  --bone-200: #2E4F40;
+  --bone-300: #4C6A59;
+  --bone-400: #5E7B6B;
 
-  --signal-400: #D9E4BC;
-  --signal-500: #C3D29F;
-  --signal-600: #8FAA78;
+  --signal-400: #5E8A6A;
+  --signal-500: #3E6B4F;
+  --signal-600: #2F5440;
 
   --ember-500: #FF6A4D;   /* danger / SOS / live */
   --amber-500: #FFB648;   /* caution / pending */
@@ -53,19 +53,19 @@
   --text-muted: var(--bone-300);
   --text-faint: var(--bone-400);
 
-  --line-subtle: rgba(245, 245, 239, 0.07);
-  --line: rgba(245, 245, 239, 0.12);
-  --line-strong: rgba(245, 245, 239, 0.22);
+  --line-subtle: rgba(23, 52, 42, 0.07);
+  --line: rgba(23, 52, 42, 0.12);
+  --line-strong: rgba(23, 52, 42, 0.22);
 
   --accent: var(--signal-500);
   --accent-hover: var(--signal-400);
   --accent-press: var(--signal-600);
-  --accent-ink: var(--ink-950);               /* text/icons placed ON accent */
-  --accent-wash: rgba(195, 210, 159, 0.12);    /* tinted backgrounds */
-  --accent-line: rgba(195, 210, 159, 0.35);
-  --grad-accent: linear-gradient(135deg, #C9D6A8, #8FAA78);        /* Sage moss: CTAs, highlights */
-  --grad-accent-hover: linear-gradient(135deg, #D9E4BC, #A0BA88);
-  --grad-canvas: linear-gradient(155deg, #0F1A15, #1E3027);         /* page background */
+  --accent-ink: #EAF6EE;               /* text/icons placed ON accent */
+  --accent-wash: rgba(62, 107, 79, 0.12);    /* tinted backgrounds */
+  --accent-line: rgba(62, 107, 79, 0.35);
+  --grad-accent: linear-gradient(135deg, #5E8A6A, #3E6B4F);        /* Forest mint to sage: CTAs, highlights */
+  --grad-accent-hover: linear-gradient(135deg, #6F9C7C, #467A58);
+  --grad-canvas: linear-gradient(160deg, #F6FBF7, #E3F2E8);         /* page background */
 
   --danger: var(--ember-500);
   --danger-wash: rgba(255, 106, 77, 0.14);
@@ -93,8 +93,8 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-on-accent: var(--accent-ink);
-  --color-surface: rgba(19, 26, 22, 0.86);
-  --color-surface-strong: rgba(24, 33, 28, 0.96);
+  --color-surface: rgba(255, 255, 255, 0.78);
+  --color-surface-strong: rgba(255, 255, 255, 0.78);
   --color-border: var(--line);
   --color-live: var(--ember-500);
   --color-live-pulse: rgba(255, 106, 77, 0.3);
@@ -156,11 +156,11 @@
   --radius-full: 9999px;
 
   /* ---- Depth ---------------------------------------------------------- */
-  --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.5);
-  --shadow-glass: 0 10px 30px rgba(0, 0, 0, 0.45);
-  --shadow-accent: 0 8px 24px rgba(195, 210, 159, 0.22);
+  --shadow-sm: 0 1px 0 rgba(47, 84, 64, 0.08);
+  --shadow-md: 0 6px 18px rgba(47, 84, 64, 0.14);
+  --shadow-lg: 0 18px 40px rgba(47, 84, 64, 0.2);
+  --shadow-glass: 0 10px 30px rgba(47, 84, 64, 0.16);
+  --shadow-accent: 0 8px 24px rgba(62, 107, 79, 0.22);
 
   /* ---- Motion --------------------------------------------------------- */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -181,14 +181,14 @@
   /* Liquid glass — translucent fills over the map/content, never over text-heavy
      reading surfaces. --glass-solid is the opaque fallback (no backdrop-filter,
      or "reduce transparency" is on). */
-  --glass-thin: rgba(20, 42, 34, 0.55);
-  --glass-regular: rgba(20, 42, 34, 0.72);
-  --glass-thick: rgba(13, 27, 22, 0.86);
+  --glass-thin: rgba(255, 255, 255, 0.55);
+  --glass-regular: rgba(255, 255, 255, 0.72);
+  --glass-thick: rgba(255, 255, 255, 0.88);
   --glass-solid: var(--ink-800);
   --glass-blur: 18px;
-  --glass-edge: rgba(245, 245, 239, 0.14);
-  --glass-shadow: 0 8px 24px rgba(0, 0, 0, 0.32);
-  --glass-highlight: inset 0 1px 0 rgba(245, 245, 239, 0.1);
+  --glass-edge: rgba(255, 255, 255, 0.9);
+  --glass-shadow: 0 8px 24px rgba(47, 84, 64, 0.15);
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.9);
 
   /* ---- Layers --------------------------------------------------------- */
   --z-nav: 100;
@@ -202,7 +202,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
   /* Contour texture (inline SVG — no network) */
-  --topo-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg fill='none' stroke='%23F5F5EF' stroke-opacity='0.055' stroke-width='1'%3E%3Cpath d='M-20 60c40-30 90-28 130 0s100 34 150 6 80-20 80-20'/%3E%3Cpath d='M-20 92c46-26 96-20 134 6s96 30 146 2 80-14 80-14'/%3E%3Cpath d='M-20 128c50-20 100-10 136 14s92 24 142-2 82-6 82-6'/%3E%3Cpath d='M60 210c18-34 64-44 96-24s30 62-4 78-82 4-92-22z'/%3E%3Cpath d='M84 214c12-20 44-26 64-12s18 40-4 50-52 2-60-14z'/%3E%3Cpath d='M106 218c6-9 22-12 32-5s8 19-2 23-24 1-30-6z'/%3E%3Cpath d='M-20 290c60-10 110 6 150-10s110-40 210-12'/%3E%3C/g%3E%3C/svg%3E");
+  --topo-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg fill='none' stroke='%233E6B4F' stroke-opacity='0.09' stroke-width='1'%3E%3Cpath d='M-20 60c40-30 90-28 130 0s100 34 150 6 80-20 80-20'/%3E%3Cpath d='M-20 92c46-26 96-20 134 6s96 30 146 2 80-14 80-14'/%3E%3Cpath d='M-20 128c50-20 100-10 136 14s92 24 142-2 82-6 82-6'/%3E%3Cpath d='M60 210c18-34 64-44 96-24s30 62-4 78-82 4-92-22z'/%3E%3Cpath d='M84 214c12-20 44-26 64-12s18 40-4 50-52 2-60-14z'/%3E%3Cpath d='M106 218c6-9 22-12 32-5s8 19-2 23-24 1-30-6z'/%3E%3Cpath d='M-20 290c60-10 110 6 150-10s110-40 210-12'/%3E%3C/g%3E%3C/svg%3E");
 }
 
 /* ==========================================================================
@@ -409,7 +409,7 @@ img { max-width: 100%; }
 .sp-btn--secondary:hover:not(:disabled) { background: var(--bg-hover); border-color: var(--line-strong); }
 .sp-btn--ghost { color: var(--text-strong); }
 .sp-btn--ghost:hover:not(:disabled) { background: var(--bg-overlay); }
-.sp-btn--danger { background: var(--danger); color: var(--ink-950); }
+.sp-btn--danger { background: var(--danger); color: #fff; }
 .sp-btn--sm { min-height: 36px; padding: 0 14px; font-size: var(--font-size-xs); }
 .sp-btn--block { width: 100%; }
 .sp-btn:disabled { opacity: 0.45; box-shadow: none; }
@@ -531,7 +531,7 @@ img { max-width: 100%; }
 .sp-sheet-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(4, 7, 5, 0.6);
+  background: rgba(255, 255, 255, 0.78);
   z-index: var(--z-modal);
   animation: sp-fade-in 0.2s var(--ease-out) both;
 }
@@ -739,4 +739,25 @@ img { max-width: 100%; }
   0% { opacity: 0; transform: translateY(28px) scale(0.98); }
   60% { opacity: 1; }
   100% { opacity: 1; transform: none; }
+}
+
+/* ==========================================================================
+   Night theme — the original dark forest tokens, scoped for surfaces that are
+   dark by design (the marketing Landing page, photo-led overlays).
+   ========================================================================== */
+.theme-night {
+  color-scheme: dark;
+  --ink-1000: #031618; --ink-950: #051F20; --ink-900: #0B2B26; --ink-850: #163832;
+  --ink-800: #1D443A; --ink-750: #235347; --ink-700: #2C6355; --ink-600: #3E7565; --ink-500: #5A8574;
+  --bone-50: #DAF1DE; --bone-200: #BFDCC6; --bone-300: #8EB69B; --bone-400: #74A184;
+  --bg-canvas: var(--ink-900); --bg-sunken: var(--ink-950); --bg-raised: var(--ink-850);
+  --bg-overlay: var(--ink-800); --bg-hover: var(--ink-750);
+  --text-strong: var(--bone-50); --text-body: var(--bone-200); --text-muted: var(--bone-300); --text-faint: var(--bone-400);
+  --line-subtle: rgba(218, 241, 222, 0.07); --line: rgba(218, 241, 222, 0.12); --line-strong: rgba(218, 241, 222, 0.22);
+  --accent: #8EB69B; --accent-hover: #DAF1DE; --accent-press: #6F9C80; --accent-ink: #051F20;
+  --accent-wash: rgba(142, 182, 155, 0.12); --accent-line: rgba(142, 182, 155, 0.35);
+  --grad-accent: linear-gradient(135deg, #DAF1DE, #8EB69B);
+  --grad-accent-hover: linear-gradient(135deg, #DAF1DE, #A3C7AE);
+  --shadow-accent: 0 8px 24px rgba(142, 182, 155, 0.22);
+  color: var(--text-strong);
 }

@@ -45,7 +45,7 @@
 
 .chat-search-bar input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.15);
+  box-shadow: 0 0 0 3px rgba(62, 107, 79, 0.15);
 }
 
 .search-icon-inside {
@@ -125,7 +125,7 @@
 }
 
 .search-result-item:hover {
-  background: rgba(195, 210, 159, 0.08);
+  background: rgba(62, 107, 79, 0.08);
 }
 
 .search-result-item span {
@@ -146,7 +146,7 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(195, 210, 159, 0.12);
+  background: rgba(62, 107, 79, 0.12);
   color: var(--color-accent);
   display: flex;
   align-items: center;
@@ -191,7 +191,7 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(195, 210, 159, 0.12);
+  background: rgba(62, 107, 79, 0.12);
   color: var(--color-accent);
   display: flex;
   align-items: center;
@@ -266,7 +266,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(195, 210, 159, 0.08);
+  background: rgba(62, 107, 79, 0.08);
   color: var(--color-accent);
   display: flex;
   align-items: center;
@@ -314,7 +314,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(195, 210, 159, 0.12);
+  background: rgba(62, 107, 79, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -345,7 +345,7 @@
   color: var(--color-bg-primary);
   font-weight: 600;
   font-size: var(--font-size-sm);
-  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.3);
+  box-shadow: 0 4px 12px rgba(62, 107, 79, 0.3);
   transition: all var(--transition-fast);
   margin-top: 8px;
 }

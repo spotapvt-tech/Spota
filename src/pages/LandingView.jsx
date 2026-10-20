@@ -648,7 +648,7 @@ export default function LandingView() {
   };
 
   return (
-    <div className="landing-wrapper">
+    <div className="landing-wrapper theme-night">
       {/* Dynamic particles overlays for level transitions */}
       <canvas ref={particlesCanvasRef} className="l-particles-canvas" />
 

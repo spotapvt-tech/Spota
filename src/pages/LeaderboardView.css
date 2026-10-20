@@ -164,7 +164,7 @@
 .lb-row:last-child { border-bottom: none; }
 
 .lb-row.is-me {
-  background: rgba(195, 210, 159, 0.1);
+  background: rgba(62, 107, 79, 0.1);
   box-shadow: inset 3px 0 0 var(--color-accent);
 }
 
@@ -184,7 +184,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: rgba(195, 210, 159, 0.15);
+  background: rgba(62, 107, 79, 0.15);
   color: var(--color-accent);
   font-weight: 700;
 }
@@ -270,7 +270,7 @@
   padding: 14px 16px;
   border-radius: var(--radius-lg);
   margin-bottom: 12px;
-  border: 1px solid rgba(195, 210, 159, 0.35);
+  border: 1px solid rgba(62, 107, 79, 0.35);
 }
 
 .lb-me > div { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
@@ -315,7 +315,7 @@
   border-radius: 999px;
   font-size: var(--font-size-xs);
   font-weight: 700;
-  background: rgba(195, 210, 159, 0.14);
+  background: rgba(62, 107, 79, 0.14);
   color: var(--color-accent);
 }
 

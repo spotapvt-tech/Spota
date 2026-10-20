@@ -51,13 +51,13 @@
   padding: 22px 24px;
   border-radius: var(--radius-lg);
   font-size: var(--font-size-lg);
-  box-shadow: 0 4px 16px rgba(195, 210, 159, 0.3);
+  box-shadow: 0 4px 16px rgba(62, 107, 79, 0.3);
 }
 
 .capture-btn.primary:hover {
   background: var(--grad-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(195, 210, 159, 0.4);
+  box-shadow: 0 8px 24px rgba(62, 107, 79, 0.4);
 }
 
 .capture-btn.secondary {
@@ -105,7 +105,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0,0,0,0.55);
+  background: rgba(255, 255, 255, 0.78);
   color: white;
   border: none;
   width: 32px;
@@ -132,7 +132,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(0,0,0,0.55);
+  background: rgba(255, 255, 255, 0.78);
   color: white;
   border: none;
   padding: 6px 12px;
@@ -145,7 +145,7 @@
 }
 
 .capture-retake-btn:hover {
-  background: rgba(0,0,0,0.75);
+  background: rgba(255, 255, 255, 0.78);
 }
 
 .capture-filters {
@@ -184,7 +184,7 @@
 .filter-chip.active,
 .filter-chip:hover {
   border-color: var(--color-accent);
-  background: rgba(195, 210, 159, 0.12);
+  background: rgba(62, 107, 79, 0.12);
   color: var(--color-accent);
 }
 

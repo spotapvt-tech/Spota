@@ -132,6 +132,7 @@ export default function HomeView() {
         )}
       </section>
 
+      <div className="home-sheet">
       {/* ---------- Hero discovery ---------- */}
       {status === 'loading' && !hero ? (
         <div className="home-hero sp-skeleton" aria-busy="true" aria-label="Loading discoveries" />
@@ -357,6 +358,7 @@ export default function HomeView() {
       )}
 
       <p className="home-foot sp-eyebrow">Explore responsibly · respect closures &amp; private land</p>
+      </div>
 
       {selectedSpot && <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />}
     </div>

@@ -23,9 +23,9 @@
   padding: 40px 24px;
   border-radius: var(--radius-lg, 24px);
   margin-bottom: 40px;
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.62);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(23, 52, 42, 0.4);
 }
 
 .paywall-back {
@@ -92,13 +92,13 @@
   border-radius: var(--radius-lg, 24px);
   background: var(--color-surface);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(23, 52, 42, 0.3);
   transition: transform 0.25s, border-color 0.25s;
 }
 
 .plan-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(195, 210, 159, 0.4);
+  border-color: rgba(62, 107, 79, 0.4);
 }
 
 .plan-card.popular {
@@ -192,7 +192,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(8px);
   z-index: 1000;
   display: flex;
@@ -208,7 +208,7 @@
   overflow-y: auto;
   background: var(--color-surface);
   border-radius: var(--radius-lg, 24px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(23, 52, 42, 0.5);
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.15);
   padding: 28px;
 }
@@ -283,9 +283,9 @@
   align-items: center;
   padding: 20px 24px;
   border-radius: var(--radius-lg, 24px);
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.62);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(23, 52, 42, 0.4);
   margin-bottom: 24px;
 }
 
@@ -351,7 +351,7 @@
   padding: 18px 20px;
   border-radius: var(--radius-md, 16px);
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(23, 52, 42, 0.3);
 }
 
 .metric-icon {
@@ -426,7 +426,7 @@
   padding: 20px;
   border-radius: var(--radius-lg, 24px);
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(23, 52, 42, 0.3);
   overflow-x: auto;
 }
 
@@ -525,8 +525,8 @@
   align-items: center;
   padding: 16px 20px;
   border-radius: var(--radius-md, 16px);
-  background: rgba(255, 255, 255, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(23, 52, 42, 0.4);
   margin-bottom: 20px;
 }
 
@@ -563,7 +563,7 @@
   padding: 24px;
   border-radius: var(--radius-lg, 24px);
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(23, 52, 42, 0.3);
 }
 
 .empty-itinerary-state {
@@ -598,7 +598,7 @@
   padding: 20px;
   border-radius: 16px;
   background: var(--color-surface);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(23, 52, 42, 0.5);
 }
 
 .spot-card-title {
@@ -621,7 +621,7 @@
   font-size: var(--font-size-2xs);
   font-weight: 700;
   text-transform: uppercase;
-  background: rgba(195, 210, 159, 0.15);
+  background: rgba(62, 107, 79, 0.15);
   color: var(--color-accent);
   padding: 2px 8px;
   border-radius: 99px;
@@ -674,7 +674,7 @@
 }
 
 .source-tag.spot_details {
-  background: rgba(195, 210, 159, 0.1);
+  background: rgba(62, 107, 79, 0.1);
   color: var(--color-accent);
 }
 

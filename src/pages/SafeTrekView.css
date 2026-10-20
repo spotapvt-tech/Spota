@@ -218,14 +218,14 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(195, 210, 159, 0.2);
+  box-shadow: 0 4px 15px rgba(62, 107, 79, 0.2);
   transition: all var(--transition-fast);
 }
 
 .check-in-btn-primary:hover {
   background: var(--grad-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(195, 210, 159, 0.3);
+  box-shadow: 0 6px 20px rgba(62, 107, 79, 0.3);
 }
 
 .end-trek-btn-secondary {
@@ -316,7 +316,7 @@
 .input-with-icon input:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.15);
+  box-shadow: 0 0 0 3px rgba(62, 107, 79, 0.15);
 }
 
 .map-label-row {
@@ -337,7 +337,7 @@
   font-size: var(--font-size-2xs);
   font-weight: 600;
   color: var(--color-accent);
-  background: rgba(195, 210, 159, 0.1);
+  background: rgba(62, 107, 79, 0.1);
   padding: 4px 10px;
   border-radius: var(--radius-full);
 }
@@ -374,7 +374,7 @@
 }
 
 .interval-btn:hover {
-  background: rgba(195, 210, 159, 0.05);
+  background: rgba(62, 107, 79, 0.05);
   color: var(--color-text-primary);
 }
 
@@ -410,14 +410,14 @@
   justify-content: center;
   gap: 8px;
   margin-top: 24px;
-  box-shadow: 0 4px 15px rgba(195, 210, 159, 0.2);
+  box-shadow: 0 4px 15px rgba(62, 107, 79, 0.2);
   transition: all var(--transition-fast);
 }
 
 .start-trek-submit:hover:not(:disabled) {
   background: var(--grad-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(195, 210, 159, 0.3);
+  box-shadow: 0 6px 20px rgba(62, 107, 79, 0.3);
 }
 
 .start-trek-submit:disabled {
@@ -518,7 +518,7 @@
 }
 
 .status-badge.active {
-  background: rgba(195, 210, 159, 0.15);
+  background: rgba(62, 107, 79, 0.15);
   color: var(--color-accent);
 }
 

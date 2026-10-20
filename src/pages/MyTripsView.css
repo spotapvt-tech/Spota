@@ -85,7 +85,7 @@
 .trips-btn.primary {
   background: var(--grad-accent);
   color: var(--color-on-accent);
-  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.25);
+  box-shadow: 0 4px 12px rgba(62, 107, 79, 0.25);
 }
 
 .trips-btn.primary:hover {
@@ -99,7 +99,7 @@
 }
 
 .trips-btn.secondary:hover {
-  background-color: rgba(195, 210, 159, 0.05);
+  background-color: rgba(62, 107, 79, 0.05);
 }
 
 .empty-trips-state {
@@ -193,7 +193,7 @@
 .role-tag {
   font-size: var(--font-size-2xs);
   font-weight: 600;
-  background-color: rgba(195, 210, 159, 0.1);
+  background-color: rgba(62, 107, 79, 0.1);
   color: var(--color-accent);
   padding: 2px 8px;
   border-radius: var(--radius-full);
@@ -220,7 +220,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -351,7 +351,7 @@
 .trips-mode-selector .tab-btn.active {
   background: var(--grad-accent);
   color: var(--color-on-accent);
-  box-shadow: 0 2px 8px rgba(195, 210, 159, 0.2);
+  box-shadow: 0 2px 8px rgba(62, 107, 79, 0.2);
 }
 
 /* Category horizontal scroll chips */

@@ -14,8 +14,8 @@ const DIRECTIONS = {
     pairs: [
       ['Text on canvas', '#F5F5EF', '#0D1B16'],
       ['Muted on card', '#89968C', '#142A22'],
-      ['CTA label on lime', '#0D1B16', '#C3D29F'],
-      ['Lime on card', '#C3D29F', '#142A22'],
+      ['CTA label on lime', '#0D1B16', '#3E6B4F'],
+      ['Lime on card', '#3E6B4F', '#142A22'],
     ],
   },
   b: {

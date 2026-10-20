@@ -5,8 +5,8 @@
 }
 
 .name-suggestion-card {
-  background: rgba(195, 210, 159, 0.08);
-  border: 1px solid rgba(195, 210, 159, 0.25);
+  background: rgba(62, 107, 79, 0.08);
+  border: 1px solid rgba(62, 107, 79, 0.25);
   border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
@@ -97,7 +97,7 @@
 
 .name-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.1);
+  box-shadow: 0 0 0 3px rgba(62, 107, 79, 0.1);
 }
 
 .name-char-count {
