@@ -1,4 +1,5 @@
 import { OverlayView } from '@react-google-maps/api';
+import './mapChrome.css';
 
 // Renders arbitrary HTML (an emoji pin, a vote-count badge, a day-number
 // badge, ...) anchored to a lat/lng — the Google Maps equivalent of

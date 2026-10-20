@@ -141,7 +141,7 @@ export default function StepPin({ location, setLocation, photoGps }) {
   return (
     <div className="step-pin wizard-step">
       <div className="step-header">
-        <h2>Drop the Pin 📍</h2>
+        <h2>Drop the pin</h2>
         <p>Confirm where this gem lives.</p>
       </div>
 

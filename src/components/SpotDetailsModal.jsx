@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, Heart, Share, AlertTriangle, Trash2, Sparkles, Navigation, ListPlus, Film, Image as ImageIcon, MessageSquare } from 'lucide-react';
+import { X, Heart, Share, AlertTriangle, Trash2, Sparkles, Navigation, ListPlus, Film, Image as ImageIcon, MessageSquare, MapPin } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { getCategoryById } from '../lib/categoryConfig';
@@ -276,24 +276,24 @@ export default function SpotDetailsModal({ spot, onClose }) {
     ctx.fillRect(0, 0, 800, 1200);
 
     // 2. Draw Decorative Glass Circles
-    ctx.fillStyle = 'rgba(108, 140, 116, 0.15)'; 
+    ctx.fillStyle = 'rgba(195, 210, 159, 0.15)'; 
     ctx.beginPath();
     ctx.arc(100, 200, 150, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = 'rgba(224, 122, 95, 0.1)'; 
+    ctx.fillStyle = 'rgba(255, 106, 77, 0.1)'; 
     ctx.beginPath();
     ctx.arc(700, 900, 200, 0, Math.PI * 2);
     ctx.fill();
 
     // 3. Draw Header
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = "bold 32px 'Outfit', sans-serif";
+    ctx.font = "bold 32px 'Archivo Variable', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('💎 S P O T A', 400, 80);
 
     ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    ctx.font = "500 16px 'Outfit', sans-serif";
+    ctx.font = "500 16px 'Archivo Variable', sans-serif";
     ctx.fillText('ZEN SOCIAL DISCOVERY', 400, 115);
 
     const drawDetails = () => {
@@ -316,7 +316,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
       // Spot Title
       ctx.fillStyle = '#FFFFFF';
       ctx.textAlign = 'left';
-      ctx.font = "bold 38px 'Outfit', sans-serif";
+      ctx.font = "bold 38px 'Archivo Variable', sans-serif";
       ctx.fillText(spot.title || 'Unknown Spot', 120, 685, 560);
 
       // Category Pill
@@ -328,18 +328,18 @@ export default function SpotDetailsModal({ spot, onClose }) {
       ctx.fill();
 
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = "bold 13px 'Outfit', sans-serif";
+      ctx.font = "bold 13px 'Archivo Variable', sans-serif";
       ctx.fillText(catText, 132, 736);
 
       // Creator attribution
       const creatorName = creatorProfile?.username || 'Explorer';
       ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-      ctx.font = "400 16px 'Outfit', sans-serif";
+      ctx.font = "400 16px 'Archivo Variable', sans-serif";
       ctx.fillText(`Dropped by: ${creatorName}`, 120 + pillWidth + 20, 737);
 
       // Description (Word Wrap)
       ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      ctx.font = "italic 20px 'Outfit', sans-serif";
+      ctx.font = "italic 20px 'Archivo Variable', sans-serif";
       const descText = `"${spot.description || spot.vibe || 'No description'}"`;
       
       const words = descText.split(' ');
@@ -360,11 +360,11 @@ export default function SpotDetailsModal({ spot, onClose }) {
 
       // Vibe Check Ratings inside Share Card
       let ratingY = 880;
-      const ratingColors = ['#E07A5F', '#E29578', '#DDA15E', '#6C8C74', '#4A90E2'];
+      const ratingColors = ['#FF6A4D', '#E29578', '#DDA15E', '#C3D29F', '#4A90E2'];
       const ratingLabels = ['Cozy', 'Insta', 'Lively', 'Zen', 'Work'];
       const ratingKeys = ['cozy', 'insta_worthy', 'lively', 'zen', 'workspace'];
 
-      ctx.font = "bold 15px 'Outfit', sans-serif";
+      ctx.font = "bold 15px 'Archivo Variable', sans-serif";
       ctx.fillStyle = '#FFFFFF';
       ctx.fillText('VIBE CHECK PROFILE', 120, ratingY - 20);
 
@@ -374,12 +374,12 @@ export default function SpotDetailsModal({ spot, onClose }) {
 
         // Label
         ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        ctx.font = "500 14px 'Outfit', sans-serif";
+        ctx.font = "500 14px 'Archivo Variable', sans-serif";
         ctx.fillText(ratingLabels[idx], 120, ratingY + 4);
 
         // Value
         ctx.fillStyle = '#FFFFFF';
-        ctx.font = "bold 14px 'Outfit', sans-serif";
+        ctx.font = "bold 14px 'Archivo Variable', sans-serif";
         ctx.fillText(`${val}`, 180, ratingY + 4);
 
         // Progress bar background
@@ -411,7 +411,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
       ctx.fillRect(645, 755, 15, 15);
 
       ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-      ctx.font = "500 12px 'Outfit', sans-serif";
+      ctx.font = "500 12px 'Archivo Variable', sans-serif";
       ctx.fillText('SCAN TO DISCOVER', 560, 815);
 
       // 6. Trigger Download
@@ -451,7 +451,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
         ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
         ctx.fillRect(80, 150, 640, 440);
         ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-        ctx.font = "italic 20px 'Outfit', sans-serif";
+        ctx.font = "italic 20px 'Archivo Variable', sans-serif";
         ctx.textAlign = 'center';
         ctx.fillText('💎 Spot Visual', 400, 370);
         
@@ -743,7 +743,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
           ) : spot.image_url ? (
             <img src={spot.image_url} alt={spot.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, rgba(108,140,116,0.1), rgba(108,140,116,0.3))' }} />
+            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, rgba(195, 210, 159,0.1), rgba(195, 210, 159,0.3))' }} />
           )}
 
           {spot.video_url && (
@@ -770,7 +770,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
         
         <div className="spot-details-body">
           {spot.status === 'pending' && (
-            <div style={{ backgroundColor: 'rgba(224, 122, 95, 0.1)', color: '#E07A5F', padding: '10px 14px', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', marginBottom: '20px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(224, 122, 95, 0.2)' }}>
+            <div style={{ backgroundColor: 'rgba(255, 106, 77, 0.1)', color: '#FF6A4D', padding: '10px 14px', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-sm)', marginBottom: '20px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid rgba(255, 106, 77, 0.2)' }}>
               <span>⏳</span>
               <span>This gem is pending moderation review and is only visible to you.</span>
             </div>
@@ -801,7 +801,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
 
           {spot.address && (
             <div className="spot-address-detail" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--color-text-secondary)', marginBottom: '14px', lineHeight: '1.4' }}>
-              <span>📍</span>
+              <MapPin size={13} aria-hidden="true" />
               <span>{spot.address}</span>
             </div>
           )}
@@ -822,7 +822,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-primary)' }}>{creatorProfile.username}</span>
                     {creatorProfile.is_verified && (
-                      <span style={{ backgroundColor: 'rgba(108,140,116,0.15)', color: 'var(--color-accent)', padding: '1px 5px', borderRadius: '4px', fontSize: '8px', fontWeight: 700, textTransform: 'uppercase' }} title="Verified Contributor">Verified</span>
+                      <span style={{ backgroundColor: 'rgba(195, 210, 159,0.15)', color: 'var(--color-accent)', padding: '1px 5px', borderRadius: '4px', fontSize: '8px', fontWeight: 700, textTransform: 'uppercase' }} title="Verified Contributor">Verified</span>
                     )}
                   </div>
                 </div>
@@ -833,7 +833,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
                 <button 
                   onClick={() => navigate('/chat', { state: { startChatWith: { id: spot.user_id, username: creatorProfile.username, avatar_url: creatorProfile.avatar_url } } })}
                   style={{
-                    background: 'rgba(108, 140, 116, 0.12)',
+                    background: 'rgba(195, 210, 159, 0.12)',
                     border: 'none',
                     color: 'var(--color-accent)',
                     padding: '6px 12px',
@@ -860,7 +860,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
           {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
             <div className="detail-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '12px 0 16px 0' }}>
               {spot.tags.map((tag, idx) => (
-                <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>
+                <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(195, 210, 159,0.1)', color: 'var(--color-accent)', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>
                   #{tag}
                 </span>
               ))}
@@ -923,7 +923,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
                   }
                   window.open(spot.booking_cta_url, '_blank');
                 }}
-                style={{ backgroundColor: '#8e44ad', color: '#fff', border: 'none' }}
+                style={{ backgroundColor: '#B79CFF', color: '#fff', border: 'none' }}
               >
                 <span>🎟️ {spot.booking_cta_label || 'Book Experience'}</span>
               </button>
@@ -938,7 +938,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
             </button>
             
             {spot.latitude !== undefined && spot.longitude !== undefined && (
-              <button className="action-btn directions-btn" onClick={handleDirections} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)' }}>
+              <button className="action-btn directions-btn" onClick={handleDirections}>
                 <Navigation size={20} />
                 <span>Directions</span>
               </button>
@@ -980,7 +980,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
               </div>
             )}
 
-            <button className="action-btn share-card-btn" onClick={handleExportShareCard} style={{ backgroundColor: 'rgba(108,140,116,0.1)', color: 'var(--color-accent)' }}>
+            <button className="action-btn share-card-btn" onClick={handleExportShareCard}>
               <Sparkles size={20} />
               <span>Share Card</span>
             </button>
@@ -1000,7 +1000,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
           {/* Vibe Checks Visualizer */}
           <div className="vibe-check-visuals" style={{ marginTop: '20px', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              📊 Vibe Profile {vibeAverages.totalCount > 0 && `(${vibeAverages.totalCount} checks)`}
+              Vibe profile {vibeAverages.totalCount > 0 && `(${vibeAverages.totalCount} checks)`}
             </h3>
             
             {vibeAverages.totalCount === 0 ? (
@@ -1035,8 +1035,8 @@ export default function SpotDetailsModal({ spot, onClose }) {
             
             {/* Submit Vibe Check */}
             {user && !hasRatedVibes && (
-              <details style={{ backgroundColor: 'rgba(108,140,116,0.04)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
-                <summary style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-accent)' }}>🎯 Submit a Vibe Check</summary>
+              <details style={{ backgroundColor: 'rgba(195, 210, 159,0.04)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
+                <summary style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-accent)' }}>Add your vibe check</summary>
                 <form onSubmit={handlePostVibes} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '14px', cursor: 'default' }} onClick={(e) => e.stopPropagation()}>
                   {[
                     { key: 'cozy', label: 'Cozy / Warm' },
@@ -1100,7 +1100,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
           {/* Comments Section */}
           <div className="comments-section" style={{ marginTop: '24px', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
             <h3 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              💬 Community Tips ({comments.length})
+              Community tips ({comments.length})
             </h3>
 
             {/* Comment Thread */}

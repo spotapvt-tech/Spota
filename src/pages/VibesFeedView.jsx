@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import SpotVibeCard from '../components/SpotVibeCard';
-import { Sparkles, Info } from 'lucide-react';
+import { Info } from 'lucide-react';
 import './VibesFeedView.css';
 
 export default function VibesFeedView() {
@@ -108,9 +108,9 @@ export default function VibesFeedView() {
 
   if (loading) {
     return (
-      <div className="vibes-feed-container loading-state">
-        <Sparkles className="animate-spin vibes-spinner" size={36} />
-        <p>Loading community video vibes...</p>
+      <div className="vibes-feed-container loading-state" role="status" aria-busy="true">
+        <div className="sp-skeleton" style={{ width: "calc(100% - 32px)", height: "70%", borderRadius: "var(--radius-lg)" }} />
+        <span className="sp-visually-hidden">Loading community vibes</span>
       </div>
     );
   }

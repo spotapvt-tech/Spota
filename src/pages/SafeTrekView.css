@@ -88,6 +88,7 @@
 }
 
 .countdown-title {
+  font-family: var(--font-display);
   font-size: var(--font-size-xs);
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -103,9 +104,9 @@
 }
 
 .test-badge {
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   background: rgba(244, 162, 97, 0.15);
-  color: #f4a261;
+  color: var(--warning);
   padding: 2px 6px;
   border-radius: var(--radius-full);
   margin-top: 4px;
@@ -118,7 +119,7 @@
   filter: drop-shadow(0 0 8px rgba(244, 162, 97, 0.5));
 }
 .countdown-wrapper.warning .countdown-time {
-  color: #f4a261;
+  color: var(--warning);
   animation: timerPulse 1s infinite alternate;
 }
 
@@ -127,7 +128,7 @@
   filter: drop-shadow(0 0 10px rgba(224, 122, 95, 0.6));
 }
 .countdown-wrapper.overdue .countdown-time {
-  color: #e07a5f;
+  color: var(--danger);
   animation: timerPulse 0.5s infinite alternate;
 }
 
@@ -186,13 +187,13 @@
 
 .warning-banner-trek {
   background: rgba(244, 162, 97, 0.1);
-  color: #f4a261;
+  color: var(--warning);
   border: 1px solid rgba(244, 162, 97, 0.2);
 }
 
 .danger-banner-trek {
   background: rgba(224, 122, 95, 0.1);
-  color: #e07a5f;
+  color: var(--danger);
   border: 1px solid rgba(224, 122, 95, 0.2);
 }
 
@@ -206,7 +207,7 @@
 .check-in-btn-primary {
   width: 100%;
   height: 52px;
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-bg-primary);
   border: none;
   border-radius: var(--radius-md);
@@ -217,14 +218,14 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(108, 140, 116, 0.2);
+  box-shadow: 0 4px 15px rgba(195, 210, 159, 0.2);
   transition: all var(--transition-fast);
 }
 
 .check-in-btn-primary:hover {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 6px 20px rgba(195, 210, 159, 0.3);
 }
 
 .end-trek-btn-secondary {
@@ -246,7 +247,7 @@
 
 .end-trek-btn-secondary:hover {
   background: rgba(224, 122, 95, 0.08);
-  color: #e07a5f;
+  color: var(--danger);
   border-color: rgba(224, 122, 95, 0.2);
 }
 
@@ -260,6 +261,7 @@
 }
 
 .section-title {
+  font-family: var(--font-display);
   font-size: var(--font-size-lg);
   font-weight: 700;
   color: var(--color-text-primary);
@@ -314,7 +316,7 @@
 .input-with-icon input:focus {
   outline: none;
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.15);
 }
 
 .map-label-row {
@@ -332,10 +334,10 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   color: var(--color-accent);
-  background: rgba(108, 140, 116, 0.1);
+  background: rgba(195, 210, 159, 0.1);
   padding: 4px 10px;
   border-radius: var(--radius-full);
 }
@@ -348,7 +350,7 @@
 }
 
 .coords-helper {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   display: block;
   text-align: right;
@@ -372,32 +374,32 @@
 }
 
 .interval-btn:hover {
-  background: rgba(108, 140, 116, 0.05);
+  background: rgba(195, 210, 159, 0.05);
   color: var(--color-text-primary);
 }
 
 .interval-btn.active {
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-bg-primary);
   border-color: var(--color-accent);
 }
 
 .interval-btn.test-mode-btn {
   grid-column: span 1;
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   white-space: nowrap;
 }
 
 .interval-btn.test-mode-btn.active {
-  background: #f4a261;
-  border-color: #f4a261;
+  background: var(--warning);
+  border-color: var(--warning);
   color: var(--color-bg-primary);
 }
 
 .start-trek-submit {
   width: 100%;
   height: 50px;
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-bg-primary);
   border-radius: var(--radius-md);
   border: none;
@@ -408,14 +410,14 @@
   justify-content: center;
   gap: 8px;
   margin-top: 24px;
-  box-shadow: 0 4px 15px rgba(108, 140, 116, 0.2);
+  box-shadow: 0 4px 15px rgba(195, 210, 159, 0.2);
   transition: all var(--transition-fast);
 }
 
 .start-trek-submit:hover:not(:disabled) {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 6px 20px rgba(195, 210, 159, 0.3);
 }
 
 .start-trek-submit:disabled {
@@ -495,12 +497,12 @@
 }
 
 .history-date {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
 }
 
 .history-details {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   white-space: nowrap;
   overflow: hidden;
@@ -508,7 +510,7 @@
 }
 
 .status-badge {
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   padding: 4px 8px;
   border-radius: 4px;
@@ -516,7 +518,7 @@
 }
 
 .status-badge.active {
-  background: rgba(108, 140, 116, 0.15);
+  background: rgba(195, 210, 159, 0.15);
   color: var(--color-accent);
 }
 
@@ -527,5 +529,5 @@
 
 .status-badge.overdue {
   background: rgba(224, 122, 95, 0.15);
-  color: #e07a5f;
+  color: var(--danger);
 }

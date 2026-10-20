@@ -6,8 +6,8 @@
 
 /* AI card */
 .vibe-ai-card {
-  background: rgba(108, 140, 116, 0.08);
-  border: 1px solid rgba(108, 140, 116, 0.25);
+  background: rgba(195, 210, 159, 0.08);
+  border: 1px solid rgba(195, 210, 159, 0.25);
   border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
@@ -33,11 +33,11 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--color-accent);
-  animation: pulse 1s infinite;
+  background: var(--grad-accent);
+  animation: stepvibe-pulse 1s infinite;
 }
 
-@keyframes pulse {
+@keyframes stepvibe-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.4; transform: scale(0.8); }
 }
@@ -76,12 +76,12 @@
 }
 
 .vibe-action-btn.primary {
-  background: var(--color-accent);
-  color: white;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
 }
 
 .vibe-action-btn.primary:hover {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 .vibe-action-btn.secondary {
@@ -128,12 +128,12 @@
 
 .vibe-textarea:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.1);
+  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.1);
 }
 
 .vibe-char-count {
   align-self: flex-end;
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   opacity: 0.5;
 }
@@ -171,7 +171,7 @@
 
 .vibe-tag-chip:hover,
 .vibe-tag-chip.active {
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(195, 210, 159, 0.12);
   border-color: var(--color-accent);
   color: var(--color-accent);
 }
@@ -199,8 +199,8 @@
 }
 
 .vibe-custom-tag-add {
-  background: var(--color-accent);
-  color: white;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
   border: none;
   padding: 8px 16px;
   border-radius: var(--radius-full);
@@ -213,7 +213,7 @@
 }
 
 .vibe-custom-tag-add:hover {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 .vibe-selected-tags {
@@ -226,7 +226,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  background: rgba(108, 140, 116, 0.15);
+  background: rgba(195, 210, 159, 0.15);
   color: var(--color-accent);
   padding: 4px 10px 4px 12px;
   border-radius: var(--radius-full);
@@ -239,7 +239,7 @@
   border: none;
   color: var(--color-accent);
   cursor: pointer;
-  font-size: 14px;
+  font-size: var(--font-size-sm);
   line-height: 1;
   padding: 0;
   opacity: 0.7;

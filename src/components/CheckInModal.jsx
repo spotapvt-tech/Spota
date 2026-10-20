@@ -6,7 +6,7 @@ export default function CheckInModal({ onCheckIn, onClose, timeRemainingStr, isO
     <div className="check-in-modal-overlay" onClick={onClose}>
       <div className="check-in-modal-content glass-panel animate-scale-in" onClick={(e) => e.stopPropagation()}>
         <div className={`alert-icon-pulse ${isOverdue ? 'overdue-pulse' : ''}`}>
-          <ShieldAlert size={40} color={isOverdue ? '#e07a5f' : '#f4a261'} />
+          <ShieldAlert size={40} color={isOverdue ? '#FF6A4D' : '#f4a261'} />
         </div>
         
         <h2>{isOverdue ? "Trek Overdue!" : "Check-in Required"}</h2>

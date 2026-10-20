@@ -37,11 +37,11 @@
 }
 
 .rank-badge {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-accent);
-  background-color: rgba(108, 140, 116, 0.12);
+  background-color: rgba(195, 210, 159, 0.12);
   padding: 3px 8px;
   border-radius: var(--radius-full);
 }
@@ -59,7 +59,7 @@
   padding: 10px;
   border-radius: var(--radius-sm);
   background-color: var(--color-bg-primary);
-  border: 1px solid rgba(44, 53, 49, 0.04);
+  border: 1px solid rgba(245, 245, 239, 0.04);
 }
 
 .tile-icon-wrapper {
@@ -73,21 +73,21 @@
 
 .tile-icon-wrapper.views {
   background-color: rgba(74, 144, 226, 0.1);
-  color: #4A90E2;
+  color: var(--info);
 }
 
 .tile-icon-wrapper.saves {
   background-color: rgba(224, 122, 95, 0.1);
-  color: #E07A5F;
+  color: var(--danger);
 }
 
 .tile-icon-wrapper.shares {
   background-color: rgba(221, 161, 94, 0.1);
-  color: #DDA15E;
+  color: var(--warning);
 }
 
 .tile-icon-wrapper.reactions {
-  background-color: rgba(108, 140, 116, 0.1);
+  background-color: rgba(195, 210, 159, 0.1);
   color: var(--color-accent);
 }
 
@@ -104,7 +104,7 @@
 }
 
 .tile-label {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
 }
 

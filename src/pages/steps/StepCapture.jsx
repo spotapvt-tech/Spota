@@ -136,8 +136,8 @@ export default function StepCapture({
   return (
     <div className="step-capture wizard-step">
       <div className="step-header">
-        <h2>Capture the Vibe 📸</h2>
-        <p>Lead with a photo — it's the heart of your gem.</p>
+        <h2>Start with a photo</h2>
+        <p>The photo is what makes explorers want to go.</p>
       </div>
 
       {/* Photo area */}

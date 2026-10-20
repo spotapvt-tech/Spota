@@ -513,8 +513,8 @@ export default function MyTripsView() {
                   <div className="trip-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800 }}>{pkg.name}</h3>
                     <span className="package-price-badge" style={{ 
-                      backgroundColor: 'rgba(142,68,173,0.12)', 
-                      color: '#8e44ad', 
+                      backgroundColor: 'rgba(183, 156, 255,0.12)', 
+                      color: '#B79CFF', 
                       fontSize: '13px', 
                       fontWeight: 800, 
                       padding: '4px 10px', 
@@ -549,10 +549,10 @@ export default function MyTripsView() {
                   )}
 
                   <div className="trip-card-footer" style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                    <span className="role-tag" style={{ color: '#8e44ad', fontWeight: 600, fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <span className="role-tag" style={{ color: '#B79CFF', fontWeight: 600, fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px' }}>
                       👑 {pkg.agency_profiles?.company_name || 'Verified Agency'}
                     </span>
-                    <span className="go-btn" style={{ color: '#8e44ad' }}>
+                    <span className="go-btn" style={{ color: '#B79CFF' }}>
                       <span>Preview & Book</span>
                       <ArrowRight size={14} />
                     </span>

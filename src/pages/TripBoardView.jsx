@@ -524,7 +524,7 @@ export default function TripBoardView() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
               <h4 style={{ margin: 0 }}>{spot.title}</h4>
               {ts.schedule_time && (
-                <span className="schedule-time-badge" style={{ fontSize: '10px', background: 'rgba(108,140,116,0.12)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
+                <span className="schedule-time-badge" style={{ fontSize: '10px', background: 'rgba(195, 210, 159,0.12)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
                   🕒 {ts.schedule_time}
                 </span>
               )}
@@ -539,7 +539,7 @@ export default function TripBoardView() {
               className="row-booking-btn" 
               onClick={(e) => handleBookingClick(e, ts)}
               style={{
-                background: '#8e44ad',
+                background: '#B79CFF',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '6px',
@@ -615,13 +615,13 @@ export default function TripBoardView() {
             margin: '12px 0 8px 0', 
             fontSize: '11px', 
             fontWeight: 700, 
-            color: '#8e44ad',
+            color: '#B79CFF',
             letterSpacing: '1px'
           }}>
-            <span style={{ background: 'rgba(142,68,173,0.1)', padding: '4px 10px', borderRadius: '4px' }}>
+            <span style={{ background: 'rgba(183, 156, 255,0.1)', padding: '4px 10px', borderRadius: '4px' }}>
               DAY {dayNum}
             </span>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(142,68,173,0.15)', marginLeft: '8px' }}></div>
+            <div style={{ flex: 1, height: '1px', background: 'rgba(183, 156, 255,0.15)', marginLeft: '8px' }}></div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {spotsByDay[dayNum]
@@ -663,7 +663,7 @@ export default function TripBoardView() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <h2>{trip.name}</h2>
             {agencyBrand && (
-              <span className="verified-agency-badge" style={{ backgroundColor: 'rgba(142, 68, 173, 0.12)', color: '#8e44ad', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '99px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+              <span className="verified-agency-badge" style={{ backgroundColor: 'rgba(183, 156, 255, 0.12)', color: '#B79CFF', fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '99px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                 👑 {agencyBrand.company_name} Partner
               </span>
             )}
@@ -698,7 +698,7 @@ export default function TripBoardView() {
                 <Polyline
                   path={getTripPathCoords(tripSpots)}
                   options={{
-                    strokeColor: '#8e44ad',
+                    strokeColor: '#B79CFF',
                     strokeWeight: 3,
                     strokeOpacity: 0.6,
                   }}
@@ -720,7 +720,7 @@ export default function TripBoardView() {
                     >
                       <div
                         className={`trip-gem-pin ${ts.visited ? 'visited' : ''}`}
-                        style={agencyBrand ? { borderColor: '#8e44ad' } : undefined}
+                        style={agencyBrand ? { borderColor: '#B79CFF' } : undefined}
                       >
                         <span className="pin-votes">{votesCount > 0 ? `👍 ${votesCount}` : '💎'}</span>
                       </div>
@@ -739,7 +739,7 @@ export default function TripBoardView() {
                             <button
                               onClick={() => handleToggleVote(spot.id)}
                               style={{
-                                background: userHasVoted(spot.id) ? 'var(--color-accent)' : 'rgba(108,140,116,0.1)',
+                                background: userHasVoted(spot.id) ? 'var(--color-accent)' : 'rgba(195, 210, 159,0.1)',
                                 color: userHasVoted(spot.id) ? '#fff' : 'var(--color-accent)',
                                 border: 'none',
                                 borderRadius: 'var(--radius-sm)',

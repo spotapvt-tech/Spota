@@ -173,23 +173,23 @@ export default function DailyVibeDropModal({ onClose, onOpenSpot }) {
     
     // Draw Cover Gradient
     const gradient = ctx.createLinearGradient(0, 0, 340, 480);
-    gradient.addColorStop(0, '#6C8C74');
+    gradient.addColorStop(0, '#C3D29F');
     gradient.addColorStop(1, '#83C5BE');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 340, 480);
 
     // Draw scratch text/icon
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = "bold 24px 'Outfit', sans-serif";
+    ctx.font = "bold 24px 'Archivo Variable', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText('✨ VIBE DROP ✨', 170, 220);
 
-    ctx.font = "500 14px 'Outfit', sans-serif";
+    ctx.font = "500 14px 'Archivo Variable', sans-serif";
     ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
     ctx.fillText('Scratch here to reveal', 170, 260);
     ctx.fillText(`your curated ${intent.toUpperCase()} spot!`, 170, 280);
 
-    ctx.font = "40px 'Outfit', sans-serif";
+    ctx.font = "40px 'Archivo Variable', sans-serif";
     ctx.fillText('💎', 170, 160);
   }, [spot, intent]);
 

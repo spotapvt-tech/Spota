@@ -45,7 +45,7 @@
 
 .chat-search-bar input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.15);
+  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.15);
 }
 
 .search-icon-inside {
@@ -86,11 +86,11 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  animation: fadeIn 0.2s ease-out;
+  animation: chat-fadeIn 0.2s ease-out;
 }
 
 .search-results-overlay h4 {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   text-transform: uppercase;
   letter-spacing: 0.8px;
   color: var(--color-text-secondary);
@@ -125,7 +125,7 @@
 }
 
 .search-result-item:hover {
-  background: rgba(108, 140, 116, 0.08);
+  background: rgba(195, 210, 159, 0.08);
 }
 
 .search-result-item span {
@@ -146,13 +146,13 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(195, 210, 159, 0.12);
   color: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 12px;
+  font-size: var(--font-size-xs);
 }
 
 /* Chat list items */
@@ -191,7 +191,7 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(195, 210, 159, 0.12);
   color: var(--color-accent);
   display: flex;
   align-items: center;
@@ -227,7 +227,7 @@
 }
 
 .chat-time {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
 }
 
@@ -243,8 +243,9 @@
 .chat-loader {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 12px var(--gutter);
   gap: 12px;
   flex: 1;
   color: var(--color-text-secondary);
@@ -265,7 +266,7 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: rgba(108, 140, 116, 0.08);
+  background: rgba(195, 210, 159, 0.08);
   color: var(--color-accent);
   display: flex;
   align-items: center;
@@ -298,7 +299,7 @@
   padding: 32px;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-lg);
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: sp-fade-in 0.3s var(--ease-out) both;
   text-align: center;
 }
 
@@ -313,7 +314,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: rgba(108, 140, 116, 0.12);
+  background: rgba(195, 210, 159, 0.12);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -340,21 +341,21 @@
   height: 48px;
   padding: 0 24px;
   border-radius: var(--radius-full);
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-bg-primary);
   font-weight: 600;
   font-size: var(--font-size-sm);
-  box-shadow: 0 4px 12px rgba(108, 140, 116, 0.3);
+  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.3);
   transition: all var(--transition-fast);
   margin-top: 8px;
 }
 
 .guest-login-btn:hover {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
   transform: translateY(-2px);
 }
 
-@keyframes fadeIn {
+@keyframes chat-fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }

@@ -13,7 +13,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Landing page', () => {
   test('loads and shows the hero content', async ({ page }) => {
     await page.goto('/landing');
-    await expect(page.getByRole('heading', { name: 'Ditch the tourists. Find the vibe.' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'The world is your playground.' })).toBeVisible();
   });
 
   test('"Start Exploring Free" opens the auth modal', async ({ page }) => {

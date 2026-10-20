@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Bell, Sparkles } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Bell, Gift, MessageCircle } from 'lucide-react';
 import { useNotification } from '../../context/NotificationContext';
 import NotificationPanel from './NotificationPanel';
 import DailyVibeDropModal from '../DailyVibeDropModal';
 import SpotDetailsModal from '../SpotDetailsModal';
+import Wordmark from '../ui/Wordmark';
 import './TopBar.css';
 
 export default function TopBar() {
@@ -11,60 +13,52 @@ export default function TopBar() {
   const [showPanel, setShowPanel] = useState(false);
   const [showVibeDrop, setShowVibeDrop] = useState(false);
   const [selectedSpot, setSelectedSpot] = useState(null);
+  const { pathname } = useLocation();
+
+  // Focus mode: the drop wizard owns the whole screen (own header + CTA bar).
+  if (pathname === '/add') return null;
 
   return (
     <>
-      <header className="top-bar glass-panel">
-        <div className="brand">
-          <span className="brand-dot animate-pulse"></span>
-          <h1>Spota</h1>
-        </div>
-        
-        <div className="top-bar-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          {/* Daily Vibe Drop Trigger */}
-          <button 
-            className="vibe-drop-trigger-btn" 
-            onClick={() => setShowVibeDrop(true)}
-            title="Daily Vibe Drop"
-            style={{
-              background: 'rgba(108, 140, 116, 0.12)',
-              border: 'none',
-              color: 'var(--color-accent)',
-              width: '38px',
-              height: '38px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              position: 'relative'
-            }}
-          >
-            <Sparkles size={20} />
-          </button>
+      <header className="top-bar">
+        <Link to="/" className="top-bar__brand" aria-label="Spota home">
+          <Wordmark size={19} />
+        </Link>
 
-          {/* Notification Button */}
-          <button className="notification-btn" aria-label="Notifications" onClick={() => setShowPanel(!showPanel)}>
-            <Bell size={24} />
-            {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
+        <div className="top-bar__actions">
+          <button
+            className="sp-icon-btn"
+            onClick={() => setShowVibeDrop(true)}
+            aria-label="Open today's Daily Drop"
+            title="Daily Drop"
+          >
+            <Gift size={21} strokeWidth={2} />
+          </button>
+          <Link to="/chat" className="sp-icon-btn" aria-label="Messages" title="Messages">
+            <MessageCircle size={21} strokeWidth={2} />
+          </Link>
+          <button
+            className="sp-icon-btn"
+            aria-label={unreadCount > 0 ? `Notifications, ${unreadCount} unread` : 'Notifications'}
+            aria-expanded={showPanel}
+            onClick={() => setShowPanel(!showPanel)}
+          >
+            <Bell size={21} strokeWidth={2} />
+            {unreadCount > 0 && <span className="notification-badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
           </button>
         </div>
       </header>
       <NotificationPanel isOpen={showPanel} onClose={() => setShowPanel(false)} />
 
       {showVibeDrop && (
-        <DailyVibeDropModal 
-          onClose={() => setShowVibeDrop(false)} 
-          onOpenSpot={(spot) => setSelectedSpot(spot)} 
+        <DailyVibeDropModal
+          onClose={() => setShowVibeDrop(false)}
+          onOpenSpot={(spot) => setSelectedSpot(spot)}
         />
       )}
 
       {selectedSpot && (
-        <SpotDetailsModal 
-          spot={selectedSpot} 
-          onClose={() => setSelectedSpot(null)} 
-        />
+        <SpotDetailsModal spot={selectedSpot} onClose={() => setSelectedSpot(null)} />
       )}
     </>
   );

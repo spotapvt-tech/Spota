@@ -58,7 +58,7 @@
 
 .recap-close-btn:hover {
   opacity: 1;
-  background-color: rgba(108, 140, 116, 0.08);
+  background-color: rgba(195, 210, 159, 0.08);
 }
 
 .recap-desc {
@@ -94,8 +94,8 @@
 .recap-download-btn {
   width: 100%;
   padding: 14px;
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
   font-weight: 600;
   border-radius: var(--radius-full);
   border: none;
@@ -108,5 +108,5 @@
 }
 
 .recap-download-btn:hover {
-  background-color: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }

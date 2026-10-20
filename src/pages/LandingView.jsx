@@ -5,6 +5,7 @@ import {
   Send, Zap, X, AlertCircle, Play, Pause, Trophy
 } from 'lucide-react';
 import AuthView from './AuthView';
+import Wordmark from '../components/ui/Wordmark';
 import './LandingView.css';
 
 // Mock spots for the Interactive Map Simulation
@@ -526,12 +527,12 @@ export default function LandingView() {
     }
 
     // Text instructions
-    ctx.font = 'bold 15px "Outfit", sans-serif';
+    ctx.font = 'bold 15px "Archivo Variable", sans-serif';
     ctx.fillStyle = '#FFFFFF';
     ctx.textAlign = 'center';
     ctx.fillText('SCRATCH WITH CURSOR', canvas.width / 2, canvas.height / 2 - 12);
     
-    ctx.font = '12px "Outfit", sans-serif';
+    ctx.font = '12px "Archivo Variable", sans-serif';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
     ctx.fillText('To Reveal Today\'s Vibe Drop', canvas.width / 2, canvas.height / 2 + 12);
   }, [activeTab, isScratched]);
@@ -708,8 +709,7 @@ export default function LandingView() {
       {/* 1. Header Navigation */}
       <header className="l-header">
         <div className="l-logo-container">
-          <span className="l-logo-dot"></span>
-          <span className="l-logo-text">Spota</span>
+          <Wordmark size={20} />
         </div>
         <nav className="l-nav">
           <a href="#sandbox" className="l-nav-link">Interactive Play</a>
@@ -725,14 +725,14 @@ export default function LandingView() {
       {/* 2. Hero Section */}
       <section className="l-hero">
         <div className="l-hero-text">
-          <span className="l-tagline">💎 Zen-Social Spot Discovery</span>
-          <h1 className="l-hero-title">Ditch the tourists. Find the vibe.</h1>
+          <span className="l-tagline">Explore · Play · Connect</span>
+          <h1 className="l-hero-title">The world is your playground.</h1>
           <p className="l-hero-desc">
-            Spota is a zen-social discovery map built for off-beat explorers. Track atmospheric vibes, stream loopable Video Vibes, plan cooperative trips, and discover hidden gems in AR, even with zero cellular signal.
+            Every location has a story. Discover hidden places other explorers have dropped, earn verified Adventure Points on real treks, and plan with your crew — even with zero signal at the trailhead.
           </p>
           <div className="l-hero-ctas">
             <button className="l-btn-primary" onClick={() => setShowAuthModal(true)}>Start Exploring Free</button>
-            <a href="#sandbox" className="l-btn-secondary">Try Demo Sandbox</a>
+            <a href="#sandbox" className="l-btn-secondary">Try the live demo</a>
           </div>
         </div>
 
@@ -1362,7 +1362,7 @@ export default function LandingView() {
               <span className="l-logo-text">Spota</span>
             </div>
             <p className="l-footer-motto">
-              Zen-social map discovery application. Ditch the tourists, find the vibe. Built for Gen Z explorers.
+              Real-world exploration, ranked. Discover, drop and share the places worth the walk.
             </p>
           </div>
           <div className="l-footer-links-grid">

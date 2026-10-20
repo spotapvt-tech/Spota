@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
 import { 
@@ -26,7 +26,9 @@ import { checkBadges } from '../lib/badgeEngine';
 import ExpeditionPicker from '../components/ExpeditionPicker';
 import ExpeditionTracker from '../components/ExpeditionTracker';
 import ExpeditionCompleteModal from '../components/ExpeditionCompleteModal';
+import DiscoveryReveal from '../components/ui/DiscoveryReveal';
 import { fetchAdventures } from '../lib/adventureCatalog';
+import { track, flushEvents, registerAnalyticsAutoFlush } from '../lib/analytics';
 import {
   startRecording,
   stopRecording,
@@ -46,6 +48,7 @@ export default function SafeTrekView() {
   const mapRef = useRef(null);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const routerLocation = useLocation();
 
   // Active Trek State
   const [activeTrek, setActiveTrek] = useState(() => getActiveTrekLocal());
@@ -73,8 +76,10 @@ export default function SafeTrekView() {
   const [adventuresFromCache, setAdventuresFromCache] = useState(false);
   const [selectedAdventureId, setSelectedAdventureId] = useState('');
   const [isGuided, setIsGuided] = useState(false);
+  const [lowPower, setLowPower] = useState(false); // battery saver: 60 s GPS sampling
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [expeditionResult, setExpeditionResult] = useState(null);
+  const [discovery, setDiscovery] = useState(null); // set only after the server verifies a summit
   const [expeditionError, setExpeditionError] = useState(null);
 
   const adventures = adventuresState ?? [];
@@ -209,10 +214,13 @@ export default function SafeTrekView() {
       setAdventuresFromCache(fromCache);
     });
     syncPendingAttempts();
+    flushEvents();
     const cleanup = registerAutoSync();
+    const cleanupAnalytics = registerAnalyticsAutoFlush();
     return () => {
       cancelled = true;
       cleanup();
+      cleanupAnalytics();
     };
   }, [expeditionUserId]);
 
@@ -233,6 +241,20 @@ export default function SafeTrekView() {
       setExpeditionError(`GPS recording could not resume: ${err.message}`);
     });
   }, [expeditionAttemptId]);
+
+  // Arriving from /expeditions with { adventureId }: pre-select it once (adjusted at render time)
+  const requestedAdventureId = routerLocation.state?.adventureId || null;
+  const [appliedRequestedId, setAppliedRequestedId] = useState(null);
+  if (requestedAdventureId && requestedAdventureId !== appliedRequestedId && !activeTrek && adventures.some((a) => a.id === requestedAdventureId)) {
+    setAppliedRequestedId(requestedAdventureId);
+    const adv = adventures.find((a) => a.id === requestedAdventureId);
+    setSelectedAdventureId(adv.id);
+    setDestinationName(adv.name);
+    if (adv.endpointLat != null && adv.endpointLng != null) {
+      setMarkerPosition([adv.endpointLat, adv.endpointLng]);
+      setMapCenter([adv.endpointLat, adv.endpointLng]);
+    }
+  }
 
   const handleSelectAdventure = (id) => {
     setSelectedAdventureId(id);
@@ -391,8 +413,10 @@ export default function SafeTrekView() {
             adventureId: adventure.id,
             adventureName: adventure.name,
             safeTrekId: typeof activeData.id === 'number' ? activeData.id : null,
-            isGuided
+            isGuided,
+            lowPower
           });
+          track('expedition_started', { adventure_id: adventure.id, source: sourceKind, guided: isGuided, low_power: lowPower });
           activeData = {
             ...activeData,
             expedition: {
@@ -400,6 +424,7 @@ export default function SafeTrekView() {
               adventureId: adventure.id,
               adventureName: adventure.name,
               sourceKind,
+              lowPower,
               missedCheckin: false
             }
           };
@@ -420,6 +445,7 @@ export default function SafeTrekView() {
       setIsTestMode(false);
       setSelectedAdventureId('');
       setIsGuided(false);
+      setLowPower(false);
       setExpeditionResult(null);
 
       if (!user.isGuest) {
@@ -489,14 +515,31 @@ export default function SafeTrekView() {
     if (isRecording()) await stopRecording();
     await addSummitPhoto(exp.clientAttemptId, photoFile);
     const result = await completeAttempt(exp.clientAttemptId, { checkinsOnTime: !exp.missedCheckin });
+    track('expedition_completed', {
+      adventure_id: exp.adventureId,
+      delivery: result.status, // submitted now | queued offline
+      server_status: result.attempt?.serverStatus || null,
+      missed_checkin: Boolean(exp.missedCheckin)
+    });
     detachExpedition();
     setShowCompleteModal(false);
-    setExpeditionResult({ name: exp.adventureName, status: result.status, error: result.error || null });
+    setExpeditionResult({
+      name: exp.adventureName,
+      status: result.status,
+      serverStatus: result.attempt?.serverStatus || null,
+      awardedAp: result.attempt?.awardedAp ?? null,
+      error: result.error || null
+    });
+    // Celebrate only when the server has actually verified the attempt
+    if (result.status === 'submitted' && result.attempt?.serverStatus === 'verified') {
+      setDiscovery({ name: exp.adventureName, awardedAp: result.attempt?.awardedAp ?? 0 });
+    }
     await finishSafeTrek({ silent: true });
   };
 
   const handleDiscardExpedition = async () => {
     await discardRecording();
+    track('expedition_discarded', { adventure_id: activeTrek?.expedition?.adventureId || null });
     detachExpedition();
     setShowCompleteModal(false);
     await finishSafeTrek({ silent: true });
@@ -608,7 +651,7 @@ export default function SafeTrekView() {
               />
               <circle
                 className="progress-ring-fill"
-                stroke={isOverdue ? '#e07a5f' : isLowTime ? '#f4a261' : 'var(--color-accent)'}
+                stroke={isOverdue ? '#FF6A4D' : isLowTime ? '#f4a261' : 'var(--color-accent)'}
                 strokeWidth="8"
                 fill="transparent"
                 r="80"
@@ -638,6 +681,7 @@ export default function SafeTrekView() {
               clientAttemptId={activeTrek.expedition.clientAttemptId}
               adventureName={activeTrek.expedition.adventureName}
               sourceKind={activeTrek.expedition.sourceKind}
+              lowPower={Boolean(activeTrek.expedition.lowPower)}
             />
           )}
 
@@ -707,9 +751,15 @@ export default function SafeTrekView() {
             <div className="expedition-result glass-panel" role="status" ref={expeditionResultRef}>
               <Trophy size={18} />
               <span>
-                {expeditionResult.status === 'submitted'
-                  ? <><strong>{expeditionResult.name}</strong> submitted for verification. Your Adventure Points appear once it's verified.</>
-                  : <><strong>{expeditionResult.name}</strong> saved on this device. It submits automatically when you're back online.{expeditionResult.error ? ` (${expeditionResult.error})` : ''}</>}
+                {expeditionResult.status !== 'submitted'
+                  ? <><strong>{expeditionResult.name}</strong> saved on this device. It submits automatically when you're back online.{expeditionResult.error ? ` (${expeditionResult.error})` : ''}</>
+                  : expeditionResult.serverStatus === 'verified'
+                    ? <><strong>{expeditionResult.name}</strong> verified! <strong>+{expeditionResult.awardedAp ?? 0} AP</strong>. <button type="button" className="expedition-result-link" onClick={() => navigate('/leaderboard')}>See your rank →</button></>
+                    : expeditionResult.serverStatus === 'pending'
+                      ? <><strong>{expeditionResult.name}</strong> is under review. Your Adventure Points are added once it's approved.</>
+                      : expeditionResult.serverStatus === 'rejected'
+                        ? <><strong>{expeditionResult.name}</strong> couldn't be verified (endpoint or photo didn't match). You can appeal once from your profile.</>
+                        : <><strong>{expeditionResult.name}</strong> submitted for verification.</>}
               </span>
               <button type="button" aria-label="Dismiss" onClick={() => setExpeditionResult(null)}>
                 <X size={16} />
@@ -727,8 +777,11 @@ export default function SafeTrekView() {
               selectedId={selectedAdventureId}
               onSelect={handleSelectAdventure}
               isGuided={isGuided}
+              lowPower={lowPower}
+              onLowPowerChange={setLowPower}
               onGuidedChange={setIsGuided}
               isGuest={Boolean(user?.isGuest)}
+              onBrowse={() => navigate('/expeditions')}
             />
 
             <div className="form-group">
@@ -900,6 +953,16 @@ export default function SafeTrekView() {
           isOverdue={isOverdue}
         />
       )}
+
+      <DiscoveryReveal
+        open={Boolean(discovery)}
+        kicker="Summit verified"
+        title={discovery?.name}
+        detail={discovery ? `+${discovery.awardedAp} AP` : null}
+        actionLabel="View leaderboard"
+        onAction={() => { setDiscovery(null); navigate('/leaderboard'); }}
+        onClose={() => setDiscovery(null)}
+      />
 
       {showCompleteModal && activeTrek?.expedition && (
         <ExpeditionCompleteModal

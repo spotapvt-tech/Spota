@@ -4,7 +4,7 @@ import { getLiveStats, subscribe } from '../lib/trackRecorder';
 import './ExpeditionMode.css';
 
 /** Live expedition stats card shown on the active Safe Trek panel. */
-export default function ExpeditionTracker({ clientAttemptId, adventureName, sourceKind }) {
+export default function ExpeditionTracker({ clientAttemptId, adventureName, sourceKind, lowPower = false }) {
   const [stats, setStats] = useState(null);
   const [lastFixAt, setLastFixAt] = useState(null);
   const [error, setError] = useState(null);
@@ -58,6 +58,7 @@ export default function ExpeditionTracker({ clientAttemptId, adventureName, sour
           {lastFixAt
             ? `Last fix ${new Date(lastFixAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
             : 'Waiting for GPS fix…'}
+          {lowPower ? ' · Battery saver (60 s)' : ''}
         </span>
       </div>
 

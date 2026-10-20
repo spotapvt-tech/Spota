@@ -51,7 +51,7 @@ vi.mock('../../lib/supabaseClient', () => {
       from: vi.fn((t) => makeBuilder(t)),
       auth: { getUser: vi.fn(async () => ({ data: { user: { id: 'user-1' } }, error: null })) },
       storage: { from: vi.fn(() => ({ upload: vi.fn(async () => ({ data: {}, error: null })) })) },
-      rpc: vi.fn(async () => ({ data: { id: 'server-1', status: 'submitted' }, error: null }))
+      rpc: vi.fn(async () => ({ data: { id: 'server-1', status: 'verified', awarded_ap: 108, verification_score: 100 }, error: null }))
     }
   };
 });
@@ -158,7 +158,9 @@ describe('SafeTrekView: Expedition mode', () => {
     expect(args.p_photo_paths[0]).toMatch(/^user-1\/.+\/0\.jpg$/);
 
     // 5. Safe Trek ended, back on setup with a success banner, GPS stopped
-    expect(await screen.findByRole('status')).toHaveTextContent('Triund submitted for verification');
+    // Phase 1: the server verifies on submit and returns the AP awarded
+    expect(await screen.findByRole('status')).toHaveTextContent('Triund verified! +108 AP');
+    expect(screen.getByRole('button', { name: /See your rank/ })).toBeInTheDocument();
     expect(calls.updates).toContainEqual({ table: 'safe_treks', payload: { status: 'completed' } });
     expect(navigator.geolocation.clearWatch).toHaveBeenCalledWith(7);
     expect(window.confirm).not.toHaveBeenCalled();

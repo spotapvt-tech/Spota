@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { X, ArrowLeft } from 'lucide-react';
+import Wordmark from '../components/ui/Wordmark';
 import './AuthView.css';
 
 // Step constants
@@ -94,7 +95,7 @@ export default function AuthView({ onClose }) {
         <button className="auth-back-btn" onClick={goBack} aria-label="Back">
           {step === STEP.EMAIL ? null : <ArrowLeft size={20} />}
         </button>
-        <span className="auth-logo">( spota )</span>
+        <span className="auth-logo"><Wordmark size={18} /></span>
         {onClose ? (
           <button className="auth-close-btn" onClick={onClose} aria-label="Close">
             <X size={20} />
@@ -109,7 +110,7 @@ export default function AuthView({ onClose }) {
       ══════════════════════════════════ */}
       {step === STEP.EMAIL && (
         <form className="auth-body" onSubmit={handleEmailContinue}>
-          <h1 className="auth-headline">find your<br />hidden gem.</h1>
+          <h1 className="auth-headline">the world is<br />your playground.</h1>
 
           <div className="auth-field-group">
             <input
@@ -242,7 +243,7 @@ export default function AuthView({ onClose }) {
       )}
 
       {/* ── Bottom tagline */}
-      <p className="auth-tagline">( your world is waiting )</p>
+      <p className="auth-tagline">every place has a story</p>
     </div>
   );
 }

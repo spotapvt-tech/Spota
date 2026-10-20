@@ -26,7 +26,7 @@ export default function StepRate({ vibeRatings, setVibeRatings }) {
   return (
     <div className="step-rate wizard-step">
       <div className="step-header">
-        <h2>Rate the Vibe 🎭</h2>
+        <h2>How does it feel?</h2>
         <p>How does this place feel?</p>
       </div>
 

@@ -10,12 +10,12 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
-  color: #ffffff;
+  background: linear-gradient(135deg, var(--danger), #FF8E53);
+  color: var(--text-strong);
   border: none;
   padding: 12px 28px;
   border-radius: 25px;
-  font-size: 15px;
+  font-size: var(--font-size-base);
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
@@ -34,14 +34,14 @@
 }
 
 .frictionless-checkin-btn.checked-in {
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  background: linear-gradient(135deg, var(--success), var(--success));
   box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
   cursor: default;
   transform: scale(0.98);
 }
 
 .frictionless-checkin-btn .btn-icon {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   transition: transform 0.3s ease;
 }
 

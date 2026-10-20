@@ -37,7 +37,7 @@
 }
 
 .back-btn:hover {
-  background-color: rgba(108, 140, 116, 0.08);
+  background-color: rgba(195, 210, 159, 0.08);
 }
 
 .header-info {
@@ -55,13 +55,13 @@
 }
 
 .destination-tag {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-accent);
   font-weight: 600;
 }
 
 .invite-action-btn {
-  background-color: rgba(108, 140, 116, 0.12);
+  background-color: rgba(195, 210, 159, 0.12);
   color: var(--color-accent);
   padding: 8px 14px;
   border-radius: var(--radius-full);
@@ -74,8 +74,8 @@
 }
 
 .invite-action-btn:hover {
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
 }
 
 /* Sidebar & Map Body Split */
@@ -123,11 +123,11 @@
 }
 
 .add-spot-trigger {
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
   padding: 6px 12px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   display: flex;
   align-items: center;
@@ -135,7 +135,7 @@
 }
 
 .add-spot-trigger:hover {
-  background-color: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 /* Collaborators list */
@@ -145,11 +145,12 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: rgba(108,140,116,0.02);
+  background-color: rgba(195, 210, 159,0.02);
 }
 
 .members-title {
-  font-size: 11px;
+  font-family: var(--font-display);
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   color: var(--color-text-secondary);
 }
@@ -163,13 +164,13 @@
   width: 26px;
   height: 26px;
   border-radius: 50%;
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
   border: 1.5px solid var(--color-bg-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 9px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   margin-left: -8px;
   overflow: hidden;
@@ -234,7 +235,7 @@
 
 .trip-spot-item.visited {
   opacity: 0.65;
-  background-color: rgba(108,140,116,0.03);
+  background-color: rgba(195, 210, 159,0.03);
 }
 
 .item-main {
@@ -252,7 +253,7 @@
 }
 
 .item-thumbnail.placeholder {
-  background-color: rgba(108,140,116,0.1);
+  background-color: rgba(195, 210, 159,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -273,7 +274,7 @@
 }
 
 .item-cat {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-accent);
   font-weight: 600;
   text-transform: uppercase;
@@ -302,13 +303,13 @@
 }
 
 .vote-btn:hover {
-  background-color: rgba(108,140,116,0.06);
+  background-color: rgba(195, 210, 159,0.06);
   color: var(--color-accent);
 }
 
 .vote-btn.active {
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
 }
 
 .visited-toggle-btn {
@@ -323,7 +324,7 @@
 }
 
 .remove-btn {
-  font-size: 18px;
+  font-size: var(--font-size-lg);
   color: var(--color-text-secondary);
   opacity: 0.6;
   padding: 0 4px;
@@ -331,7 +332,7 @@
 
 .remove-btn:hover {
   opacity: 1;
-  color: #c94a4a;
+  color: var(--danger);
 }
 
 /* Custom Marker Pins on Map */
@@ -356,7 +357,7 @@
 
 .trip-gem-pin .pin-votes {
   transform: rotate(45deg);
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   font-weight: 700;
   color: var(--color-accent);
   white-space: nowrap;
@@ -414,7 +415,7 @@
 
 .drawer-close {
   background: none;
-  font-size: 24px;
+  font-size: var(--font-size-h3);
   color: var(--color-text-secondary);
 }
 
@@ -453,7 +454,7 @@
 }
 
 .avail-thumb.placeholder {
-  background-color: rgba(108,140,116,0.1);
+  background-color: rgba(195, 210, 159,0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -474,7 +475,7 @@
 }
 
 .avail-info p {
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   margin: 0;
   white-space: nowrap;
@@ -483,18 +484,18 @@
 }
 
 .add-to-trip-btn {
-  background-color: rgba(108, 140, 116, 0.12);
+  background-color: rgba(195, 210, 159, 0.12);
   color: var(--color-accent);
   padding: 6px 12px;
   border-radius: var(--radius-full);
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   white-space: nowrap;
 }
 
 .add-to-trip-btn:hover {
-  background-color: var(--color-accent);
-  color: #ffffff;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
 }
 
 /* Mobile Responsiveness for split layout */
@@ -560,6 +561,6 @@
 }
 
 .trip-spot-item.has-booking {
-  border-left: 3px solid #8e44ad !important;
+  border-left: 3px solid var(--violet-400) !important;
 }
 

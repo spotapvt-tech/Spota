@@ -5,8 +5,8 @@
 }
 
 .name-suggestion-card {
-  background: rgba(108, 140, 116, 0.08);
-  border: 1px solid rgba(108, 140, 116, 0.25);
+  background: rgba(195, 210, 159, 0.08);
+  border: 1px solid rgba(195, 210, 159, 0.25);
   border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
@@ -23,7 +23,7 @@
 }
 
 .name-suggestion-text {
-  font-size: 22px;
+  font-size: var(--font-size-xl);
   font-weight: 700;
   color: var(--color-text-primary);
   line-height: 1.2;
@@ -47,12 +47,12 @@
 }
 
 .name-action-btn.primary {
-  background: var(--color-accent);
-  color: white;
+  background: var(--grad-accent);
+  color: var(--color-on-accent);
 }
 
 .name-action-btn.primary:hover {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 .name-action-btn.secondary {
@@ -97,14 +97,14 @@
 
 .name-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(108, 140, 116, 0.1);
+  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.1);
 }
 
 .name-char-count {
   position: absolute;
   right: 12px;
   bottom: 10px;
-  font-size: 10px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary);
   opacity: 0.5;
 }
@@ -140,12 +140,12 @@
 }
 
 .name-cat-emoji {
-  font-size: 16px;
+  font-size: var(--font-size-base);
   flex-shrink: 0;
 }
 
 .name-cat-label {
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   font-weight: 600;
   line-height: 1.2;
 }

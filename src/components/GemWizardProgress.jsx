@@ -1,23 +1,23 @@
 import './GemWizardProgress.css';
 
-const STEP_LABELS = ['Capture', 'Pin', 'Name', 'Rate', 'Vibe'];
+const STEP_LABELS = ['Photo', 'Pin', 'Name', 'Rate', 'Story', 'Review'];
 
-export default function GemWizardProgress({ currentStep, totalSteps = 5 }) {
+/** Segmented trail: one segment per step, current step labelled below. */
+export default function GemWizardProgress({ currentStep, totalSteps = 6 }) {
   return (
-    <div className="wizard-progress-bar">
-      {Array.from({ length: totalSteps }, (_, i) => {
-        const stepNum = i + 1;
-        const isDone = currentStep > stepNum;
-        const isActive = currentStep === stepNum;
-        return (
-          <div key={i} className="wizard-progress-segment">
-            <div className={`wizard-progress-dot ${isDone ? 'done' : ''} ${isActive ? 'active' : ''}`} />
-            <span className={`wizard-progress-label ${isActive ? 'active' : ''} ${isDone ? 'done' : ''}`}>
-              {STEP_LABELS[i]}
-            </span>
-          </div>
-        );
-      })}
+    <div className="wizard-progress" aria-label={`Step ${currentStep} of ${totalSteps}: ${STEP_LABELS[currentStep - 1]}`}>
+      <div className="wizard-progress__track">
+        {Array.from({ length: totalSteps }, (_, i) => {
+          const n = i + 1;
+          const state = currentStep > n ? 'done' : currentStep === n ? 'active' : '';
+          return <span key={n} className={`wizard-progress__seg ${state}`} />;
+        })}
+      </div>
+      <div className="wizard-progress__labels" aria-hidden="true">
+        {STEP_LABELS.slice(0, totalSteps).map((label, i) => (
+          <span key={label} className={currentStep === i + 1 ? 'active' : currentStep > i + 1 ? 'done' : ''}>{label}</span>
+        ))}
+      </div>
     </div>
   );
 }

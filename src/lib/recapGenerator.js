@@ -33,20 +33,20 @@ function wrapText(ctx, text, maxWidth) {
 function getWrappedTitleLines(ctx, title, maxWidth) {
   const cleanTitle = title ? String(title).trim() : 'Kasol Group Trip';
   let fontSize = 56;
-  ctx.font = `bold ${fontSize}px 'Outfit', sans-serif`;
+  ctx.font = `bold ${fontSize}px 'Archivo Variable', sans-serif`;
   let lines = wrapText(ctx, cleanTitle, maxWidth);
   
   const hasOverflow = (lineList) => lineList.some(l => ctx.measureText(l).width > maxWidth);
 
   if (lines.length > 2 || hasOverflow(lines)) {
     fontSize = 44;
-    ctx.font = `bold ${fontSize}px 'Outfit', sans-serif`;
+    ctx.font = `bold ${fontSize}px 'Archivo Variable', sans-serif`;
     lines = wrapText(ctx, cleanTitle, maxWidth);
   }
   
   if (lines.length > 2 || hasOverflow(lines)) {
     fontSize = 36;
-    ctx.font = `bold ${fontSize}px 'Outfit', sans-serif`;
+    ctx.font = `bold ${fontSize}px 'Archivo Variable', sans-serif`;
     lines = wrapText(ctx, cleanTitle, maxWidth);
   }
   
@@ -140,8 +140,8 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
   // 3. Draw Glass Orb Highlights (Ambient light glows)
   // Sage Green Orb (Top Right)
   const sageGlow = ctx.createRadialGradient(850, 300, 50, 850, 300, 450);
-  sageGlow.addColorStop(0, 'rgba(108, 140, 116, 0.22)');
-  sageGlow.addColorStop(1, 'rgba(108, 140, 116, 0)');
+  sageGlow.addColorStop(0, 'rgba(195, 210, 159, 0.22)');
+  sageGlow.addColorStop(1, 'rgba(195, 210, 159, 0)');
   ctx.fillStyle = sageGlow;
   ctx.beginPath();
   ctx.arc(850, 300, 450, 0, Math.PI * 2);
@@ -149,8 +149,8 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
 
   // Terracotta Orb (Bottom Left)
   const terraGlow = ctx.createRadialGradient(200, 1500, 50, 200, 1500, 500);
-  terraGlow.addColorStop(0, 'rgba(224, 122, 95, 0.18)');
-  terraGlow.addColorStop(1, 'rgba(224, 122, 95, 0)');
+  terraGlow.addColorStop(0, 'rgba(255, 106, 77, 0.18)');
+  terraGlow.addColorStop(1, 'rgba(255, 106, 77, 0)');
   ctx.fillStyle = terraGlow;
   ctx.beginPath();
   ctx.arc(200, 1500, 500, 0, Math.PI * 2);
@@ -169,11 +169,11 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
   // 5. Header Branding
   ctx.fillStyle = '#FFFFFF';
   ctx.textAlign = 'center';
-  ctx.font = "bold 44px 'Outfit', sans-serif";
+  ctx.font = "bold 44px 'Archivo Variable', sans-serif";
   ctx.fillText('💎  S P O T A', w / 2, 180);
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
-  ctx.font = "bold 20px 'Outfit', sans-serif";
+  ctx.font = "bold 20px 'Archivo Variable', sans-serif";
   ctx.fillText('T R I P   W R A P P E D   R E C A P', w / 2, 235);
 
   // 6. Trip Summary Card (Large Box)
@@ -227,7 +227,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
     avatarY = datesY + 36;
   }
 
-  ctx.font = `bold ${titleFontSize}px 'Outfit', sans-serif`;
+  ctx.font = `bold ${titleFontSize}px 'Archivo Variable', sans-serif`;
   if (titleLines.length === 1) {
     ctx.fillText(titleLines[0], w / 2, titleY);
   } else {
@@ -236,12 +236,12 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
   }
 
   ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-  ctx.font = "600 26px 'Outfit', sans-serif";
+  ctx.font = "600 26px 'Archivo Variable', sans-serif";
   const destText = trip.destination ? `📍 ${trip.destination}` : '📍 Flexible Destination';
   ctx.fillText(destText, w / 2, destY);
 
-  ctx.fillStyle = 'var(--color-accent, #6C8C74)';
-  ctx.font = "600 20px 'Outfit', sans-serif";
+  ctx.fillStyle = 'var(--color-accent, #C3D29F)';
+  ctx.font = "600 20px 'Archivo Variable', sans-serif";
   const formatDates = (s, e) => {
     if (!s) return 'Flexible Dates';
     const sDate = new Date(s).toLocaleDateString([], { month: 'short', day: 'numeric' });
@@ -259,8 +259,8 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
     const startX = w / 2 - ((totalAvatars - 1) * avatarSpacing) / 2;
 
     const avatarColors = [
-      '#6C8C74', // Sage Green
-      '#E07A5F', // Terracotta
+      '#C3D29F', // Sage Green
+      '#FF6A4D', // Terracotta
       '#DDA15E', // Sand
       '#83C5BE', // Teal
       '#9B5DE5', // Purple
@@ -282,7 +282,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
       ctx.stroke();
 
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = "bold 14px 'Outfit', sans-serif";
+      ctx.font = "bold 14px 'Archivo Variable', sans-serif";
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(initials, startX + index * avatarSpacing, avatarY + 1);
@@ -301,7 +301,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
       ctx.stroke();
 
       ctx.fillStyle = '#FFFFFF';
-      ctx.font = "bold 14px 'Outfit', sans-serif";
+      ctx.font = "bold 14px 'Archivo Variable', sans-serif";
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(`+${members.length - 6}`, badgeX, avatarY + 1);
@@ -331,25 +331,25 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
     ctx.stroke();
 
     // Icon circle
-    ctx.fillStyle = 'rgba(108, 140, 116, 0.15)';
+    ctx.fillStyle = 'rgba(195, 210, 159, 0.15)';
     ctx.beginPath();
     ctx.arc(x + 70, y + 70, 40, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = "32px 'Outfit', sans-serif";
+    ctx.font = "32px 'Archivo Variable', sans-serif";
     ctx.textAlign = 'center';
     ctx.fillText(iconCode, x + 70, y + 80);
 
     // Label
     ctx.textAlign = 'left';
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.font = "bold 20px 'Outfit', sans-serif";
+    ctx.font = "bold 20px 'Archivo Variable', sans-serif";
     ctx.fillText(label.toUpperCase(), x + 40, y + 160);
 
     // Value
     ctx.fillStyle = '#FFFFFF';
-    ctx.font = "bold 32px 'Outfit', sans-serif";
+    ctx.font = "bold 32px 'Archivo Variable', sans-serif";
     ctx.fillText(val, x + 40, y + 225, 340);
     ctx.restore();
   };
@@ -398,7 +398,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
 
   ctx.textAlign = 'left';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-  ctx.font = "bold 20px 'Outfit', sans-serif";
+  ctx.font = "bold 20px 'Archivo Variable', sans-serif";
   ctx.fillText('TRIP VIBE PALETTE', 140, 1340);
 
   // Draw Unique categories visited as inline emoji badges
@@ -424,7 +424,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
     
     // Draw pill background
     ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-    ctx.font = "bold 22px 'Outfit', sans-serif";
+    ctx.font = "bold 22px 'Archivo Variable', sans-serif";
     const textWidth = ctx.measureText(label).width + 30;
     ctx.beginPath();
     ctx.roundRect(drawX, 1370, textWidth, 60, 30);
@@ -439,7 +439,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
 
   if (uniqueCategories.length === 0) {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-    ctx.font = "italic 22px 'Outfit', sans-serif";
+    ctx.font = "italic 22px 'Archivo Variable', sans-serif";
     ctx.fillText('No spots visited yet to generate vibes.', 140, 1400);
   }
 
@@ -451,19 +451,19 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
 
   ctx.textAlign = 'left';
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = "bold 28px 'Outfit', sans-serif";
+  ctx.font = "bold 28px 'Archivo Variable', sans-serif";
   if (trip.agency_name) {
     ctx.fillText(`PLANNED BY ${trip.agency_name.toUpperCase()}`, 140, 1640);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.font = "500 18px 'Outfit', sans-serif";
+    ctx.font = "500 18px 'Archivo Variable', sans-serif";
     ctx.fillText('CURATED COLLABORATIVELY ON SPOTA', 140, 1685);
-    ctx.fillStyle = '#8e44ad';
-    ctx.font = "bold 16px 'Outfit', sans-serif";
+    ctx.fillStyle = '#B79CFF';
+    ctx.font = "bold 16px 'Archivo Variable', sans-serif";
     ctx.fillText('💎 SPOTA VERIFIED PARTNER', 140, 1725);
   } else {
     ctx.fillText('PLAN YOUR NEXT GEM WITH FRIENDS', 140, 1650);
     ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.font = "500 18px 'Outfit', sans-serif";
+    ctx.font = "500 18px 'Archivo Variable', sans-serif";
     ctx.fillText('DOWNLOAD SPOTA ON IOS & ANDROID', 140, 1690);
   }
 
