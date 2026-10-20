@@ -83,13 +83,13 @@
 }
 
 .trips-btn.primary {
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
-  box-shadow: 0 4px 12px rgba(198, 243, 107, 0.25);
+  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.25);
 }
 
 .trips-btn.primary:hover {
-  background-color: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 .trips-btn.secondary {
@@ -99,7 +99,7 @@
 }
 
 .trips-btn.secondary:hover {
-  background-color: rgba(198, 243, 107, 0.05);
+  background-color: rgba(195, 210, 159, 0.05);
 }
 
 .empty-trips-state {
@@ -193,7 +193,7 @@
 .role-tag {
   font-size: var(--font-size-2xs);
   font-weight: 600;
-  background-color: rgba(198, 243, 107, 0.1);
+  background-color: rgba(195, 210, 159, 0.1);
   color: var(--color-accent);
   padding: 2px 8px;
   border-radius: var(--radius-full);
@@ -274,7 +274,7 @@
 .submit-trip-btn {
   width: 100%;
   padding: 14px;
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
   font-weight: 600;
   border-radius: var(--radius-full);
@@ -285,7 +285,7 @@
 }
 
 .submit-trip-btn:hover {
-  background-color: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 .submit-trip-btn:disabled {
@@ -349,9 +349,9 @@
 }
 
 .trips-mode-selector .tab-btn.active {
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
-  box-shadow: 0 2px 8px rgba(198, 243, 107, 0.2);
+  box-shadow: 0 2px 8px rgba(195, 210, 159, 0.2);
 }
 
 /* Category horizontal scroll chips */

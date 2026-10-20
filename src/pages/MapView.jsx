@@ -301,9 +301,9 @@ export default function MapView() {
                 center={{ lat: referenceCoords[0], lng: referenceCoords[1] }}
                 radius={Number(selectedRange) * 1000}
                 options={{
-                  fillColor: '#C6F36B',
+                  fillColor: '#C3D29F',
                   fillOpacity: 0.04,
-                  strokeColor: '#C6F36B',
+                  strokeColor: '#C3D29F',
                   strokeOpacity: 0.45,
                   strokeWeight: 1.2,
                   clickable: false,

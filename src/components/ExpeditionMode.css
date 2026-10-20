@@ -333,14 +333,14 @@
   border-radius: 999px;
   font-size: var(--font-size-sm);
   font-weight: 700;
-  background: rgba(198, 243, 107, 0.14);
+  background: rgba(195, 210, 159, 0.14);
   color: var(--color-accent);
   white-space: nowrap;
 }
 
 .tier-sm .tier-badge { padding: 1px 7px; font-size: var(--font-size-2xs); font-weight: 600; }
 
-.tier-trailblazer      { background: rgba(198, 243, 107, 0.18); }
+.tier-trailblazer      { background: rgba(195, 210, 159, 0.18); }
 .tier-ridge_runner     { background: rgba(95, 130, 170, 0.15); color: #4f7aa6; }
 .tier-summiteer        { background: rgba(244, 162, 97, 0.16); color: var(--warning); }
 .tier-expedition_legend { background: rgba(224, 122, 95, 0.16); color: var(--danger); }
@@ -358,7 +358,7 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--color-accent);
+  background: var(--grad-accent);
   transition: width 0.6s ease;
 }
 
@@ -421,7 +421,7 @@
 
 .expedition-save-btn {
   border: none;
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-bg-primary);
   align-self: flex-start;
   padding: 0 16px;
@@ -507,7 +507,7 @@
   font-weight: 600;
 }
 
-.status-verified  { background: rgba(198, 243, 107, 0.15); color: var(--color-accent) !important; }
+.status-verified  { background: rgba(195, 210, 159, 0.15); color: var(--color-accent) !important; }
 .status-pending,
 .status-submitted { background: rgba(244, 162, 97, 0.15); color: var(--warning) !important; }
 .status-rejected  { background: rgba(224, 122, 95, 0.15); color: var(--danger) !important; }
@@ -553,7 +553,7 @@
 
 .review-checks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
 .review-checks li { display: flex; justify-content: space-between; font-size: var(--font-size-xs); padding: 4px 8px; border-radius: var(--radius-sm); }
-.review-checks li.ok      { background: rgba(198, 243, 107, 0.1); }
+.review-checks li.ok      { background: rgba(195, 210, 159, 0.1); }
 .review-checks li.partial { background: rgba(244, 162, 97, 0.1); }
 .review-checks li.fail    { background: rgba(224, 122, 95, 0.1); }
 
@@ -587,7 +587,7 @@
   cursor: pointer;
 }
 
-.review-approve { border: none; background: var(--color-accent); color: var(--color-bg-primary); }
+.review-approve { border: none; background: var(--grad-accent); color: var(--color-bg-primary); }
 .review-reject  { border: 1px solid rgba(224, 122, 95, 0.4); background: rgba(224, 122, 95, 0.08); color: var(--danger); }
 .review-actions button:disabled { opacity: 0.6; cursor: default; }
 
@@ -628,7 +628,7 @@
 .xfunnel em { font-style: normal; color: var(--color-accent); font-weight: 600; }
 .xbar { display: grid; grid-template-columns: 120px 1fr 48px; align-items: center; gap: 8px; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
 .xbar-track { height: 8px; border-radius: 999px; background: var(--color-border); overflow: hidden; }
-.xbar-track span { display: block; height: 100%; border-radius: inherit; background: var(--color-accent); }
+.xbar-track span { display: block; height: 100%; border-radius: inherit; background: var(--grad-accent); }
 .xbar-track span.mid { background: var(--warning); }
 .xbar-track span.low { background: var(--danger); }
 .xbar-val { text-align: right; font-variant-numeric: tabular-nums; color: var(--color-text-primary); font-weight: 600; }
@@ -666,7 +666,7 @@
   display: inline-flex; align-items: center; gap: 4px;
   height: 36px; padding: 0 12px;
   border: none; border-radius: var(--radius-sm);
-  background: var(--color-accent); color: var(--color-bg-primary);
+  background: var(--grad-accent); color: var(--color-bg-primary);
   font-weight: 700; font-size: var(--font-size-xs); cursor: pointer;
 }
 .vouch-form-row button:disabled,
@@ -686,7 +686,7 @@
   background: var(--color-surface); border: 1px solid var(--color-border);
   color: var(--color-text-secondary) !important;
 }
-.vouch-chip.is-confirmed { background: rgba(198, 243, 107, 0.15); color: var(--color-accent) !important; border-color: transparent; }
+.vouch-chip.is-confirmed { background: rgba(195, 210, 159, 0.15); color: var(--color-accent) !important; border-color: transparent; }
 .vouch-chip.is-declined { text-decoration: line-through; }
 
 .vouch-incoming {
@@ -713,7 +713,7 @@
 .chal-logo { width: 36px; height: 36px; border-radius: var(--radius-sm); object-fit: cover; flex-shrink: 0; }
 .chal-logo-fallback {
   display: inline-flex; align-items: center; justify-content: center;
-  background: rgba(198, 243, 107, 0.15); color: var(--color-accent);
+  background: rgba(195, 210, 159, 0.15); color: var(--color-accent);
 }
 .chal-desc { margin: 0; font-size: var(--font-size-sm); color: var(--color-text-primary); line-height: 1.45; }
 .chal-meta { display: flex; flex-wrap: wrap; gap: 12px; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
@@ -726,7 +726,7 @@
 .chal-progress { display: flex; align-items: center; gap: 10px; font-size: var(--font-size-xs); color: var(--color-text-secondary); }
 .chal-progress > span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
 .chal-bar { flex: 1; height: 8px; border-radius: 999px; background: var(--color-surface); border: 1px solid var(--color-border); overflow: hidden; }
-.chal-bar span { display: block; height: 100%; background: var(--color-accent); border-radius: 999px; }
+.chal-bar span { display: block; height: 100%; background: var(--grad-accent); border-radius: 999px; }
 .chal-card .exp-start,
 .chal-leave { align-self: flex-start; }
 .chal-leave {
@@ -791,7 +791,7 @@
   display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;
   height: 32px; padding: 0 12px; border-radius: 999px; font-size: var(--font-size-xs); font-weight: 700; cursor: pointer;
 }
-.partner-on { border: none; background: var(--color-accent); color: var(--color-bg-primary); }
+.partner-on { border: none; background: var(--grad-accent); color: var(--color-bg-primary); }
 .partner-off { border: 1px solid var(--color-border); background: transparent; color: var(--color-text-primary); }
 
 /* Agency dashboard: challenges */

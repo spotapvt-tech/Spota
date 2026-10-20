@@ -6,8 +6,8 @@
 
 .auth-shell {
   --auth-bg: var(--accent-ink);
-  --auth-accent: var(--accent);
-  --auth-accent-hover: var(--accent-hover);
+  --auth-accent: var(--grad-accent);
+  --auth-accent-hover: var(--grad-accent-hover);
 }
 
 /* Shell: full-screen dark modal */

@@ -98,7 +98,7 @@
 
 .plan-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(198, 243, 107, 0.4);
+  border-color: rgba(195, 210, 159, 0.4);
 }
 
 .plan-card.popular {
@@ -621,7 +621,7 @@
   font-size: var(--font-size-2xs);
   font-weight: 700;
   text-transform: uppercase;
-  background: rgba(198, 243, 107, 0.15);
+  background: rgba(195, 210, 159, 0.15);
   color: var(--color-accent);
   padding: 2px 8px;
   border-radius: 99px;
@@ -674,7 +674,7 @@
 }
 
 .source-tag.spot_details {
-  background: rgba(198, 243, 107, 0.1);
+  background: rgba(195, 210, 159, 0.1);
   color: var(--color-accent);
 }
 

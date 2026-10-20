@@ -38,7 +38,7 @@
   height: 17px;
   padding: 0 4px;
   border-radius: var(--radius-full);
-  background: var(--accent);
+  background: var(--grad-accent);
   color: var(--accent-ink);
   border: 2px solid var(--bg-canvas);
   font-family: var(--font-mono);

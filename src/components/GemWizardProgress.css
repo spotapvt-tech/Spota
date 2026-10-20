@@ -11,7 +11,7 @@
   transition: background-color 0.3s var(--ease-out);
 }
 .wizard-progress__seg.done { background: var(--accent-line); }
-.wizard-progress__seg.active { background: var(--accent); }
+.wizard-progress__seg.active { background: var(--grad-accent); }
 .wizard-progress__labels { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; margin-top: 6px; }
 .wizard-progress__labels span {
   font-family: var(--font-mono);

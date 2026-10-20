@@ -48,7 +48,7 @@ export function drawRankCard(canvas, { rank, ap, tier, username, boardLabel, win
     ctx.fillStyle = color;
     ctx.fill();
   };
-  ridge([[0, 980], [180, 860], [360, 940], [560, 780], [760, 900], [920, 820], [1080, 880]], 'rgba(198, 243, 107,0.55)');
+  ridge([[0, 980], [180, 860], [360, 940], [560, 780], [760, 900], [920, 820], [1080, 880]], 'rgba(195, 210, 159,0.55)');
   ridge([[0, 1100], [220, 1010], [430, 1080], [640, 960], [860, 1060], [1080, 1000]], 'rgba(63,90,72,0.85)');
   // Glass card
   roundRect(ctx, 90, 150, W - 180, 620, 48);
@@ -64,7 +64,7 @@ export function drawRankCard(canvas, { rank, ap, tier, username, boardLabel, win
   ctx.font = '800 260px system-ui, -apple-system, Segoe UI, sans-serif';
   ctx.fillText(`#${rank}`, W / 2, 500);
 
-  ctx.fillStyle = '#C6F36B';
+  ctx.fillStyle = '#C3D29F';
   ctx.font = '700 64px system-ui, -apple-system, Segoe UI, sans-serif';
   ctx.fillText(`${Number(ap).toLocaleString('en-IN')} AP`, W / 2, 600);
 

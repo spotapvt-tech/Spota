@@ -24,8 +24,8 @@
   --bg-canvas: #0D1B16; --bg-raised: #142A22; --bg-overlay: #1A342A; --bg-hover: #20402F;
   --text-strong: #F5F5EF; --text-body: #D3D8CF; --text-muted: #89968C;
   --line: rgba(245, 245, 239, 0.12); --line-strong: rgba(245, 245, 239, 0.24); --line-subtle: rgba(245, 245, 239, 0.07);
-  --accent: #C6F36B; --accent-hover: #D6FA8A; --accent-ink: #0D1B16;
-  --shadow-accent: 0 8px 24px rgba(198, 243, 107, 0.2);
+  --accent: #C3D29F; --accent-hover: #D9E4BC; --accent-ink: #0D1B16;
+  --shadow-accent: 0 8px 24px rgba(195, 210, 159, 0.2);
   --dp-ink: #0D1B16; --dp-reward: #F2C14E;
 }
 .dp[data-dir='b'] {
@@ -61,13 +61,13 @@
 .dp__card--hidden { border-style: dashed; border-color: var(--line-strong); color: var(--text-muted); }
 .dp__card--trek { color: var(--text-muted); }
 .dp__bar { height: 6px; border-radius: 3px; background: var(--bg-hover); margin-top: 6px; overflow: hidden; }
-.dp__bar span { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.dp__bar span { display: block; height: 100%; background: var(--grad-accent); border-radius: 3px; }
 
 .dp__map { position: relative; height: 150px; border-radius: var(--radius-md); overflow: hidden; background: var(--bg-raised); border: 1px solid var(--line-subtle); }
 .dp__pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--text-muted); border: 2px solid var(--bg-canvas); }
 .dp__pin--a { left: 18%; top: 30%; }
 .dp__pin--b { left: 70%; top: 22%; background: var(--dp-reward); }
-.dp__pin--sel { position: absolute; left: 45%; top: 26%; width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; box-shadow: var(--shadow-accent); }
+.dp__pin--sel { position: absolute; left: 45%; top: 26%; width: 34px; height: 34px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--grad-accent); color: var(--accent-ink); display: grid; place-items: center; box-shadow: var(--shadow-accent); }
 .dp__pin--sel svg { transform: rotate(45deg); }
 .dp__sheet { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 14px; background: var(--bg-overlay); border-top: 1px solid var(--line); display: flex; flex-direction: column; color: var(--text-strong); }
 

@@ -106,8 +106,8 @@
   font-weight: 700;
 }
 .action-btn:hover { border-color: var(--line-strong); background-color: var(--bg-hover); }
-.action-btn.directions-btn { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.action-btn.directions-btn:hover { background: var(--accent-hover); }
+.action-btn.directions-btn { background: var(--grad-accent); border-color: var(--accent); color: var(--accent-ink); }
+.action-btn.directions-btn:hover { background: var(--grad-accent-hover); }
 
 /* Report / delete are secondary: a quiet full-width text row, not a tile */
 .report-btn,
@@ -147,12 +147,12 @@
 }
 
 .reaction-emoji-btn:hover {
-  background-color: rgba(198, 243, 107, 0.05);
+  background-color: rgba(195, 210, 159, 0.05);
 }
 
 .reaction-emoji-btn.active {
-  background-color: rgba(198, 243, 107, 0.12);
-  border-color: rgba(198, 243, 107, 0.3);
+  background-color: rgba(195, 210, 159, 0.12);
+  border-color: rgba(195, 210, 159, 0.3);
   transform: scale(1.05);
 }
 
@@ -214,7 +214,7 @@
 }
 
 .media-toggle-btn.active {
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
 }
 

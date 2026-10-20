@@ -528,7 +528,7 @@ export default function AgencyDashboardView() {
         tier: 'boutique',
         name: 'Boutique Plan',
         price: '$49',
-        color: '#C6F36B',
+        color: '#C3D29F',
         desc: 'Best for local guides and weekend group coordinators.',
         features: [
           'Up to 5 active client groups',
@@ -729,7 +729,7 @@ export default function AgencyDashboardView() {
       {/* Analytics Dashboard Grid */}
       <div className="analytics-dashboard-grid">
         <div className="metric-card glass-panel">
-          <div className="metric-icon" style={{ backgroundColor: 'rgba(198, 243, 107, 0.15)', color: 'var(--color-accent)' }}>
+          <div className="metric-icon" style={{ backgroundColor: 'rgba(195, 210, 159, 0.15)', color: 'var(--color-accent)' }}>
             <Users size={20} />
           </div>
           <div className="metric-info">

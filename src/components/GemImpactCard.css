@@ -41,7 +41,7 @@
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-accent);
-  background-color: rgba(198, 243, 107, 0.12);
+  background-color: rgba(195, 210, 159, 0.12);
   padding: 3px 8px;
   border-radius: var(--radius-full);
 }
@@ -87,7 +87,7 @@
 }
 
 .tile-icon-wrapper.reactions {
-  background-color: rgba(198, 243, 107, 0.1);
+  background-color: rgba(195, 210, 159, 0.1);
   color: var(--color-accent);
 }
 

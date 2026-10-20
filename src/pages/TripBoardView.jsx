@@ -524,7 +524,7 @@ export default function TripBoardView() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
               <h4 style={{ margin: 0 }}>{spot.title}</h4>
               {ts.schedule_time && (
-                <span className="schedule-time-badge" style={{ fontSize: '10px', background: 'rgba(198, 243, 107,0.12)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
+                <span className="schedule-time-badge" style={{ fontSize: '10px', background: 'rgba(195, 210, 159,0.12)', color: 'var(--color-accent)', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
                   🕒 {ts.schedule_time}
                 </span>
               )}
@@ -739,7 +739,7 @@ export default function TripBoardView() {
                             <button
                               onClick={() => handleToggleVote(spot.id)}
                               style={{
-                                background: userHasVoted(spot.id) ? 'var(--color-accent)' : 'rgba(198, 243, 107,0.1)',
+                                background: userHasVoted(spot.id) ? 'var(--color-accent)' : 'rgba(195, 210, 159,0.1)',
                                 color: userHasVoted(spot.id) ? '#fff' : 'var(--color-accent)',
                                 border: 'none',
                                 borderRadius: 'var(--radius-sm)',

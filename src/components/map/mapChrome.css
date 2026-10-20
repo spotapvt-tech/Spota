@@ -38,7 +38,7 @@
   text-align: center;
   padding: 8px;
   margin-top: 10px;
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent) !important;
   border-radius: var(--radius-sm);
   font-size: var(--font-size-xs);
@@ -48,7 +48,7 @@
   transition: background-color var(--transition-fast);
 }
 .popup-details-btn:hover {
-  background-color: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 .popup-trending-tag {
   color: var(--color-live);

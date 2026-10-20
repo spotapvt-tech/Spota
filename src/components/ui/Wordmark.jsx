@@ -12,11 +12,14 @@ export default function Wordmark({ size = 20, className = '' }) {
       <span aria-hidden="true">SP</span>
       <svg className="sp-eye" width={Math.round(h * 1.82)} height={h} viewBox="0 0 40 22" aria-hidden="true" style={{ margin: '0 0.05em', flexShrink: 0 }}>
         <clipPath id={clipId}><path d={almond} /></clipPath>
+        <linearGradient id={`${clipId}-g`} x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#C9D6A8" /><stop offset="1" stopColor="#8FAA78" />
+        </linearGradient>
         <g className="sp-eye__lid">
           <path d={almond} fill="currentColor" />
           <g clipPath={`url(#${clipId})`}>
             <g className="sp-eye__iris">
-              <circle cx="20" cy="11" r="8" fill="var(--accent)" />
+              <circle cx="20" cy="11" r="8" fill={`url(#${clipId}-g)`} />
               <circle cx="20" cy="11" r="3.7" fill="var(--accent-ink)" />
             </g>
           </g>

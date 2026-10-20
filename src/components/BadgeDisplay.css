@@ -71,14 +71,14 @@
 
 /* Earned vs Locked states */
 .badge-card.earned {
-  background: radial-gradient(circle at center, rgba(198, 243, 107, 0.1) 0%, rgba(255,255,255,0.02) 100%);
-  border-color: rgba(198, 243, 107, 0.25);
-  box-shadow: 0 4px 12px rgba(198, 243, 107, 0.05);
+  background: radial-gradient(circle at center, rgba(195, 210, 159, 0.1) 0%, rgba(255,255,255,0.02) 100%);
+  border-color: rgba(195, 210, 159, 0.25);
+  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.05);
 }
 
 .badge-card.earned:hover {
   border-color: var(--color-accent);
-  box-shadow: 0 8px 20px rgba(198, 243, 107, 0.15), inset 0 0 8px rgba(198, 243, 107, 0.1);
+  box-shadow: 0 8px 20px rgba(195, 210, 159, 0.15), inset 0 0 8px rgba(195, 210, 159, 0.1);
 }
 
 .badge-card.locked {
@@ -109,8 +109,8 @@
 }
 
 .badge-card.earned .badge-emoji-wrapper {
-  background: linear-gradient(135deg, rgba(198, 243, 107, 0.2) 0%, rgba(131, 197, 190, 0.2) 100%);
-  box-shadow: 0 0 12px rgba(198, 243, 107, 0.15);
+  background: linear-gradient(135deg, rgba(195, 210, 159, 0.2) 0%, rgba(131, 197, 190, 0.2) 100%);
+  box-shadow: 0 0 12px rgba(195, 210, 159, 0.15);
 }
 
 .badge-lock-overlay {
@@ -154,7 +154,7 @@
 
 .badge-progress-bar {
   height: 100%;
-  background: var(--color-accent);
+  background: var(--grad-accent);
   border-radius: var(--radius-full);
   transition: width 0.4s ease;
 }
@@ -223,7 +223,7 @@
   width: 90px;
   height: 90px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, rgba(198, 243, 107, 0.15) 0%, rgba(224, 122, 95, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(195, 210, 159, 0.15) 0%, rgba(224, 122, 95, 0.05) 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   align-items: center;
@@ -271,7 +271,7 @@
   font-size: var(--font-size-sm);
   font-weight: 700;
   color: var(--color-accent);
-  background: rgba(198, 243, 107, 0.12);
+  background: rgba(195, 210, 159, 0.12);
   padding: 6px 16px;
   border-radius: var(--radius-full);
   letter-spacing: 0.5px;
@@ -282,7 +282,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
   border: none;
   font-family: inherit;
@@ -294,13 +294,13 @@
   transition: all 0.2s ease;
   width: 100%;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(198, 243, 107, 0.2);
+  box-shadow: 0 4px 12px rgba(195, 210, 159, 0.2);
 }
 
 .badge-share-btn:hover {
   background: #597560;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(198, 243, 107, 0.3);
+  box-shadow: 0 6px 16px rgba(195, 210, 159, 0.3);
 }
 
 .badge-status-locked {

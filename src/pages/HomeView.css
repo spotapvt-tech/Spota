@@ -6,7 +6,7 @@
   padding: calc(60px + var(--safe-top)) 0 calc(96px + var(--safe-bottom));
   background:
     var(--topo-texture) 0 0 / 320px 320px,
-    radial-gradient(120% 60% at 100% 0%, rgba(198, 243, 107, 0.06), transparent 60%),
+    radial-gradient(120% 60% at 100% 0%, rgba(195, 210, 159, 0.06), transparent 60%),
     var(--bg-canvas);
   min-height: 100%;
   animation: sp-fade-in 0.36s var(--ease-out);
@@ -55,7 +55,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--grad-accent);
   box-shadow: 0 0 0 4px var(--accent-wash);
   flex-shrink: 0;
 }
@@ -98,7 +98,7 @@
   gap: 6px;
   padding: 5px 9px;
   border-radius: var(--radius-xs);
-  background: var(--accent);
+  background: var(--grad-accent);
   color: var(--accent-ink);
   font-family: var(--font-mono);
   font-size: var(--font-size-2xs);
@@ -151,12 +151,12 @@
 .home-action__chev { margin-left: auto; color: var(--text-faint); flex-shrink: 0; }
 .home-action--explore:hover { border-color: var(--line-strong); }
 .home-action--drop {
-  background: var(--accent);
+  background: var(--grad-accent);
   border-color: var(--accent);
   color: var(--accent-ink);
 }
 .home-action--drop small { color: rgba(10, 15, 13, 0.7); }
-.home-action--drop:hover { background: var(--accent-hover); }
+.home-action--drop:hover { background: var(--grad-accent-hover); }
 
 /* ---- Location ask ------------------------------------------------------ */
 .home-locate {
@@ -333,7 +333,7 @@
   top: 0;
   bottom: 0;
   border-radius: 2px;
-  background: linear-gradient(90deg, rgba(198, 243, 107, 0.15), var(--accent));
+  background: linear-gradient(90deg, rgba(195, 210, 159, 0.15), var(--accent));
 }
 .alt-strip__peak {
   position: absolute;
@@ -360,7 +360,7 @@
 .home-record__card {
   padding: 16px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, rgba(198, 243, 107, 0.09), rgba(198, 243, 107, 0) 55%), var(--bg-raised);
+  background: linear-gradient(135deg, rgba(195, 210, 159, 0.09), rgba(195, 210, 159, 0) 55%), var(--bg-raised);
   border: 1px solid var(--accent-line);
 }
 .home-record__head { display: flex; justify-content: space-between; align-items: center; color: var(--accent); }
@@ -368,7 +368,7 @@
 .home-record__tier strong { font-size: var(--font-size-lead); font-weight: 800; }
 .home-record__tier span { font-size: var(--font-size-sm); color: var(--accent); }
 .home-record__bar { height: 6px; margin-top: 10px; border-radius: 3px; background: var(--ink-700); overflow: hidden; }
-.home-record__bar span { display: block; height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.8s var(--ease-out); }
+.home-record__bar span { display: block; height: 100%; background: var(--grad-accent); border-radius: 3px; transition: width 0.8s var(--ease-out); }
 .home-record__hint { margin-top: 8px; font-size: var(--font-size-xs); color: var(--text-muted); }
 .home-record__pitch { margin-top: 8px; font-size: var(--font-size-sm); color: var(--text-body); line-height: 1.45; }
 .home-record__cta { margin-top: 10px; display: inline-flex; align-items: center; gap: 4px; font-weight: 700; font-size: var(--font-size-sm); color: var(--accent); }

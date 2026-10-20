@@ -38,7 +38,7 @@
   border-radius: 22px;
   display: grid;
   place-items: center;
-  background: var(--accent);
+  background: var(--grad-accent);
   color: var(--accent-ink);
   /* 0–180 ms: hold small (anticipation); then spring to full size */
   animation: dr-tile 560ms var(--ease-settle) both, dr-glow 640ms var(--ease-out) 180ms 1 both;
@@ -49,8 +49,8 @@
   100% { opacity: 1; transform: none; }
 }
 @keyframes dr-glow {
-  0% { box-shadow: 0 0 0 0 rgba(198, 243, 107, 0.55); }
-  100% { box-shadow: 0 0 36px 14px rgba(198, 243, 107, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(195, 210, 159, 0.55); }
+  100% { box-shadow: 0 0 36px 14px rgba(195, 210, 159, 0); }
 }
 
 .dr__ring {
@@ -74,7 +74,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--grad-accent);
   opacity: 0;
   animation: dr-particle 620ms var(--ease-out) 220ms 1 both;
 }

@@ -199,7 +199,7 @@
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
   border: 2px solid var(--text-strong);
   display: flex;
@@ -225,7 +225,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
   font-size: var(--font-size-xs);
   font-weight: 800;

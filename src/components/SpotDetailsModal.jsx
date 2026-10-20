@@ -276,7 +276,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
     ctx.fillRect(0, 0, 800, 1200);
 
     // 2. Draw Decorative Glass Circles
-    ctx.fillStyle = 'rgba(198, 243, 107, 0.15)'; 
+    ctx.fillStyle = 'rgba(195, 210, 159, 0.15)'; 
     ctx.beginPath();
     ctx.arc(100, 200, 150, 0, Math.PI * 2);
     ctx.fill();
@@ -360,7 +360,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
 
       // Vibe Check Ratings inside Share Card
       let ratingY = 880;
-      const ratingColors = ['#FF6A4D', '#E29578', '#DDA15E', '#C6F36B', '#4A90E2'];
+      const ratingColors = ['#FF6A4D', '#E29578', '#DDA15E', '#C3D29F', '#4A90E2'];
       const ratingLabels = ['Cozy', 'Insta', 'Lively', 'Zen', 'Work'];
       const ratingKeys = ['cozy', 'insta_worthy', 'lively', 'zen', 'workspace'];
 
@@ -743,7 +743,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
           ) : spot.image_url ? (
             <img src={spot.image_url} alt={spot.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           ) : (
-            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, rgba(198, 243, 107,0.1), rgba(198, 243, 107,0.3))' }} />
+            <div style={{ width: '100%', height: '100%', background: 'linear-gradient(135deg, rgba(195, 210, 159,0.1), rgba(195, 210, 159,0.3))' }} />
           )}
 
           {spot.video_url && (
@@ -822,7 +822,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-primary)' }}>{creatorProfile.username}</span>
                     {creatorProfile.is_verified && (
-                      <span style={{ backgroundColor: 'rgba(198, 243, 107,0.15)', color: 'var(--color-accent)', padding: '1px 5px', borderRadius: '4px', fontSize: '8px', fontWeight: 700, textTransform: 'uppercase' }} title="Verified Contributor">Verified</span>
+                      <span style={{ backgroundColor: 'rgba(195, 210, 159,0.15)', color: 'var(--color-accent)', padding: '1px 5px', borderRadius: '4px', fontSize: '8px', fontWeight: 700, textTransform: 'uppercase' }} title="Verified Contributor">Verified</span>
                     )}
                   </div>
                 </div>
@@ -833,7 +833,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
                 <button 
                   onClick={() => navigate('/chat', { state: { startChatWith: { id: spot.user_id, username: creatorProfile.username, avatar_url: creatorProfile.avatar_url } } })}
                   style={{
-                    background: 'rgba(198, 243, 107, 0.12)',
+                    background: 'rgba(195, 210, 159, 0.12)',
                     border: 'none',
                     color: 'var(--color-accent)',
                     padding: '6px 12px',
@@ -860,7 +860,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
           {spot.tags && Array.isArray(spot.tags) && spot.tags.length > 0 && (
             <div className="detail-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '12px 0 16px 0' }}>
               {spot.tags.map((tag, idx) => (
-                <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(198, 243, 107,0.1)', color: 'var(--color-accent)', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>
+                <span key={idx} className="tag-pill" style={{ backgroundColor: 'rgba(195, 210, 159,0.1)', color: 'var(--color-accent)', padding: '3px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600 }}>
                   #{tag}
                 </span>
               ))}
@@ -1035,7 +1035,7 @@ export default function SpotDetailsModal({ spot, onClose }) {
             
             {/* Submit Vibe Check */}
             {user && !hasRatedVibes && (
-              <details style={{ backgroundColor: 'rgba(198, 243, 107,0.04)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
+              <details style={{ backgroundColor: 'rgba(195, 210, 159,0.04)', padding: '14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
                 <summary style={{ fontSize: '12px', fontWeight: 600, color: 'var(--color-accent)' }}>Add your vibe check</summary>
                 <form onSubmit={handlePostVibes} style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '14px', cursor: 'default' }} onClick={(e) => e.stopPropagation()}>
                   {[

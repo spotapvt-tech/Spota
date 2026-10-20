@@ -52,7 +52,7 @@
 
 .invite-close-btn:hover {
   opacity: 1;
-  background-color: rgba(198, 243, 107, 0.08);
+  background-color: rgba(195, 210, 159, 0.08);
 }
 
 .invite-subtitle {
@@ -153,7 +153,7 @@
 .copy-icon-btn {
   width: 48px;
   height: 100%;
-  background-color: rgba(198, 243, 107, 0.08);
+  background-color: rgba(195, 210, 159, 0.08);
   color: var(--color-accent);
   display: flex;
   align-items: center;
@@ -163,7 +163,7 @@
 }
 
 .copy-icon-btn:hover {
-  background-color: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
 }
 

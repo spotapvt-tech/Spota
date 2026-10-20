@@ -173,7 +173,7 @@ export default function DailyVibeDropModal({ onClose, onOpenSpot }) {
     
     // Draw Cover Gradient
     const gradient = ctx.createLinearGradient(0, 0, 340, 480);
-    gradient.addColorStop(0, '#C6F36B');
+    gradient.addColorStop(0, '#C3D29F');
     gradient.addColorStop(1, '#83C5BE');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, 340, 480);

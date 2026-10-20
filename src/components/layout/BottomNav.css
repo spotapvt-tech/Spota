@@ -55,7 +55,7 @@
   width: 50px;
   height: 34px;
   border-radius: 13px;
-  background: var(--accent);
+  background: var(--grad-accent);
   color: var(--accent-ink);
   display: flex;
   align-items: center;
@@ -63,5 +63,5 @@
   box-shadow: var(--shadow-accent);
   transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
 }
-.nav-drop:hover .nav-drop__btn { background: var(--accent-hover); }
+.nav-drop:hover .nav-drop__btn { background: var(--grad-accent-hover); }
 .nav-drop:active .nav-drop__btn { transform: scale(0.94); background: var(--pressed); }

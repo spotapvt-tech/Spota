@@ -5,8 +5,8 @@
 }
 
 .name-suggestion-card {
-  background: rgba(198, 243, 107, 0.08);
-  border: 1px solid rgba(198, 243, 107, 0.25);
+  background: rgba(195, 210, 159, 0.08);
+  border: 1px solid rgba(195, 210, 159, 0.25);
   border-radius: var(--radius-md);
   padding: 16px;
   display: flex;
@@ -47,12 +47,12 @@
 }
 
 .name-action-btn.primary {
-  background: var(--color-accent);
+  background: var(--grad-accent);
   color: var(--color-on-accent);
 }
 
 .name-action-btn.primary:hover {
-  background: var(--color-accent-hover);
+  background: var(--grad-accent-hover);
 }
 
 .name-action-btn.secondary {
@@ -97,7 +97,7 @@
 
 .name-input:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(198, 243, 107, 0.1);
+  box-shadow: 0 0 0 3px rgba(195, 210, 159, 0.1);
 }
 
 .name-char-count {

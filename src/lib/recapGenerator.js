@@ -140,8 +140,8 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
   // 3. Draw Glass Orb Highlights (Ambient light glows)
   // Sage Green Orb (Top Right)
   const sageGlow = ctx.createRadialGradient(850, 300, 50, 850, 300, 450);
-  sageGlow.addColorStop(0, 'rgba(198, 243, 107, 0.22)');
-  sageGlow.addColorStop(1, 'rgba(198, 243, 107, 0)');
+  sageGlow.addColorStop(0, 'rgba(195, 210, 159, 0.22)');
+  sageGlow.addColorStop(1, 'rgba(195, 210, 159, 0)');
   ctx.fillStyle = sageGlow;
   ctx.beginPath();
   ctx.arc(850, 300, 450, 0, Math.PI * 2);
@@ -240,7 +240,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
   const destText = trip.destination ? `📍 ${trip.destination}` : '📍 Flexible Destination';
   ctx.fillText(destText, w / 2, destY);
 
-  ctx.fillStyle = 'var(--color-accent, #C6F36B)';
+  ctx.fillStyle = 'var(--color-accent, #C3D29F)';
   ctx.font = "600 20px 'Archivo Variable', sans-serif";
   const formatDates = (s, e) => {
     if (!s) return 'Flexible Dates';
@@ -259,7 +259,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
     const startX = w / 2 - ((totalAvatars - 1) * avatarSpacing) / 2;
 
     const avatarColors = [
-      '#C6F36B', // Sage Green
+      '#C3D29F', // Sage Green
       '#FF6A4D', // Terracotta
       '#DDA15E', // Sand
       '#83C5BE', // Teal
@@ -331,7 +331,7 @@ export function drawTripRecapCanvas(canvas, { trip, tripSpots, members, votes },
     ctx.stroke();
 
     // Icon circle
-    ctx.fillStyle = 'rgba(198, 243, 107, 0.15)';
+    ctx.fillStyle = 'rgba(195, 210, 159, 0.15)';
     ctx.beginPath();
     ctx.arc(x + 70, y + 70, 40, 0, Math.PI * 2);
     ctx.fill();

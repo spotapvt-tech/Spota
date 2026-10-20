@@ -91,7 +91,7 @@
   color: var(--accent);
   flex-shrink: 0;
 }
-.explore-search__ai:hover { background: var(--accent); color: var(--accent-ink); }
+.explore-search__ai:hover { background: var(--grad-accent); color: var(--accent-ink); }
 
 .explore-dropdown {
   position: absolute;
@@ -356,4 +356,4 @@
   font-weight: 600;
   color: var(--text-muted);
 }
-.explore-seg button.is-on { background: var(--accent); color: var(--accent-ink); }
+.explore-seg button.is-on { background: var(--grad-accent); color: var(--accent-ink); }
