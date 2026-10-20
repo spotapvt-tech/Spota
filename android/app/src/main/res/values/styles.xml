@@ -17,6 +17,11 @@
 
 
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
-        <item name="android:background">@drawable/splash</item>
+        <item name="android:background">@color/spota_splash_bg</item>
+        <!-- Android 12+: animated SPOTA eye on the launch splash (max 1000 ms). -->
+        <item name="windowSplashScreenBackground">@color/spota_splash_bg</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_eye</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 </resources>

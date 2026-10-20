@@ -1,6 +1,6 @@
 .trip-board-container {
-  height: calc(100% - 140px);
-  margin-top: 60px;
+  height: calc(100% - 140px - var(--safe-top));
+  margin-top: calc(60px + var(--safe-top));
   margin-bottom: 80px;
   display: flex;
   flex-direction: column;

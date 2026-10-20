@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Iris glances right, then left, then settles (0-700 ms of the 1000 ms splash). -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
+    <objectAnimator
+        android:duration="200"
+        android:propertyName="translateX"
+        android:valueFrom="0"
+        android:valueTo="28"
+        android:valueType="floatType" />
+    <objectAnimator
+        android:duration="300"
+        android:propertyName="translateX"
+        android:valueFrom="28"
+        android:valueTo="-28"
+        android:valueType="floatType" />
+    <objectAnimator
+        android:duration="200"
+        android:propertyName="translateX"
+        android:valueFrom="-28"
+        android:valueTo="0"
+        android:valueType="floatType" />
+</set>

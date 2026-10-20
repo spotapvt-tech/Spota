@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPOTA eye for the Android 12+ splash. 288dp canvas; art stays inside the 192dp safe circle. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="288dp"
+    android:height="288dp"
+    android:viewportWidth="288"
+    android:viewportHeight="288">
+    <group
+        android:name="lid"
+        android:pivotX="144"
+        android:pivotY="144">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M68,144 Q144,88 220,144 Q144,200 68,144 Z" />
+        <group android:name="clipper">
+            <clip-path android:pathData="M68,144 Q144,88 220,144 Q144,200 68,144 Z" />
+            <group android:name="iris">
+                <path android:pathData="M112,144 a32,32 0 1,0 64,0 a32,32 0 1,0 -64,0 Z">
+                    <aapt:attr name="android:fillColor">
+                        <gradient
+                            android:startX="112"
+                            android:startY="112"
+                            android:endX="176"
+                            android:endY="176"
+                            android:startColor="#5E8A6A"
+                            android:endColor="#2F5440" />
+                    </aapt:attr>
+                </path>
+                <path
+                    android:fillColor="#17342A"
+                    android:pathData="M129,144 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0 Z" />
+            </group>
+        </group>
+        <path
+            android:fillColor="#00000000"
+            android:pathData="M68,144 Q144,88 220,144 Q144,200 68,144 Z"
+            android:strokeColor="#17342A"
+            android:strokeLineJoin="round"
+            android:strokeWidth="9" />
+    </group>
+</vector>

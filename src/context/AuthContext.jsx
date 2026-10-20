@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import Wordmark from '../components/ui/Wordmark';
 
 const AuthContext = createContext(null);
+const SPLASH_MIN_MS = 2200;
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -20,6 +22,14 @@ export function AuthProvider({ children }) {
       return true;
     }
   });
+
+  // Hold the branded splash for a minimum time so the animated eye is seen,
+  // even for returning guests whose session resolves instantly.
+  const [splashHeld, setSplashHeld] = useState(true);
+  useEffect(() => {
+    const t = setTimeout(() => setSplashHeld(false), SPLASH_MIN_MS);
+    return () => clearTimeout(t);
+  }, []);
 
   // Helper to fetch custom profile from the profiles table
   const fetchUserProfile = async (authUser) => {
@@ -214,7 +224,7 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  if (loading) {
+  if (loading || splashHeld) {
     // Branded splash (also the first paint inside the Capacitor shell).
     return (
       <div
@@ -228,22 +238,14 @@ export function AuthProvider({ children }) {
           gap: '18px',
           height: '100dvh',
           width: '100%',
-          backgroundColor: '#0D1B16',
-          color: '#F5F5EF',
+          background: 'var(--grad-canvas)',
+          color: 'var(--text-strong)',
         }}
       >
-        <svg width="56" height="56" viewBox="0 0 24 24" aria-hidden="true">
-          <circle cx="12" cy="12" r="9" fill="none" stroke="#F5F5EF" strokeWidth="2.6" />
-          <circle cx="12" cy="12" r="3.4" fill="#3E6B4F" className="spota-splash-dot" />
-        </svg>
-        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#87928A' }}>
+        <Wordmark size={44} className="sp-wordmark--splash" />
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>
           Finding your bearings
         </span>
-        <style>{`
-          .spota-splash-dot { transform-origin: 12px 12px; animation: spota-splash 1.4s ease-in-out infinite; }
-          @keyframes spota-splash { 0%, 100% { transform: scale(0.75); opacity: .6; } 50% { transform: scale(1.15); opacity: 1; } }
-          @media (prefers-reduced-motion: reduce) { .spota-splash-dot { animation: none; } }
-        `}</style>
       </div>
     );
   }

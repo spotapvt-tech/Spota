@@ -3,7 +3,7 @@
    Vanilla CSS on the shared HSL tokens + glass-panel system.
    ============================================================ */
 .lb-container {
-  padding: 80px 20px 120px;
+  padding: calc(80px + var(--safe-top)) 20px 120px;
   overflow-y: auto;
 }
 

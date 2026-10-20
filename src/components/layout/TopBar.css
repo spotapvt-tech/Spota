@@ -9,9 +9,11 @@
   justify-content: space-between;
   align-items: center;
   z-index: var(--z-nav);
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: linear-gradient(180deg, #FFFFFF, #F1F9F3), #F6FBF7; /* opaque: page content never shows through */
+  /* own compositing layer so Android WebView never paints scrolled content over the bar */
+  isolation: isolate;
+  transform: translateZ(0);
+  will-change: transform;
   border-bottom: 1px solid var(--line-subtle);
 }
 

@@ -8,7 +8,7 @@
 }
 
 .chat-header {
-  margin-top: 60px; /* offset top-bar */
+  margin-top: calc(60px + var(--safe-top)); /* offset top-bar */
   margin-bottom: 16px;
   display: flex;
   flex-direction: column;

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_splash_eye_vector">
+    <target
+        android:name="iris"
+        android:animation="@animator/splash_eye_look" />
+    <target
+        android:name="lid"
+        android:animation="@animator/splash_eye_blink" />
+</animated-vector>

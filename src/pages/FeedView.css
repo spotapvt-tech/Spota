@@ -1,6 +1,6 @@
 .feed-container {
-  padding: 80px 20px;
-  padding-top: 100px; /* Account for top bar */
+  padding: calc(80px + var(--safe-top)) 20px 80px;
+  padding-top: calc(100px + var(--safe-top)); /* Account for top bar */
   height: 100%;
   overflow-y: auto;
 }

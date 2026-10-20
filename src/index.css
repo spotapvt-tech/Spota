@@ -656,6 +656,9 @@ img { max-width: 100%; }
   79% { transform: scaleY(0.06); }
 }
 
+/* Launch splash: compress the loop so look-around and blink both play in ~2 s */
+.sp-wordmark--splash .sp-eye__iris, .sp-wordmark--splash .sp-eye__lid { animation-duration: 2s; }
+
 /* Shared sign-in CTA used by guest gates (Trips, Creator analytics). The
    class predates the design system and was never defined anywhere. */
 .submit-auth-btn {

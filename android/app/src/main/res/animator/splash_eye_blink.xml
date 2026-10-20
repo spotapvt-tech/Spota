@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One blink at the end of the splash (700-1000 ms). -->
+<set xmlns:android="http://schemas.android.com/apk/res/android"
+    android:ordering="sequentially">
+    <objectAnimator
+        android:duration="150"
+        android:propertyName="scaleY"
+        android:startOffset="700"
+        android:valueFrom="1"
+        android:valueTo="0.08"
+        android:valueType="floatType" />
+    <objectAnimator
+        android:duration="150"
+        android:propertyName="scaleY"
+        android:valueFrom="0.08"
+        android:valueTo="1"
+        android:valueType="floatType" />
+</set>
