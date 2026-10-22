@@ -359,7 +359,7 @@ export default function MapView() {
               <X size={16} />
             </button>
           )}
-          <button type="button" className="explore-search__ai" onClick={() => setShowAiMatcher(true)} aria-label="Ask Spota AI for a match" title="Vibe match">
+          <button type="button" className="explore-search__ai" onClick={() => setShowAiMatcher(true)} aria-label="Vibe Match search" title="Vibe match">
             <Sparkles size={17} />
           </button>
 

@@ -57,10 +57,10 @@ The gem-dropping flow is a 6-step wizard (5 input steps + Review) followed by th
 
 1.  **Think First**: Analyze changes against the product specs in `docs/Spota_PRD_Enhancement.md` and check how they impact mobile (Capacitor) vs. web users.
 2.  **Implementation Plan**: For any major architectural changes or schemas, draft or update the implementation plan under `gem_drop_implementation_plan.md`.
-3.  **Strict Styling Constraints** (SPOTA 2.0 "Night Topo" system — see `docs/spota-2-redesign.md`):
+3.  **Strict Styling Constraints** (SPOTA 2.0 structure in `docs/spota-2-redesign.md`; since commit 8f272a9 the palette is the light forest-mint frosted-glass theme, with the Landing page kept dark via scoped `.theme-night`):
     *   Use vanilla CSS. Avoid importing third-party UI framework utilities unless explicitly approved.
-    *   Dark-first. Use semantic tokens from `src/index.css` (`--bg-*`, `--text-*`, `--line*`, `--accent*`, `--danger`, …); never hard-code hex colours in components. Legacy `--color-*` names are aliases and still work.
-    *   One accent only: signal chartreuse `--accent`. Text/icons on it use `--accent-ink` — never white.
+    *   Light-first (mint canvas, deep-green text). Use semantic tokens from `src/index.css` (`--bg-*`, `--text-*`, `--line*`, `--accent*`, `--danger`, …); never hard-code hex colours in components. Legacy `--color-*` names are aliases and still work.
+    *   One accent only: forest-mint `--accent` (`--grad-accent` for primary CTAs). Text/icons on it use `--accent-ink` — never pure white.
     *   Reuse primitives before writing new CSS: `.sp-btn(--primary|--secondary|--ghost|--danger|--sm|--block)`, `.sp-chip`, `.sp-icon-btn`, `.sp-eyebrow`, `.sp-mono`, `.sp-display`, `.sp-section-head`, `.sp-rail`, `.sp-sheet`, `.sp-state`, `.sp-skeleton`.
     *   Categories render via `components/ui/CategoryGlyph.jsx` (lucide icons), map pins via `components/ui/SpotMarker.jsx` — no emoji in new UI.
     *   Page roots must not animate `transform` (it traps fixed modals under the nav) — `.animate-fade-in` is opacity-only for this reason. Keyframe names must be unique per file.
@@ -78,6 +78,15 @@ Rules:
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Safe Trek alerts
+
+- Overdue treks are handled server-side by `supabase/functions/safe-trek-overdue` (cron via `supabase_safe_trek_push.sql`), which sends an FCM push to the **explorer's own** device(s). Emergency contacts are not app users and are **not** alerted — never write copy claiming they are.
+- Needs `android/app/google-services.json` and the `FCM_SERVICE_ACCOUNT` / `CRON_SECRET` function secrets.
+
+## Branding language
+
+- Vibe Match is keyword/synonym scoring, not AI. Do not label it, or template-based wizard suggestions, "AI" in UI or marketing.
 
 ## Liquid Glass & Motion (SPOTA 2.0)
 

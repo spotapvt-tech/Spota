@@ -68,7 +68,7 @@ export default function StepVibe({ description, setDescription, selectedTags, se
       {/* AI typewriter card */}
       <div className="vibe-ai-card">
         <div className="vibe-ai-header">
-          <span className="vibe-ai-badge">✨ AI Vibe Check</span>
+          <span className="vibe-ai-badge">✨ Vibe Check</span>
           {isTyping && <span className="vibe-ai-typing-dot" />}
         </div>
         <p className="vibe-ai-text">

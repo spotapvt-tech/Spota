@@ -155,7 +155,7 @@ export default function FeedView() {
             type="button" 
             className="ai-search-trigger"
             onClick={() => setShowAiMatcher(true)}
-            title="Ask Spota Vibe AI"
+            title="Vibe Match"
           >
             <Sparkles size={18} />
           </button>

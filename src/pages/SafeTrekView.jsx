@@ -21,6 +21,7 @@ import {
 
 import CheckInModal from '../components/CheckInModal';
 import { checkBadges } from '../lib/badgeEngine';
+import { registerPushToken } from '../lib/pushNotifications';
 
 // Spota Expeditions (docs/spota-expeditions-implementation-plan.md)
 import ExpeditionPicker from '../components/ExpeditionPicker';
@@ -398,7 +399,8 @@ export default function SafeTrekView() {
           .single();
 
         if (error) throw error;
-        
+        registerPushToken(user.id);
+
         activeData = {
           ...data,
           isTestMode: isTestMode
@@ -476,7 +478,8 @@ export default function SafeTrekView() {
           .from('safe_treks')
           .update({ 
             last_checked_in: nowStr,
-            status: 'active'
+            status: 'active',
+            overdue_push_sent_at: null
           })
           .eq('id', activeTrek.id);
 
@@ -504,7 +507,7 @@ export default function SafeTrekView() {
       setShowCompleteModal(true);
       return;
     }
-    if (!confirm('Are you sure you want to end this trek? Your emergency contacts will no longer be monitored.')) return;
+    if (!confirm('Are you sure you want to end this trek? Your check-in reminders will stop.')) return;
     await finishSafeTrek();
   };
 
@@ -728,7 +731,7 @@ export default function SafeTrekView() {
           {isOverdue && (
             <div className="danger-banner-trek animate-pulse">
               <ShieldAlert size={18} />
-              <span>Trek Overdue! Emergency contacts have been notified.</span>
+              <span>Trek overdue! Check in now, or contact your emergency contact yourself. Spota does not alert them automatically.</span>
             </div>
           )}
 

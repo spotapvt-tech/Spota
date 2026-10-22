@@ -8,7 +8,7 @@ export default function AIVibeMatcher({ onClose, onSelectSpot }) {
     {
       id: 1,
       sender: 'ai',
-      text: 'Hey Explorer! 🌌 I am your Spota Vibe AI. Tell me what kind of environment or mood you are looking for today in plain English. For example:\n\n• "A quiet, cozy cafe with wifi to get work done"\n• "A scenic mountain viewpoint to watch the sunset"\n• "An aesthetic and colorful neon vibe with great photos"',
+      text: 'Hey Explorer! 🌌 I am Vibe Match. Tell me what kind of environment or mood you are looking for today in plain English. For example:\n\n• "A quiet, cozy cafe with wifi to get work done"\n• "A scenic mountain viewpoint to watch the sunset"\n• "An aesthetic and colorful neon vibe with great photos"',
     }
   ]);
   const [input, setInput] = useState('');
@@ -54,7 +54,7 @@ export default function AIVibeMatcher({ onClose, onSelectSpot }) {
     setInput('');
     setIsTyping(true);
 
-    // Simulate AI response delay
+    // Brief pause so the reply feels conversational
     setTimeout(() => {
       processAiQuery(userQuery);
     }, 1500);
@@ -165,8 +165,8 @@ export default function AIVibeMatcher({ onClose, onSelectSpot }) {
             <Bot size={20} color="var(--color-bg-primary)" fill="var(--color-bg-primary)" />
           </div>
           <div>
-            <h3>Spota Vibe AI</h3>
-            <span>Conversational Search Assistant</span>
+            <h3>Vibe Match</h3>
+            <span>Describe a mood, find a spot</span>
           </div>
         </div>
         <button className="ai-close-btn" onClick={onClose}>

@@ -68,7 +68,7 @@ export default function StepName({
       {/* AI name suggestion */}
       {suggestion && !usedSuggestion && (
         <div className="name-suggestion-card">
-          <div className="name-suggestion-label">✨ AI Suggestion</div>
+          <div className="name-suggestion-label">✨ Suggestion</div>
           <div className="name-suggestion-text">{suggestion}</div>
           <div className="name-suggestion-actions">
             <button type="button" className="name-action-btn primary" onClick={applySuggestion}>
