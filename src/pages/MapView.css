@@ -26,6 +26,34 @@
 .explore-map__placeholder .sp-eyebrow { animation: pulse 1.6s ease-in-out infinite; }
 .explore.is-list .explore-map { visibility: hidden; }
 
+/* AR finder is full-screen: stop painting/compositing the map, its pins and
+   glass chrome underneath it. */
+.explore.is-ar > :not(.ar-view-container) { visibility: hidden; }
+
+/* While the map pans/zooms, chrome over it drops the backdrop blur (re-blurred
+   every frame otherwise) for the opaque fallback; restored on map idle. */
+.explore.is-moving .sp-glass {
+  background: var(--glass-solid);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Grid cluster badge (src/lib/mapClustering.js) */
+.explore-cluster {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--grad-accent, var(--accent));
+  color: var(--accent-ink);
+  border: 3px solid var(--bg-canvas);
+  box-shadow: 0 0 0 1px var(--accent-line), 0 3px 6px rgba(0, 0, 0, 0.3);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+}
+
 /* ---- Top controls ------------------------------------------------------ */
 .explore-top {
   position: absolute;

@@ -1,0 +1,4514 @@
+{
+  ".agents/agents/spota-adventure-trailblazer/agent.json": {
+    "mtime": 1792495252.6356418,
+    "seen": 1792496821.008022,
+    "ast_hash": "cd29853425b44023962b6f4a34d2f85c",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-aesthetic-hunter/agent.json": {
+    "mtime": 1792495252.6376545,
+    "seen": 1792496821.0080483,
+    "ast_hash": "cc812f3188766e00d7e4c1a42608a271",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-backpacker-social/agent.json": {
+    "mtime": 1792495252.6407282,
+    "seen": 1792496821.0080574,
+    "ast_hash": "57b0bf80c8e890a03066c94a2cacd792",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-ceo/agent.json": {
+    "mtime": 1792495252.642748,
+    "seen": 1792496821.0080652,
+    "ast_hash": "339a95a603cd2a65bfb5c79c56406013",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-eng-mgr/agent.json": {
+    "mtime": 1792495252.6466014,
+    "seen": 1792496821.0080726,
+    "ast_hash": "fa342ebfa1bbb152ef8a24ac388e3b9d",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-frontend/agent.json": {
+    "mtime": 1792495252.6486018,
+    "seen": 1792496821.0080795,
+    "ast_hash": "b2a50b5c6d1df56d03984b3b585099a4",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-local-insider/agent.json": {
+    "mtime": 1792495252.6511073,
+    "seen": 1792496821.0080864,
+    "ast_hash": "f289042aed3bce8fe66ca767c092923d",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-nomad-hustler/agent.json": {
+    "mtime": 1792495252.6531196,
+    "seen": 1792496821.0080936,
+    "ast_hash": "dadeaf1fd82f0052e4a6ad0b7d6f2136",
+    "semantic_hash": ""
+  },
+  ".agents/agents/spota-qa/agent.json": {
+    "mtime": 1792495252.655635,
+    "seen": 1792496821.0081005,
+    "ast_hash": "5d19ba02a69e192082dd9c5f0a5d603c",
+    "semantic_hash": ""
+  },
+  ".claude/launch.json": {
+    "mtime": 1792495254.574368,
+    "seen": 1792496821.0081074,
+    "ast_hash": "b55d33c0f069ea78b4d24b3f92b4e81c",
+    "semantic_hash": ""
+  },
+  ".claude/settings.json": {
+    "mtime": 1792495254.5753818,
+    "seen": 1792496821.0081146,
+    "ast_hash": "3ac995fbf93552a991ecab9b63f776aa",
+    "semantic_hash": "3ac995fbf93552a991ecab9b63f776aa"
+  },
+  "Claude outputs/supabase_p0_security_fixes.sql": {
+    "mtime": 1789397761.5061572,
+    "seen": 1790713742.654626,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "android/app/build.gradle": {
+    "mtime": 1792495254.7506616,
+    "seen": 1792496821.008122,
+    "ast_hash": "351bbde0977b8b186bdd0623be18223b",
+    "semantic_hash": ""
+  },
+  "android/app/capacitor.build.gradle": {
+    "mtime": 1792496690.0653396,
+    "seen": 1792496821.008128,
+    "ast_hash": "ae1edea73d1b1fa3e3cbb1c632024d22",
+    "semantic_hash": ""
+  },
+  "android/app/src/androidTest/java/com/getcapacitor/myapp/ExampleInstrumentedTest.java": {
+    "mtime": 1792495255.0970936,
+    "seen": 1792496821.0081346,
+    "ast_hash": "c777a4127ae7213f7da22c4105bdfeab",
+    "semantic_hash": ""
+  },
+  "android/app/src/main/java/com/spota/app/MainActivity.java": {
+    "mtime": 1792495255.1056101,
+    "seen": 1792496821.0081415,
+    "ast_hash": "19881d29ca51527b52594db298cf4ef2",
+    "semantic_hash": ""
+  },
+  "android/app/src/test/java/com/getcapacitor/myapp/ExampleUnitTest.java": {
+    "mtime": 1792495255.3024714,
+    "seen": 1792496821.0081487,
+    "ast_hash": "3f8a2768101e4de10f606ea4516fd339",
+    "semantic_hash": ""
+  },
+  "android/build.gradle": {
+    "mtime": 1792495255.3044827,
+    "seen": 1792496821.0081549,
+    "ast_hash": "ca5f0fa0ea4c3997363777d8a2b6467b",
+    "semantic_hash": ""
+  },
+  "android/capacitor.settings.gradle": {
+    "mtime": 1792496690.0508273,
+    "seen": 1792496821.0081618,
+    "ast_hash": "d3e8eaec00722e4ddcbdf30a9b6165e9",
+    "semantic_hash": ""
+  },
+  "android/gradlew": {
+    "mtime": 1792495255.314594,
+    "seen": 1792496821.0081682,
+    "ast_hash": "f2d3d383787f61a4a99710ee8d780434",
+    "semantic_hash": ""
+  },
+  "android/settings.gradle": {
+    "mtime": 1792495255.3156052,
+    "seen": 1792496821.0081751,
+    "ast_hash": "c609df618dbeec637255380c9f707ccf",
+    "semantic_hash": ""
+  },
+  "android/variables.gradle": {
+    "mtime": 1792495255.317626,
+    "seen": 1792496821.0081813,
+    "ast_hash": "32293aeff620cc10298866858c22ddc9",
+    "semantic_hash": ""
+  },
+  "capacitor.config.json": {
+    "mtime": 1792495255.3207514,
+    "seen": 1792496821.008188,
+    "ast_hash": "377cfbe1e4767deffa17397c497aec98",
+    "semantic_hash": ""
+  },
+  "e2e/landing.spec.js": {
+    "mtime": 1792495255.405458,
+    "seen": 1792496821.0081942,
+    "ast_hash": "57605b6835469eb0e9195f0b739e8779",
+    "semantic_hash": ""
+  },
+  "eslint.config.js": {
+    "mtime": 1792495255.4084902,
+    "seen": 1792496821.0082006,
+    "ast_hash": "8a6d135cbf51b541aa503986e07ae225",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1792495255.520393,
+    "seen": 1792496821.008207,
+    "ast_hash": "49e3f4181ca6dabd82f66c27c3db3994",
+    "semantic_hash": ""
+  },
+  "playwright.config.js": {
+    "mtime": 1792495255.520393,
+    "seen": 1792496821.0082133,
+    "ast_hash": "05319e7010c55dcdc3d5fe1a1af1552e",
+    "semantic_hash": ""
+  },
+  "scratch/check_buckets.js": {
+    "mtime": 1792495257.0227027,
+    "seen": 1792496821.0082195,
+    "ast_hash": "de7efde822861ca62e6e6c4c18db99db",
+    "semantic_hash": ""
+  },
+  "scratch/check_db.js": {
+    "mtime": 1792495257.0247157,
+    "seen": 1792496821.0082264,
+    "ast_hash": "cb113323c3be0a5cd6d208164e6b5516",
+    "semantic_hash": ""
+  },
+  "scratch/find_local_assets.js": {
+    "mtime": 1792495257.0257292,
+    "seen": 1792496821.0082326,
+    "ast_hash": "38979fd9c85026e680bf0181555c23de",
+    "semantic_hash": ""
+  },
+  "scratch/inspect_ids.js": {
+    "mtime": 1792495257.0257292,
+    "seen": 1792496821.0082388,
+    "ast_hash": "97037532267878193a327b885aa3440a",
+    "semantic_hash": ""
+  },
+  "scratch/inspect_urls.js": {
+    "mtime": 1792495257.033356,
+    "seen": 1792496821.0082448,
+    "ast_hash": "7b1e5d8723b8b58ac43b0be617f6f8e1",
+    "semantic_hash": ""
+  },
+  "scratch/list_buckets.js": {
+    "mtime": 1792495257.0353696,
+    "seen": 1792496821.008251,
+    "ast_hash": "9c987b8685e9fa27949ecb3d61ae627c",
+    "semantic_hash": ""
+  },
+  "scratch/migrate_seeded_assets.js": {
+    "mtime": 1792495257.0373802,
+    "seen": 1792496821.008257,
+    "ast_hash": "e7cceda54cc0a6110d894991a27c5ba6",
+    "semantic_hash": ""
+  },
+  "scratch/seed_delhi_spots.js": {
+    "mtime": 1792495257.038391,
+    "seen": 1792496821.0082633,
+    "ast_hash": "f3001690fa656ffacf84c78915604863",
+    "semantic_hash": ""
+  },
+  "scratch/seed_gurgaon_assets.js": {
+    "mtime": 1792495257.0404334,
+    "seen": 1792496821.0082695,
+    "ast_hash": "397926a26b7d0449e428648d0bc8f2f1",
+    "semantic_hash": ""
+  },
+  "scratch/seed_gurgaon_spots.js": {
+    "mtime": 1792495257.0573578,
+    "seen": 1792496821.0082762,
+    "ast_hash": "9ed0f734e56284c2b24766c1f60f4502",
+    "semantic_hash": ""
+  },
+  "scratch/test_auth.js": {
+    "mtime": 1792495257.0922995,
+    "seen": 1792496821.008283,
+    "ast_hash": "5f2c2a69684d175c2aaa1eafae41fb63",
+    "semantic_hash": ""
+  },
+  "scratch/upload_assets_to_storage.js": {
+    "mtime": 1792495257.098377,
+    "seen": 1792496821.0082898,
+    "ast_hash": "8693525c3d3f92c67545f8bee5bd56a9",
+    "semantic_hash": ""
+  },
+  "src/App.jsx": {
+    "mtime": 1792495257.1282854,
+    "seen": 1792496821.0082963,
+    "ast_hash": "072c504166d6fc9793aaae763d2aa547",
+    "semantic_hash": ""
+  },
+  "src/components/AIVibeMatcher.jsx": {
+    "mtime": 1792495257.132341,
+    "seen": 1792496821.0083027,
+    "ast_hash": "cab44a556ce712db39870da83b5b8152",
+    "semantic_hash": ""
+  },
+  "src/components/BadgeDisplay.jsx": {
+    "mtime": 1792495257.1404896,
+    "seen": 1792496821.0083165,
+    "ast_hash": "4baa0cb74db08e6410e1787787d6ef90",
+    "semantic_hash": ""
+  },
+  "src/components/CheckInModal.jsx": {
+    "mtime": 1792495257.2004108,
+    "seen": 1792496821.0083296,
+    "ast_hash": "249188cd6686deeacfc84f01d98e7888",
+    "semantic_hash": ""
+  },
+  "src/components/DailyVibeDropModal.jsx": {
+    "mtime": 1792496062.1612349,
+    "seen": 1792496821.0083358,
+    "ast_hash": "90ed9528754f08f02574f6096fbf56f0",
+    "semantic_hash": ""
+  },
+  "src/components/FrictionlessCheckIn.jsx": {
+    "mtime": 1792495257.224925,
+    "seen": 1792496821.0083835,
+    "ast_hash": "8559a93e93e914e51d9219f49753472e",
+    "semantic_hash": ""
+  },
+  "src/components/GemImpactCard.jsx": {
+    "mtime": 1792495257.2284698,
+    "seen": 1792496821.00839,
+    "ast_hash": "398256dbc30beffb57c0fdf599189fef",
+    "semantic_hash": ""
+  },
+  "src/components/GemWizardCTA.jsx": {
+    "mtime": 1792495257.2325392,
+    "seen": 1792496821.0083966,
+    "ast_hash": "d21964bafb31e36e7e829d3bbe443b17",
+    "semantic_hash": ""
+  },
+  "src/components/GemWizardProgress.jsx": {
+    "mtime": 1792495257.2806504,
+    "seen": 1792496821.008403,
+    "ast_hash": "1c46840bdfe458220a3e446234f2764d",
+    "semantic_hash": ""
+  },
+  "src/components/OfflineModal.jsx": {
+    "mtime": 1792495257.3482106,
+    "seen": 1792496821.0084088,
+    "ast_hash": "9f1d5630ca61a318636445e6352d56b6",
+    "semantic_hash": ""
+  },
+  "src/components/SpotDetailsModal.jsx": {
+    "mtime": 1792496062.2045302,
+    "seen": 1792496821.008459,
+    "ast_hash": "d9ecc8e1080c4d571d82e92f07e16bdf",
+    "semantic_hash": ""
+  },
+  "src/components/SpotVibeCard.jsx": {
+    "mtime": 1792495257.5057447,
+    "seen": 1792496821.0084696,
+    "ast_hash": "d5054b351244002a4eb1d98bd9d3acc0",
+    "semantic_hash": ""
+  },
+  "src/components/TripInviteModal.jsx": {
+    "mtime": 1792495257.542244,
+    "seen": 1792496821.0084903,
+    "ast_hash": "da64f9fdbee450f136ef6feb166ad7e5",
+    "semantic_hash": ""
+  },
+  "src/components/TripRecapModal.jsx": {
+    "mtime": 1792495257.5484602,
+    "seen": 1792496821.0085158,
+    "ast_hash": "7583893f110c6e0b9a027701ec3b5831",
+    "semantic_hash": ""
+  },
+  "src/components/chat/DirectMessageView.jsx": {
+    "mtime": 1792495257.5554578,
+    "seen": 1792496821.0085297,
+    "ast_hash": "a6bfb81d9d1d1d4bf86bb70fb0066843",
+    "semantic_hash": ""
+  },
+  "src/components/layout/BottomNav.jsx": {
+    "mtime": 1792495257.5902598,
+    "seen": 1792496821.008536,
+    "ast_hash": "888943b34f9cc22fcbd0d3e0985e091b",
+    "semantic_hash": ""
+  },
+  "src/components/layout/Layout.jsx": {
+    "mtime": 1780150573.2334168,
+    "seen": 1790713742.654701,
+    "ast_hash": "225d3cb067b85f507648323ad8059bc0",
+    "semantic_hash": "225d3cb067b85f507648323ad8059bc0"
+  },
+  "src/components/layout/NotificationPanel.jsx": {
+    "mtime": 1780261934.5056467,
+    "seen": 1790713742.6547027,
+    "ast_hash": "c105c519cc42a7a0f9747792ca3dc63b",
+    "semantic_hash": "c105c519cc42a7a0f9747792ca3dc63b"
+  },
+  "src/components/layout/TopBar.jsx": {
+    "mtime": 1792495257.6024435,
+    "seen": 1792496821.010064,
+    "ast_hash": "c7019ab0813cf1215d299aa1e405b104",
+    "semantic_hash": ""
+  },
+  "src/components/map/GemMarkerOverlay.jsx": {
+    "mtime": 1792495257.604454,
+    "seen": 1792496821.0100718,
+    "ast_hash": "4de5eea13eca735bf62c0ef72d64dc5e",
+    "semantic_hash": ""
+  },
+  "src/context/AuthContext.jsx": {
+    "mtime": 1792496062.2523813,
+    "seen": 1792496821.0101037,
+    "ast_hash": "a76d0b92b067a7268daa1e637fc27147",
+    "semantic_hash": ""
+  },
+  "src/context/NotificationContext.jsx": {
+    "mtime": 1792495257.6284437,
+    "seen": 1792496821.0101101,
+    "ast_hash": "b0c3c2e8d46f4dc0b24d0f2c6c9f76c4",
+    "semantic_hash": ""
+  },
+  "src/hooks/useOfflineSpots.js": {
+    "mtime": 1792495257.6556144,
+    "seen": 1792496821.0101225,
+    "ast_hash": "bdd16ba6c96147ccaf579e97e13be62f",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/badgeEngine.test.js": {
+    "mtime": 1792495257.6725311,
+    "seen": 1792496821.0101638,
+    "ast_hash": "5733a5546c735af48a8ff6031e59bd3e",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/gemService.test.js": {
+    "mtime": 1792495257.6785934,
+    "seen": 1792496821.0101864,
+    "ast_hash": "1108a0bdb4f98ee8bbbcd98a07959dc6",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/offlineCache.test.js": {
+    "mtime": 1792495257.6806571,
+    "seen": 1792496821.0101929,
+    "ast_hash": "300756a587463db85ff4b11c81bb12a9",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/safeTrekTimer.test.js": {
+    "mtime": 1792495257.6824164,
+    "seen": 1792496821.0101986,
+    "ast_hash": "72e16faa20f6319df667f44873743934",
+    "semantic_hash": ""
+  },
+  "src/lib/badgeEngine.js": {
+    "mtime": 1792496062.2886834,
+    "seen": 1792496821.0102377,
+    "ast_hash": "e8bb423155c1f7e8ef290810f2c845e2",
+    "semantic_hash": ""
+  },
+  "src/lib/categoryConfig.js": {
+    "mtime": 1792496062.3057992,
+    "seen": 1792496821.0102446,
+    "ast_hash": "00d650a5a7ee52d9ceaa4f812fb50f57",
+    "semantic_hash": ""
+  },
+  "src/lib/exifUtils.js": {
+    "mtime": 1792495257.713334,
+    "seen": 1792496821.0102623,
+    "ast_hash": "a64a140d58f09a476c338bb6f5083a54",
+    "semantic_hash": ""
+  },
+  "src/lib/gemService.js": {
+    "mtime": 1792495257.7224827,
+    "seen": 1792496821.0102937,
+    "ast_hash": "5f8902d75d953e2ac98dfa35da4155ec",
+    "semantic_hash": ""
+  },
+  "src/lib/gemWizardData.js": {
+    "mtime": 1792495257.7224827,
+    "seen": 1792496821.0103035,
+    "ast_hash": "7da961a2316c1b2bd5f2658978b45e30",
+    "semantic_hash": ""
+  },
+  "src/lib/geocoding.js": {
+    "mtime": 1792495257.72551,
+    "seen": 1792496821.010313,
+    "ast_hash": "410e54c6972c6bfd81ff99c4b2d68226",
+    "semantic_hash": ""
+  },
+  "src/lib/googleMaps.js": {
+    "mtime": 1792495257.728575,
+    "seen": 1792496821.010319,
+    "ast_hash": "87b86a15d6de5c0c5f515d127ef31569",
+    "semantic_hash": ""
+  },
+  "src/lib/hardwareBack.js": {
+    "mtime": 1792495257.7306755,
+    "seen": 1792496821.0103245,
+    "ast_hash": "e47afd43ece3597f642e35425e63f8ec",
+    "semantic_hash": ""
+  },
+  "src/lib/imageUtils.js": {
+    "mtime": 1792495257.7326899,
+    "seen": 1792496821.0103295,
+    "ast_hash": "774670c45a6cb5b5f3570ec0a38a09a6",
+    "semantic_hash": ""
+  },
+  "src/lib/monitoring.js": {
+    "mtime": 1792495257.7357185,
+    "seen": 1792496821.010346,
+    "ast_hash": "60d1e5394bc9c03290776dd7996c2b54",
+    "semantic_hash": ""
+  },
+  "src/lib/offlineCache.js": {
+    "mtime": 1792495257.7357185,
+    "seen": 1792496821.0103512,
+    "ast_hash": "afb1a58f67152b4b08d74ce7348b781d",
+    "semantic_hash": ""
+  },
+  "src/lib/recapGenerator.js": {
+    "mtime": 1792496062.330513,
+    "seen": 1792496821.0103629,
+    "ast_hash": "00c13f04ab17a41da4c2293ddc237883",
+    "semantic_hash": ""
+  },
+  "src/lib/safeTrekTimer.js": {
+    "mtime": 1792495257.7402995,
+    "seen": 1792496821.0103688,
+    "ast_hash": "b3b359b405cc76b770ddc50aaee5d5e0",
+    "semantic_hash": ""
+  },
+  "src/lib/supabaseClient.js": {
+    "mtime": 1792495257.7423162,
+    "seen": 1792496821.0103745,
+    "ast_hash": "20adff900004c22f0e5805f809bca508",
+    "semantic_hash": ""
+  },
+  "src/lib/utils.js": {
+    "mtime": 1792495257.7504222,
+    "seen": 1792496821.0103936,
+    "ast_hash": "437ff3346a259acf9a461ed470abbc55",
+    "semantic_hash": ""
+  },
+  "src/main.jsx": {
+    "mtime": 1792495257.7504222,
+    "seen": 1792496821.0103989,
+    "ast_hash": "1d9d1ecdad7d722fd0825e0e8caad897",
+    "semantic_hash": ""
+  },
+  "src/pages/ARView.jsx": {
+    "mtime": 1792495257.7544665,
+    "seen": 1792496821.010405,
+    "ast_hash": "d3ada572848f154c5858094860c2ede0",
+    "semantic_hash": ""
+  },
+  "src/pages/AddGemView.jsx": {
+    "mtime": 1792495257.782701,
+    "seen": 1792496821.0104115,
+    "ast_hash": "4e4efd5254d2c4e04cc8971d17aeca35",
+    "semantic_hash": ""
+  },
+  "src/pages/AdminView.jsx": {
+    "mtime": 1792495257.79031,
+    "seen": 1792496821.0104177,
+    "ast_hash": "ad1f84443d5ac9be141764b657a92446",
+    "semantic_hash": ""
+  },
+  "src/pages/AgencyDashboardView.jsx": {
+    "mtime": 1792496062.362757,
+    "seen": 1792496821.0104232,
+    "ast_hash": "d7d25887fe7b457a25ef025593484462",
+    "semantic_hash": ""
+  },
+  "src/pages/AuthView.jsx": {
+    "mtime": 1792495257.8025143,
+    "seen": 1792496821.010429,
+    "ast_hash": "6e9ea6899d98d71719aab5c059ed5691",
+    "semantic_hash": ""
+  },
+  "src/pages/ChatView.jsx": {
+    "mtime": 1792495257.8206687,
+    "seen": 1792496821.0104342,
+    "ast_hash": "16d08ee9cab4329d645833c3ca835c09",
+    "semantic_hash": ""
+  },
+  "src/pages/FeedView.jsx": {
+    "mtime": 1792496062.402431,
+    "seen": 1792496821.0104513,
+    "ast_hash": "c2d318e78599a2d94e15843323acb13a",
+    "semantic_hash": ""
+  },
+  "src/pages/LandingView.jsx": {
+    "mtime": 1792495257.8754299,
+    "seen": 1792496821.0104623,
+    "ast_hash": "312f20941fa99774abbce4acb2ff69b2",
+    "semantic_hash": ""
+  },
+  "src/pages/MapView.jsx": {
+    "mtime": 1792496062.438638,
+    "seen": 1792496821.0104735,
+    "ast_hash": "f46bff6bec7b47ed3e0740cc9880649e",
+    "semantic_hash": ""
+  },
+  "src/pages/MyGemsView.jsx": {
+    "mtime": 1792495257.8906753,
+    "seen": 1792496821.0104787,
+    "ast_hash": "fb4da998da9cbfe7ebb475060f56a214",
+    "semantic_hash": ""
+  },
+  "src/pages/MyTripsView.jsx": {
+    "mtime": 1792495257.8957176,
+    "seen": 1792496821.0104845,
+    "ast_hash": "15c9a8c85b58bb6b7dcdaa9aa8281c82",
+    "semantic_hash": ""
+  },
+  "src/pages/ProfileView.jsx": {
+    "mtime": 1792495257.9003184,
+    "seen": 1792496821.0104902,
+    "ast_hash": "293fbe25dfd3a716e896b3629c678110",
+    "semantic_hash": ""
+  },
+  "src/pages/SafeTrekView.jsx": {
+    "mtime": 1792495257.9023287,
+    "seen": 1792496821.0104961,
+    "ast_hash": "14d39107a8463c7519a60972214501ce",
+    "semantic_hash": ""
+  },
+  "src/pages/TripBoardView.jsx": {
+    "mtime": 1792496062.5325537,
+    "seen": 1792496821.0105019,
+    "ast_hash": "a957bac0d85d408da87f83e89f5a29c3",
+    "semantic_hash": ""
+  },
+  "src/pages/TripPackagePreviewView.jsx": {
+    "mtime": 1792495257.94001,
+    "seen": 1792496821.0105083,
+    "ast_hash": "b94c6449cdb0146dbf5922df4f307bf0",
+    "semantic_hash": ""
+  },
+  "src/pages/VibesFeedView.jsx": {
+    "mtime": 1792495257.9455626,
+    "seen": 1792496821.010515,
+    "ast_hash": "3a2df463a31245cda63aaf729200221b",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepCapture.jsx": {
+    "mtime": 1792495257.9526615,
+    "seen": 1792496821.010533,
+    "ast_hash": "622669d136a4dfd4ee2d33cbc1ed1c6a",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepCelebrate.jsx": {
+    "mtime": 1792496062.4870915,
+    "seen": 1792496821.010539,
+    "ast_hash": "2d30351e7cfafccc60fd671de9b859ad",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepName.jsx": {
+    "mtime": 1792495257.9582145,
+    "seen": 1792496821.0105448,
+    "ast_hash": "1985371a2bcfb287f35540c086516adb",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepPin.jsx": {
+    "mtime": 1792495257.9633021,
+    "seen": 1792496821.0105503,
+    "ast_hash": "b47e31e06f7cde7fab5a92fe29538c07",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepRate.jsx": {
+    "mtime": 1792495257.9653547,
+    "seen": 1792496821.010556,
+    "ast_hash": "290b3b01c7a535dba372eab279caa93f",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepVibe.jsx": {
+    "mtime": 1792495257.9905581,
+    "seen": 1792496821.0105674,
+    "ast_hash": "2324e5afb3264892e2ddc6d5fb5e24f6",
+    "semantic_hash": ""
+  },
+  "src/test/setupTests.js": {
+    "mtime": 1792495257.992676,
+    "seen": 1792496821.010573,
+    "ast_hash": "8b49f8ba921d904c5f984f50b480fdbd",
+    "semantic_hash": ""
+  },
+  "supabase_add_address_column.sql": {
+    "mtime": 1780439259.1853151,
+    "seen": 1790713742.6547842,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_agency_setup.sql": {
+    "mtime": 1781374477.4317088,
+    "seen": 1790713742.6547859,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_badges_and_streaks.sql": {
+    "mtime": 1782487748.8311772,
+    "seen": 1790713742.654787,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_chat_setup.sql": {
+    "mtime": 1781374480.948759,
+    "seen": 1790713742.6547883,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_comments_and_tags_setup.sql": {
+    "mtime": 1781374483.5257628,
+    "seen": 1790713742.65479,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_complete_schema.sql": {
+    "mtime": 1782514094.9531808,
+    "seen": 1790713742.6547914,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_marketplace_setup.sql": {
+    "mtime": 1781374491.1798332,
+    "seen": 1790713742.6547928,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_p0_security_fixes.sql": {
+    "mtime": 1789397551.235685,
+    "seen": 1790713742.654794,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_playlists_and_video_setup.sql": {
+    "mtime": 1781374493.747786,
+    "seen": 1790713742.6547954,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_profiles_setup.sql": {
+    "mtime": 1780263318.0302298,
+    "seen": 1790713742.6547968,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_rls_setup.sql": {
+    "mtime": 1780266750.7078767,
+    "seen": 1790713742.6547983,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_safe_trek_setup.sql": {
+    "mtime": 1781374496.186997,
+    "seen": 1790713742.6548,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_storage_setup.sql": {
+    "mtime": 1782514102.234676,
+    "seen": 1790713742.6548011,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_trip_enhancements.sql": {
+    "mtime": 1782515569.5410936,
+    "seen": 1790713742.6548028,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_trip_migration.sql": {
+    "mtime": 1781374504.0005724,
+    "seen": 1790713742.6548042,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_update_rls.sql": {
+    "mtime": 1782511790.8480463,
+    "seen": 1790713742.6548054,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "supabase_vibe_ratings_setup.sql": {
+    "mtime": 1781374498.4204302,
+    "seen": 1790713742.65481,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "vercel.json": {
+    "mtime": 1792495258.145659,
+    "seen": 1792496821.010585,
+    "ast_hash": "0db7ccb3aff36e97aa469126e9e17f99",
+    "semantic_hash": ""
+  },
+  "vite.config.js": {
+    "mtime": 1792495258.1486347,
+    "seen": 1792496821.010591,
+    "ast_hash": "8e90b7f05fafcf7ffff2c0310c84b672",
+    "semantic_hash": ""
+  },
+  "vite.sandbox.tmp.mjs": {
+    "mtime": 1792495258.1486347,
+    "seen": 1792496821.0105972,
+    "ast_hash": "fa32c2d3750806f27802dac78ca79cac",
+    "semantic_hash": ""
+  },
+  ".agents/AGENTS.md": {
+    "mtime": 1792495252.6184072,
+    "seen": 1792496821.0106025,
+    "ast_hash": "82a41bb642c3057dfd947a8941193860",
+    "semantic_hash": ""
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1792495252.655635,
+    "seen": 1792496821.0106084,
+    "ast_hash": "c232166e6492ba1ed955030b16979b05",
+    "semantic_hash": ""
+  },
+  ".claude/agents/academic-anthropologist.md": {
+    "mtime": 1792495252.6586955,
+    "seen": 1792496821.0106142,
+    "ast_hash": "c198064f8282ac9647972ac913f0e2b0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/academic-geographer.md": {
+    "mtime": 1792495252.6627755,
+    "seen": 1792496821.0106199,
+    "ast_hash": "532158a2e1c82fd28e83b9cd6bb5bedc",
+    "semantic_hash": ""
+  },
+  ".claude/agents/academic-historian.md": {
+    "mtime": 1792495252.6653037,
+    "seen": 1792496821.0106254,
+    "ast_hash": "a150be5ec8146d932a41c2899238c769",
+    "semantic_hash": ""
+  },
+  ".claude/agents/academic-narratologist.md": {
+    "mtime": 1792495252.6683314,
+    "seen": 1792496821.0106308,
+    "ast_hash": "2c68422d073e890cac6628afcf65399b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/academic-psychologist.md": {
+    "mtime": 1792495252.6884959,
+    "seen": 1792496821.0106366,
+    "ast_hash": "902f399ced0b1b5a219f515721500b30",
+    "semantic_hash": ""
+  },
+  ".claude/agents/academic-statistician.md": {
+    "mtime": 1792495252.6925552,
+    "seen": 1792496821.0106425,
+    "ast_hash": "20cd289906b59f0d7b3017e0a7d84492",
+    "semantic_hash": ""
+  },
+  ".claude/agents/accounts-payable-agent.md": {
+    "mtime": 1792495252.6975007,
+    "seen": 1792496821.010648,
+    "ast_hash": "246e94dcd17a938782945c6b5142a188",
+    "semantic_hash": ""
+  },
+  ".claude/agents/agentic-identity-trust.md": {
+    "mtime": 1792495252.6990168,
+    "seen": 1792496821.0106544,
+    "ast_hash": "db490e120b4ebd013791b4d089ff9938",
+    "semantic_hash": ""
+  },
+  ".claude/agents/agents-orchestrator.md": {
+    "mtime": 1792495252.7000308,
+    "seen": 1792496821.0106606,
+    "ast_hash": "c7dd04a8858c555599cfcb23bff04f11",
+    "semantic_hash": ""
+  },
+  ".claude/agents/automation-governance-architect.md": {
+    "mtime": 1792495252.7010455,
+    "seen": 1792496821.0106673,
+    "ast_hash": "23f3155cc19c128295c7a8f0155ae94f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/business-strategist.md": {
+    "mtime": 1792495252.7056756,
+    "seen": 1792496821.0106728,
+    "ast_hash": "161be7418e25a7830d913bf028920145",
+    "semantic_hash": ""
+  },
+  ".claude/agents/change-management-consultant.md": {
+    "mtime": 1792495252.708206,
+    "seen": 1792496821.0106788,
+    "ast_hash": "8ab80b66a10941f0a0819810fe4cfeac",
+    "semantic_hash": ""
+  },
+  ".claude/agents/chief-financial-officer.md": {
+    "mtime": 1792495252.7102473,
+    "seen": 1792496821.0106845,
+    "ast_hash": "d16b7ef8435d19cb90b87519f7538c5f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/corporate-training-designer.md": {
+    "mtime": 1792495252.713003,
+    "seen": 1792496821.0106902,
+    "ast_hash": "fb10418e75c8c63e0caa6bf20c2b15f7",
+    "semantic_hash": ""
+  },
+  ".claude/agents/customer-service.md": {
+    "mtime": 1792495252.715802,
+    "seen": 1792496821.0106962,
+    "ast_hash": "97d04fdd6287eff4603d39cbab606763",
+    "semantic_hash": ""
+  },
+  ".claude/agents/customer-success-manager.md": {
+    "mtime": 1792495252.715802,
+    "seen": 1792496821.010702,
+    "ast_hash": "6b1d234535480beab4634070d064cc47",
+    "semantic_hash": ""
+  },
+  ".claude/agents/data-consolidation-agent.md": {
+    "mtime": 1792495252.7183309,
+    "seen": 1792496821.0107088,
+    "ast_hash": "e6b41e430fadb00a29f3fe15ec2ac85d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/data-privacy-officer.md": {
+    "mtime": 1792495252.7203877,
+    "seen": 1792496821.0107145,
+    "ast_hash": "92ebfc893f44086d62acea2ec0433229",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-brand-guardian.md": {
+    "mtime": 1792495252.7203877,
+    "seen": 1792496821.0107205,
+    "ast_hash": "a20c92dd8a8c3ae315980b3184865726",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-image-prompt-engineer.md": {
+    "mtime": 1792495252.7224004,
+    "seen": 1792496821.0107265,
+    "ast_hash": "4acf286bea1948181816b81478cd1222",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-inclusive-visuals-specialist.md": {
+    "mtime": 1792495252.7244124,
+    "seen": 1792496821.0107334,
+    "ast_hash": "7e01a325a666e8e8f75937708d2e4328",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-persona-walkthrough.md": {
+    "mtime": 1792495252.7254286,
+    "seen": 1792496821.010739,
+    "ast_hash": "faf3927cf20184d2a8ad265d26dbe3b2",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-ui-designer.md": {
+    "mtime": 1792495252.7254286,
+    "seen": 1792496821.0107446,
+    "ast_hash": "d1bdff1458a462bd7c1e304e9fb0393d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-ui-finish-gate-reviewer.md": {
+    "mtime": 1792495252.7313552,
+    "seen": 1792496821.0107503,
+    "ast_hash": "fa94f272c2338732e974cc49236eb491",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-ux-architect.md": {
+    "mtime": 1792495252.7334359,
+    "seen": 1792496821.010758,
+    "ast_hash": "3d18d678a8d9e36d2bed82ba50bcec4b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-ux-researcher.md": {
+    "mtime": 1792495252.735447,
+    "seen": 1792496821.0107644,
+    "ast_hash": "8bb5572ea36550002811d4358b595b12",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-visual-storyteller.md": {
+    "mtime": 1792495252.735447,
+    "seen": 1792496821.0107696,
+    "ast_hash": "f65808f730f9c773a5d0777c0bcdc4c6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/design-whimsy-injector.md": {
+    "mtime": 1792495252.73858,
+    "seen": 1792496821.0107753,
+    "ast_hash": "99c99de21c590e8fc41a2d32aa37ab77",
+    "semantic_hash": ""
+  },
+  ".claude/agents/economy-designer.md": {
+    "mtime": 1792495252.7406847,
+    "seen": 1792496821.0107825,
+    "ast_hash": "bda931c6ab87ab686e62a3e0604fb940",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-ai-data-remediation-engineer.md": {
+    "mtime": 1792495252.7426975,
+    "seen": 1792496821.0107894,
+    "ast_hash": "0633d42cec4265a31096f20924e2e0c2",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-ai-engineer.md": {
+    "mtime": 1792495252.7426975,
+    "seen": 1792496821.0107968,
+    "ast_hash": "233ba9a9e6da1c4a81637e28c397bdaf",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-api-platform-engineer.md": {
+    "mtime": 1792495252.7486854,
+    "seen": 1792496821.0108073,
+    "ast_hash": "0e3b9fd02dc5b6d141660f5294596776",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-ats-validator-architect.md": {
+    "mtime": 1792495252.7507226,
+    "seen": 1792496821.0108151,
+    "ast_hash": "852116e2d1bbbbf39553973426b10ca7",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-autonomous-optimization-architect.md": {
+    "mtime": 1792495252.8422153,
+    "seen": 1792496821.0108223,
+    "ast_hash": "cf29fe64534a3e94a6ad9ded3940e1bb",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-backend-architect.md": {
+    "mtime": 1792495252.8422153,
+    "seen": 1792496821.0108306,
+    "ast_hash": "2b45911cfe9522ae3a5b0357500f6030",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-china-network-engineer.md": {
+    "mtime": 1792495252.8472614,
+    "seen": 1792496821.010838,
+    "ast_hash": "ab9dedcd16b502a4ade6a3cc4cea2b6c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-cms-developer.md": {
+    "mtime": 1792495252.848277,
+    "seen": 1792496821.0108452,
+    "ast_hash": "892d9fc5ecaa475e2e283e3ae1e5deba",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-code-reviewer.md": {
+    "mtime": 1792495252.850335,
+    "seen": 1792496821.010852,
+    "ast_hash": "ced4d019a240d0ae66adc799b271c967",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-codebase-onboarding-engineer.md": {
+    "mtime": 1792495252.8523526,
+    "seen": 1792496821.010859,
+    "ast_hash": "ea8adaab3c126661915f8a3a5e064ba0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-data-engineer.md": {
+    "mtime": 1792495252.8523526,
+    "seen": 1792496821.0108662,
+    "ast_hash": "48bbd705863d2849a51d54d49274ae0b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-data-visualization-engineer.md": {
+    "mtime": 1792495252.8553839,
+    "seen": 1792496821.010874,
+    "ast_hash": "10e6fafa2a9c06af84a7fb2ffee8c255",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-database-optimizer.md": {
+    "mtime": 1792495252.8584936,
+    "seen": 1792496821.0108805,
+    "ast_hash": "b4ae66f14df82e39fcb68fb145e0144e",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-database-reliability-engineer.md": {
+    "mtime": 1792495252.860547,
+    "seen": 1792496821.0108874,
+    "ast_hash": "dfc07c88fe3ea293fb6a9a41907355cd",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-desktop-app-engineer.md": {
+    "mtime": 1792495252.8625689,
+    "seen": 1792496821.010895,
+    "ast_hash": "3e6c37b2ec187e689f12a7e0deeae423",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-developer-tooling-engineer.md": {
+    "mtime": 1792495252.8645873,
+    "seen": 1792496821.0109022,
+    "ast_hash": "8bf6a74d65958dacc878bcc2458f21f7",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-devops-automator.md": {
+    "mtime": 1792495252.8656037,
+    "seen": 1792496821.010909,
+    "ast_hash": "8656d144c08588c2b52a9bede08d1b43",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-drupal-performance.md": {
+    "mtime": 1792495252.867621,
+    "seen": 1792496821.0109158,
+    "ast_hash": "fb7efd65e6982d967445fac19bb0309b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-drupal-shopping-cart.md": {
+    "mtime": 1792495252.8686364,
+    "seen": 1792496821.010922,
+    "ast_hash": "b0840461ffec28550f4e4bb9800015d9",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-email-intelligence-engineer.md": {
+    "mtime": 1792495252.8707137,
+    "seen": 1792496821.0109282,
+    "ast_hash": "7ea5efdeef5d6456c1e2340d77d9bd12",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-embedded-firmware-engineer.md": {
+    "mtime": 1792495252.8727372,
+    "seen": 1792496821.0109353,
+    "ast_hash": "84bf1a42b239785f28ce7a69cdc2b634",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-feishu-integration-developer.md": {
+    "mtime": 1792495252.8727372,
+    "seen": 1792496821.0109427,
+    "ast_hash": "9941d2f183ca0a2d303497796522c981",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-filament-optimization-specialist.md": {
+    "mtime": 1792495252.8752656,
+    "seen": 1792496821.0109506,
+    "ast_hash": "962d85dec4e6a9dd21064439686af934",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-finops-engineer.md": {
+    "mtime": 1792495252.8773098,
+    "seen": 1792496821.0109582,
+    "ast_hash": "52cbdeabc36706ba73273beceb34674c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-frontend-developer.md": {
+    "mtime": 1792495252.9656038,
+    "seen": 1792496821.0109653,
+    "ast_hash": "c1aaa01380dd007037f3275976df47fe",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-gaussdb-expert.md": {
+    "mtime": 1792495252.9686587,
+    "seen": 1792496821.0109725,
+    "ast_hash": "b6c2b26a1c576f077b9c462a24a9fc8c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-git-workflow-master.md": {
+    "mtime": 1792495252.9686587,
+    "seen": 1792496821.0109794,
+    "ast_hash": "2a3c43e9fe40c16f431674fa39dd701e",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-i18n-engineer.md": {
+    "mtime": 1792495252.9707274,
+    "seen": 1792496821.0109863,
+    "ast_hash": "7ac72e3c2745e714d2e6187ca74aa031",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-identity-access-engineer.md": {
+    "mtime": 1792495252.9727478,
+    "seen": 1792496821.0109942,
+    "ast_hash": "14c58d9f0b15cdc0af9b7e891e54e214",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-incident-response-commander.md": {
+    "mtime": 1792495252.9727478,
+    "seen": 1792496821.0110006,
+    "ast_hash": "ca65bb95745778de53d13589352a0f59",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-iot-fleet-engineer.md": {
+    "mtime": 1792495252.9752748,
+    "seen": 1792496821.0110068,
+    "ast_hash": "575be981e79aa9272ee67857b63bcfa1",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-it-service-manager.md": {
+    "mtime": 1792495252.9773526,
+    "seen": 1792496821.0110147,
+    "ast_hash": "9ea1f363997443aafc5106d90c139656",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-knowledge-graph-engineer.md": {
+    "mtime": 1792495252.9824538,
+    "seen": 1792496821.0110223,
+    "ast_hash": "9c106a84ed4fec4c09d425ae4084c038",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-llm-post-training-engineer.md": {
+    "mtime": 1792495252.9824538,
+    "seen": 1792496821.0110302,
+    "ast_hash": "699598064ffe85146fd6191e58fff8b3",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-minimal-change-engineer.md": {
+    "mtime": 1792495252.985482,
+    "seen": 1792496821.0110376,
+    "ast_hash": "b22d10aaad64196c7facd0ec3850ec15",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-mobile-app-builder.md": {
+    "mtime": 1792495252.985482,
+    "seen": 1792496821.0110445,
+    "ast_hash": "e1d2bb5d92b1fa3b9768e232ad583531",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-mobile-release-engineer.md": {
+    "mtime": 1792495252.9885273,
+    "seen": 1792496821.0110526,
+    "ast_hash": "33612d423aa82e62196b48bfbaac3120",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-multi-agent-systems-architect.md": {
+    "mtime": 1792495252.9885273,
+    "seen": 1792496821.0110598,
+    "ast_hash": "dd6006fe0b9c77ea78d0f244eab79330",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-network-engineer.md": {
+    "mtime": 1792495252.990584,
+    "seen": 1792496821.0110674,
+    "ast_hash": "60ae4d99694b342536f3f7bc454449f2",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-orgscript-engineer.md": {
+    "mtime": 1792495252.992599,
+    "seen": 1792496821.0110738,
+    "ast_hash": "c944d198076947b99cc7637c0b0768c4",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-payments-billing-engineer.md": {
+    "mtime": 1792495252.99765,
+    "seen": 1792496821.0110807,
+    "ast_hash": "93674b969c7b22f61d195b12358e4937",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-pdf-engine-architect.md": {
+    "mtime": 1792495252.998666,
+    "seen": 1792496821.0110881,
+    "ast_hash": "817ac76a5fa541ecc0c84ba116cfd0e4",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-platform-engineer.md": {
+    "mtime": 1792495253.0007112,
+    "seen": 1792496821.0110953,
+    "ast_hash": "39439f653be2f041c72a2964fc77ee79",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-privacy-engineer.md": {
+    "mtime": 1792495253.0027227,
+    "seen": 1792496821.0111034,
+    "ast_hash": "bd4baab736f87bba7c1e53ed33c07212",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-prompt-engineer.md": {
+    "mtime": 1792495253.0027227,
+    "seen": 1792496821.0111115,
+    "ast_hash": "ac2232aa4cc94f44159ab9b8c3047458",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-rag-pipeline-engineer.md": {
+    "mtime": 1792495253.0811646,
+    "seen": 1792496821.0111187,
+    "ast_hash": "d297b341c629dca40635923f713a47ba",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-rapid-prototyper.md": {
+    "mtime": 1792495253.08318,
+    "seen": 1792496821.0111263,
+    "ast_hash": "6340583fad52c2a106fe47ce4178cf55",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-realtime-collaboration-engineer.md": {
+    "mtime": 1792495253.0851946,
+    "seen": 1792496821.0111332,
+    "ast_hash": "79370259248705a2a1da424e76ec4665",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-rust-refactoring-specialist.md": {
+    "mtime": 1792495253.087209,
+    "seen": 1792496821.0111406,
+    "ast_hash": "cfe6883494370087a5523d61a16a1176",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-search-relevance-engineer.md": {
+    "mtime": 1792495253.087209,
+    "seen": 1792496821.011148,
+    "ast_hash": "3440725ff7ad790150384b7c1524501b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-section-508-specialist.md": {
+    "mtime": 1792495253.0907915,
+    "seen": 1792496821.0111547,
+    "ast_hash": "edbd1090d2c3dd41550675594d63f080",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-senior-developer.md": {
+    "mtime": 1792495253.0928023,
+    "seen": 1792496821.0111613,
+    "ast_hash": "ce69aeaf7609e04c425ef1338c93e506",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-software-architect.md": {
+    "mtime": 1792495253.0928023,
+    "seen": 1792496821.0111685,
+    "ast_hash": "76718cb24ac6487ae60e150d1d8d14bf",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-solidity-smart-contract-engineer.md": {
+    "mtime": 1792495253.0984063,
+    "seen": 1792496821.011176,
+    "ast_hash": "f181f40970e496b9311e3b10efd3b7a3",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-sre.md": {
+    "mtime": 1792495253.1010063,
+    "seen": 1792496821.0111835,
+    "ast_hash": "5caf4b9625fef45fa50a313aeb8ddcb7",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-technical-writer.md": {
+    "mtime": 1792495253.1010063,
+    "seen": 1792496821.011191,
+    "ast_hash": "5a65e6b067622e292cde246660d102a9",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-universal-document-compiler.md": {
+    "mtime": 1792495253.110626,
+    "seen": 1792496821.0111985,
+    "ast_hash": "b8228819b4e8fa240eab7c230edc829a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-uswds-developer.md": {
+    "mtime": 1792495253.1144009,
+    "seen": 1792496821.0112057,
+    "ast_hash": "586761cb6b7a747dabb0759223f2f3ed",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-video-streaming-engineer.md": {
+    "mtime": 1792495253.1154299,
+    "seen": 1792496821.011217,
+    "ast_hash": "cab52519809f7c3ad3d80e3019019745",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-voice-ai-integration-engineer.md": {
+    "mtime": 1792495253.1174824,
+    "seen": 1792496821.0112293,
+    "ast_hash": "296f6148ef783ac7ed215ee1e71aadd1",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-webassembly-engineer.md": {
+    "mtime": 1792495253.1184938,
+    "seen": 1792496821.0112362,
+    "ast_hash": "e74a3442cc9d6085031416d43a550034",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-wechat-mini-program-developer.md": {
+    "mtime": 1792495253.1205268,
+    "seen": 1792496821.0112436,
+    "ast_hash": "4842204ecd914c9bf8d1052f39a1dcc2",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-wordpress-performance.md": {
+    "mtime": 1792495253.1205268,
+    "seen": 1792496821.0112522,
+    "ast_hash": "06ee045d2320dc3e493b993136d4bd8f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/engineering-wordpress-shopping-cart.md": {
+    "mtime": 1792495253.123559,
+    "seen": 1792496821.0112593,
+    "ast_hash": "e34a13d80a4cc941853cbf9b126f1c3a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/esg-sustainability-officer.md": {
+    "mtime": 1792495253.125597,
+    "seen": 1792496821.0112672,
+    "ast_hash": "747b9e4df129b8ada20b7ef0e43b8faa",
+    "semantic_hash": ""
+  },
+  ".claude/agents/finance-bookkeeper-controller.md": {
+    "mtime": 1792495253.1505208,
+    "seen": 1792496821.011275,
+    "ast_hash": "fb758185f9f3c88580ebf75648ce01d6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/finance-financial-analyst.md": {
+    "mtime": 1792495253.1505208,
+    "seen": 1792496821.0112822,
+    "ast_hash": "fa5a698786780e7bc6f2f8b189015b10",
+    "semantic_hash": ""
+  },
+  ".claude/agents/finance-fpa-analyst.md": {
+    "mtime": 1792495253.1525383,
+    "seen": 1792496821.0112898,
+    "ast_hash": "985fdabea384b567bd7e836fa84356f3",
+    "semantic_hash": ""
+  },
+  ".claude/agents/finance-investment-researcher.md": {
+    "mtime": 1792495253.1545658,
+    "seen": 1792496821.0112972,
+    "ast_hash": "12dfd2bb0cad9cdf3b1f560bd4b07a43",
+    "semantic_hash": ""
+  },
+  ".claude/agents/finance-tax-strategist.md": {
+    "mtime": 1792495253.1576326,
+    "seen": 1792496821.0113044,
+    "ast_hash": "16cc71c88b18392b0b02fab08dd71821",
+    "semantic_hash": ""
+  },
+  ".claude/agents/game-audio-engineer.md": {
+    "mtime": 1792495253.1608484,
+    "seen": 1792496821.0113113,
+    "ast_hash": "a6d8534e9a0883d963e95f062190a76b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/game-designer.md": {
+    "mtime": 1792495253.1628606,
+    "seen": 1792496821.0113184,
+    "ast_hash": "ce753c6b15ab0d5eb854c659dddab35b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-3d-scene-developer.md": {
+    "mtime": 1792495253.165385,
+    "seen": 1792496821.0113268,
+    "ast_hash": "28d0f5f131aea7fb2bf470eec704757e",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-analyst.md": {
+    "mtime": 1792495253.165385,
+    "seen": 1792496821.011334,
+    "ast_hash": "f2abc659b149862633f52df27012a062",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-bim-specialist.md": {
+    "mtime": 1792495253.1684172,
+    "seen": 1792496821.011341,
+    "ast_hash": "65590fd4ebfea9e761a2bef233d2672f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-cartography-designer.md": {
+    "mtime": 1792495253.1724885,
+    "seen": 1792496821.0113478,
+    "ast_hash": "47ba22f83a48fd3cd135388a0c77c420",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-drone-reality-mapping.md": {
+    "mtime": 1792495253.175516,
+    "seen": 1792496821.0113552,
+    "ast_hash": "fc5bbd4c2c73ee0983728ef5a751e681",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-geoai-ml-engineer.md": {
+    "mtime": 1792495253.1806815,
+    "seen": 1792496821.011362,
+    "ast_hash": "c0e9eb350586e65a899c1c378413663c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-geoprocessing-specialist.md": {
+    "mtime": 1792495253.1827233,
+    "seen": 1792496821.0113695,
+    "ast_hash": "3cf412d2ca818920c8ba1abd72468134",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-qa-engineer.md": {
+    "mtime": 1792495253.1872663,
+    "seen": 1792496821.0113764,
+    "ast_hash": "c0854ef5bae3887d169d48d3e4282903",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-solution-engineer.md": {
+    "mtime": 1792495253.1882818,
+    "seen": 1792496821.0113833,
+    "ast_hash": "3df5add56864ceebcb4771a9444248e0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-spatial-data-engineer.md": {
+    "mtime": 1792495253.1923566,
+    "seen": 1792496821.01139,
+    "ast_hash": "49e41fff8a378d48eac037d653333902",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-spatial-data-scientist.md": {
+    "mtime": 1792495253.1987529,
+    "seen": 1792496821.011397,
+    "ast_hash": "7c197caf4410f0629fd6ee806c20e395",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-technical-consultant.md": {
+    "mtime": 1792495253.2019536,
+    "seen": 1792496821.0114036,
+    "ast_hash": "f1c1c10abc4975e95ec7ce74803600ce",
+    "semantic_hash": ""
+  },
+  ".claude/agents/gis-web-gis-developer.md": {
+    "mtime": 1792495253.2019536,
+    "seen": 1792496821.0114086,
+    "ast_hash": "54edac2f7602e3969bb63ab04de0674b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/government-digital-presales-consultant.md": {
+    "mtime": 1792495253.3079877,
+    "seen": 1792496821.0114143,
+    "ast_hash": "f84956de2ba67ab3f5defd99f3c8a88d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/grant-writer.md": {
+    "mtime": 1792495253.3203304,
+    "seen": 1792496821.01142,
+    "ast_hash": "e42ec4c0d1c54ca9aadfcc2adb43e75c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/healthcare-aging-parent-care-companion.md": {
+    "mtime": 1792495253.3223422,
+    "seen": 1792496821.0114253,
+    "ast_hash": "9f358d166b0f32640b26073db8b0686d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/healthcare-clinical-evidence-agent.md": {
+    "mtime": 1792495253.3243556,
+    "seen": 1792496821.0114322,
+    "ast_hash": "da50ad68236929da98b113cd4bae968c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/healthcare-customer-service.md": {
+    "mtime": 1792495253.3253663,
+    "seen": 1792496821.0114393,
+    "ast_hash": "59f42b7b2f0eaa1ecf3ba57d5c4698b8",
+    "semantic_hash": ""
+  },
+  ".claude/agents/healthcare-innovation-strategist.md": {
+    "mtime": 1792495253.3302715,
+    "seen": 1792496821.011446,
+    "ast_hash": "5cdb7b99273b2357b2112ce0e005e935",
+    "semantic_hash": ""
+  },
+  ".claude/agents/healthcare-marketing-compliance.md": {
+    "mtime": 1792495253.3332508,
+    "seen": 1792496821.011453,
+    "ast_hash": "93aa9e28317331e6789aff3dc69c61bd",
+    "semantic_hash": ""
+  },
+  ".claude/agents/healthcare-sovereign-health-systems-agent.md": {
+    "mtime": 1792495253.3340387,
+    "seen": 1792496821.0114625,
+    "ast_hash": "83da285995b4c102e47cf8e650a41d72",
+    "semantic_hash": ""
+  },
+  ".claude/agents/hospitality-guest-services.md": {
+    "mtime": 1792495253.3355508,
+    "seen": 1792496821.0114686,
+    "ast_hash": "f2874591caf70cb826361de4cda17136",
+    "semantic_hash": ""
+  },
+  ".claude/agents/hr-onboarding.md": {
+    "mtime": 1792495253.3385825,
+    "seen": 1792496821.0114744,
+    "ast_hash": "827b13db873bad0c05451ca3d67f84f3",
+    "semantic_hash": ""
+  },
+  ".claude/agents/identity-graph-operator.md": {
+    "mtime": 1792495253.3385825,
+    "seen": 1792496821.0114799,
+    "ast_hash": "c631a5d170903fd99af27e9851d63ff5",
+    "semantic_hash": ""
+  },
+  ".claude/agents/language-translator.md": {
+    "mtime": 1792495253.3406382,
+    "seen": 1792496821.0114863,
+    "ast_hash": "293843348bdf90e94a11cdaa1d77a6c6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/legal-billing-time-tracking.md": {
+    "mtime": 1792495253.3426516,
+    "seen": 1792496821.0114958,
+    "ast_hash": "2cb96c813d146b4f08e9df9e2e6750f6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/legal-client-intake.md": {
+    "mtime": 1792495253.3482366,
+    "seen": 1792496821.0115032,
+    "ast_hash": "b142b992a0259657572860f5c62716fc",
+    "semantic_hash": ""
+  },
+  ".claude/agents/legal-document-review.md": {
+    "mtime": 1792495253.3503084,
+    "seen": 1792496821.011509,
+    "ast_hash": "e92dfe3705e61eb18c5a6011da1001ec",
+    "semantic_hash": ""
+  },
+  ".claude/agents/level-designer.md": {
+    "mtime": 1792495253.352316,
+    "seen": 1792496821.0115156,
+    "ast_hash": "52ef86ab3cda862ea2d9b6a221495f2a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/loan-officer-assistant.md": {
+    "mtime": 1792495253.3553417,
+    "seen": 1792496821.0115223,
+    "ast_hash": "c5d697f4c5726dafab36cb5ed10fc2b6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/lsp-index-engineer.md": {
+    "mtime": 1792495253.3553417,
+    "seen": 1792496821.0115294,
+    "ast_hash": "f07228f97a678adc8791a2dcdb113ca1",
+    "semantic_hash": ""
+  },
+  ".claude/agents/ma-integration-manager.md": {
+    "mtime": 1792495253.3579237,
+    "seen": 1792496821.0115392,
+    "ast_hash": "3886e43c4419401dbffed22e337affa6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/macos-spatial-metal-engineer.md": {
+    "mtime": 1792495253.3605757,
+    "seen": 1792496821.0115466,
+    "ast_hash": "1e393286900345ff6db4729953e66d9c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-aeo-foundations.md": {
+    "mtime": 1792495253.4385085,
+    "seen": 1792496821.011553,
+    "ast_hash": "8e6cac7d3fbd30a1923d2ff4c865ed1a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-agentic-search-optimizer.md": {
+    "mtime": 1792495253.440595,
+    "seen": 1792496821.0115595,
+    "ast_hash": "4aadeb6490ba5f43876f3c44c0e82951",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-ai-citation-strategist.md": {
+    "mtime": 1792495253.4497995,
+    "seen": 1792496821.0115652,
+    "ast_hash": "c8432f5b6b9732ff0b2f9df00f4f0fa8",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-app-store-optimizer.md": {
+    "mtime": 1792495253.4538069,
+    "seen": 1792496821.0115757,
+    "ast_hash": "5f55bd39a986a1b5bd444458ba2305b4",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-baidu-seo-specialist.md": {
+    "mtime": 1792495253.5085473,
+    "seen": 1792496821.0115838,
+    "ast_hash": "5961d1cf8b427d93862b1ddfd7e6f073",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-bilibili-content-strategist.md": {
+    "mtime": 1792495253.522702,
+    "seen": 1792496821.0115907,
+    "ast_hash": "87be28867f3da8488f608c8aa94d3fa0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-book-co-author.md": {
+    "mtime": 1792495253.5247307,
+    "seen": 1792496821.011598,
+    "ast_hash": "1c780501ca65aa75a3c55b1b95ef6d98",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-carousel-growth-engine.md": {
+    "mtime": 1792495253.5252433,
+    "seen": 1792496821.0116055,
+    "ast_hash": "41df9fd10ea6ba8ab034a8d850a87f9d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-china-ecommerce-operator.md": {
+    "mtime": 1792495253.528658,
+    "seen": 1792496821.0116115,
+    "ast_hash": "d0bd76d10cf50c1c6f7f1a9ed85acc2f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-china-market-localization-strategist.md": {
+    "mtime": 1792495253.5337372,
+    "seen": 1792496821.0116174,
+    "ast_hash": "15fc9a287426585f84c56a6ccaf700df",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-content-creator.md": {
+    "mtime": 1792495253.5359976,
+    "seen": 1792496821.0116234,
+    "ast_hash": "d3fc97133639cf43bd4b5b38a0dbe354",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-cross-border-ecommerce.md": {
+    "mtime": 1792495253.538523,
+    "seen": 1792496821.0116305,
+    "ast_hash": "761bffa17adbe1d8ec6182211e1e61f4",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-douyin-strategist.md": {
+    "mtime": 1792495253.5405715,
+    "seen": 1792496821.0116374,
+    "ast_hash": "708d4f1093ab22f94141a95851678e24",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-email-strategist.md": {
+    "mtime": 1792495253.5405715,
+    "seen": 1792496821.0116441,
+    "ast_hash": "1caf2e3ffd7f7712005732d6921b60b0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-global-podcast-strategist.md": {
+    "mtime": 1792495253.5425868,
+    "seen": 1792496821.0116503,
+    "ast_hash": "455937564c415be8d5b3b48a30e5d3c7",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-growth-hacker.md": {
+    "mtime": 1792495253.5476325,
+    "seen": 1792496821.0116572,
+    "ast_hash": "b709244a430846997dd242c5d4326fff",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-instagram-curator.md": {
+    "mtime": 1792495253.5488238,
+    "seen": 1792496821.011664,
+    "ast_hash": "622abbbb431a040eb12bf7424871f1b6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-kuaishou-strategist.md": {
+    "mtime": 1792495253.5507946,
+    "seen": 1792496821.0116768,
+    "ast_hash": "36d353f263ee7396d6151d0815f61fd3",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-linkedin-content-creator.md": {
+    "mtime": 1792495253.5550978,
+    "seen": 1792496821.0116844,
+    "ast_hash": "1e327c0fd1251bb3b87660a0899451f4",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-livestream-commerce-coach.md": {
+    "mtime": 1792495253.8370664,
+    "seen": 1792496821.0116913,
+    "ast_hash": "bba4244377bc85491c7770fad5ea8dba",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-multi-platform-publisher.md": {
+    "mtime": 1792495253.841494,
+    "seen": 1792496821.0116987,
+    "ast_hash": "42d5339d0c36c89b71d6d407839e3875",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-podcast-strategist.md": {
+    "mtime": 1792495253.8431022,
+    "seen": 1792496821.0117059,
+    "ast_hash": "98ca0a2428f426ad95ce583fc0d20b79",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-pr-communications-manager.md": {
+    "mtime": 1792495253.848749,
+    "seen": 1792496821.0117118,
+    "ast_hash": "af617e4046348ef3ab35aa2829bc6e86",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-private-domain-operator.md": {
+    "mtime": 1792495253.851156,
+    "seen": 1792496821.011719,
+    "ast_hash": "1c1a78069ca1e3699332bac0d1600d2a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-reddit-community-builder.md": {
+    "mtime": 1792495253.8531659,
+    "seen": 1792496821.0117266,
+    "ast_hash": "763461a68b821271d34577991f88ce64",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-seo-specialist.md": {
+    "mtime": 1792495253.8572276,
+    "seen": 1792496821.0117338,
+    "ast_hash": "ae2099195042a850105885b6b2060124",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-short-video-editing-coach.md": {
+    "mtime": 1792495253.8587804,
+    "seen": 1792496821.0117388,
+    "ast_hash": "7464ec0f9b72ab7663d24da7db2e5a9f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-social-media-strategist.md": {
+    "mtime": 1792495253.8689775,
+    "seen": 1792496821.0117474,
+    "ast_hash": "86f84f93c1f7fcd1767f96f424f72869",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-tiktok-strategist.md": {
+    "mtime": 1792495253.873036,
+    "seen": 1792496821.011755,
+    "ast_hash": "5df3ebed314e8171a70318e1484daef2",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-twitter-engager.md": {
+    "mtime": 1792495253.873036,
+    "seen": 1792496821.0117614,
+    "ast_hash": "325cf9c6bf631c2ee5f1821a9253d4c8",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-video-optimization-specialist.md": {
+    "mtime": 1792495253.8755836,
+    "seen": 1792496821.0117683,
+    "ast_hash": "02bac631816f5867686892ac68ddba92",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-wechat-official-account.md": {
+    "mtime": 1792495253.8822598,
+    "seen": 1792496821.0117755,
+    "ast_hash": "b66cd372ef9c3ad2a6000b2170eb698c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-weibo-strategist.md": {
+    "mtime": 1792495253.8841228,
+    "seen": 1792496821.0117812,
+    "ast_hash": "512d96d2ea48132d7978bb12cbf4bf54",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-x-twitter-intelligence-analyst.md": {
+    "mtime": 1792495253.887753,
+    "seen": 1792496821.011788,
+    "ast_hash": "e8500d128145f64abd592c32b6aa84b9",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-xiaohongshu-specialist.md": {
+    "mtime": 1792495253.889816,
+    "seen": 1792496821.0118084,
+    "ast_hash": "0dcadf27f9c68825c778eb8b54910a05",
+    "semantic_hash": ""
+  },
+  ".claude/agents/marketing-zhihu-strategist.md": {
+    "mtime": 1792495253.8918538,
+    "seen": 1792496821.0118163,
+    "ast_hash": "57090b4f892d96cbc6bbcd859e6a655d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/medical-billing-coding-specialist.md": {
+    "mtime": 1792495253.8968356,
+    "seen": 1792496821.0118232,
+    "ast_hash": "1565b41417ff725681ed88820ad9e8c4",
+    "semantic_hash": ""
+  },
+  ".claude/agents/narrative-designer.md": {
+    "mtime": 1792495253.9032867,
+    "seen": 1792496821.011831,
+    "ast_hash": "189d9edf67a59f569f02242ffb387a7f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/operations-manager.md": {
+    "mtime": 1792495253.968673,
+    "seen": 1792496821.0118387,
+    "ast_hash": "60fd20dc84435ab63a5d0b765c037a74",
+    "semantic_hash": ""
+  },
+  ".claude/agents/organizational-psychologist.md": {
+    "mtime": 1792495253.972813,
+    "seen": 1792496821.0118463,
+    "ast_hash": "ad6da8d53d4faa4c940bbee7d0c4cee9",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-auditor.md": {
+    "mtime": 1792495253.97534,
+    "seen": 1792496821.0118518,
+    "ast_hash": "0ddee53cba1b2d875d626551c5e75a3e",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-creative-strategist.md": {
+    "mtime": 1792495253.9844737,
+    "seen": 1792496821.0118587,
+    "ast_hash": "3109186281408934073b9ef82becc8c0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-paid-social-strategist.md": {
+    "mtime": 1792495253.9854872,
+    "seen": 1792496821.0118656,
+    "ast_hash": "925127e63eaf308cff2588df65b92c53",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-ppc-strategist.md": {
+    "mtime": 1792495253.9885283,
+    "seen": 1792496821.0118725,
+    "ast_hash": "bcd1a6481369baa78697cf7a875601ce",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-programmatic-buyer.md": {
+    "mtime": 1792495253.9885283,
+    "seen": 1792496821.0118794,
+    "ast_hash": "1eb8f81cc25969f4865cafdfde31f8f0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-search-query-analyst.md": {
+    "mtime": 1792495253.9905865,
+    "seen": 1792496821.0118873,
+    "ast_hash": "9dcb64eae5b7e84e4326fc483b366c21",
+    "semantic_hash": ""
+  },
+  ".claude/agents/paid-media-tracking-specialist.md": {
+    "mtime": 1792495253.992601,
+    "seen": 1792496821.0118947,
+    "ast_hash": "cd7b52bddc6476e9cd6702383500d393",
+    "semantic_hash": ""
+  },
+  ".claude/agents/personal-growth-mentor.md": {
+    "mtime": 1792495253.992601,
+    "seen": 1792496821.011902,
+    "ast_hash": "a356001c087fc68bf25cc3db875f9c8a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/product-behavioral-nudge-engine.md": {
+    "mtime": 1792495253.9976504,
+    "seen": 1792496821.011911,
+    "ast_hash": "bb6fd75a9c4fd531647d85907d80d1ad",
+    "semantic_hash": ""
+  },
+  ".claude/agents/product-feedback-synthesizer.md": {
+    "mtime": 1792495253.9986682,
+    "seen": 1792496821.0119195,
+    "ast_hash": "10d77b95592dfe3c11c7d1746017f040",
+    "semantic_hash": ""
+  },
+  ".claude/agents/product-manager.md": {
+    "mtime": 1792495254.0007162,
+    "seen": 1792496821.0119264,
+    "ast_hash": "3f3f1e8a8228386960e96734604314d2",
+    "semantic_hash": ""
+  },
+  ".claude/agents/product-sprint-prioritizer.md": {
+    "mtime": 1792495254.0027297,
+    "seen": 1792496821.0119326,
+    "ast_hash": "3361665bb31edf1137ad14bde3a09f54",
+    "semantic_hash": ""
+  },
+  ".claude/agents/product-trend-researcher.md": {
+    "mtime": 1792495254.0027297,
+    "seen": 1792496821.0119627,
+    "ast_hash": "878bd15284b9ab6d482f5f4c1a80b6f8",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-management-experiment-tracker.md": {
+    "mtime": 1792495254.0052657,
+    "seen": 1792496821.0119722,
+    "ast_hash": "3502f69e0d4757c3ee773324aa6760fe",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-management-jira-workflow-steward.md": {
+    "mtime": 1792495254.0052657,
+    "seen": 1792496821.0119803,
+    "ast_hash": "b1d84e6904031ab9480590cdad0eb854",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-management-meeting-notes-specialist.md": {
+    "mtime": 1792495254.008307,
+    "seen": 1792496821.011987,
+    "ast_hash": "956c9bea7a1f0ad4be393ccdd092b08d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-management-project-shepherd.md": {
+    "mtime": 1792495254.008307,
+    "seen": 1792496821.0119922,
+    "ast_hash": "e0b635b1ea9edbbc212d518d741bbd85",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-management-studio-operations.md": {
+    "mtime": 1792495254.0136878,
+    "seen": 1792496821.0119982,
+    "ast_hash": "d0ccbb107a8b777272166b0889788ffb",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-management-studio-producer.md": {
+    "mtime": 1792495254.015206,
+    "seen": 1792496821.0120044,
+    "ast_hash": "2713d55ae0b3dff4b2a5a27d94190908",
+    "semantic_hash": ""
+  },
+  ".claude/agents/project-manager-senior.md": {
+    "mtime": 1792495254.1520345,
+    "seen": 1792496821.0120113,
+    "ast_hash": "a2428eb4153b732aeabb1144306bd466",
+    "semantic_hash": ""
+  },
+  ".claude/agents/real-estate-buyer-seller.md": {
+    "mtime": 1792495254.1555758,
+    "seen": 1792496821.0120184,
+    "ast_hash": "8c9a7d0022f7212e792064774180ca4f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/recruitment-specialist.md": {
+    "mtime": 1792495254.1586013,
+    "seen": 1792496821.0120256,
+    "ast_hash": "0b6bf56607ae22b9ab6fa977c08bad5c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/report-distribution-agent.md": {
+    "mtime": 1792495254.1633778,
+    "seen": 1792496821.0120325,
+    "ast_hash": "0e4cd93596aa5177744662bd08f5339a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/research-synthesist.md": {
+    "mtime": 1792495254.1708024,
+    "seen": 1792496821.0120394,
+    "ast_hash": "c7dd38e86fa26ef265c4abd1809fbe2c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/resume-tailor.md": {
+    "mtime": 1792495254.1708024,
+    "seen": 1792496821.012046,
+    "ast_hash": "52a294631d1d6fcf5715a82369aa6914",
+    "semantic_hash": ""
+  },
+  ".claude/agents/retail-customer-returns.md": {
+    "mtime": 1792495254.1748438,
+    "seen": 1792496821.0120518,
+    "ast_hash": "bb014fae7600c717549376b983fe104d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-account-strategist.md": {
+    "mtime": 1792495254.1753602,
+    "seen": 1792496821.0120575,
+    "ast_hash": "f83cb9847be4802a06b70beb6234e18f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-coach.md": {
+    "mtime": 1792495254.182553,
+    "seen": 1792496821.012063,
+    "ast_hash": "b1960c3982ad937037e7bae3f2402aa0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-data-extraction-agent.md": {
+    "mtime": 1792495254.184554,
+    "seen": 1792496821.0120692,
+    "ast_hash": "10dfcb94a46c0366073bbf0721716dca",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-deal-strategist.md": {
+    "mtime": 1792495254.1850932,
+    "seen": 1792496821.012075,
+    "ast_hash": "1c31e259dc720d0fe77ceb244e4369f9",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-discovery-coach.md": {
+    "mtime": 1792495254.188618,
+    "seen": 1792496821.012081,
+    "ast_hash": "8a71cdf7fe0309ebdd01c706299d42e0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-engineer.md": {
+    "mtime": 1792495254.1906736,
+    "seen": 1792496821.0120873,
+    "ast_hash": "e7ce2f57409c25f703d530f5b275775e",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-offer-lead-gen-strategist.md": {
+    "mtime": 1792495254.1926954,
+    "seen": 1792496821.0120945,
+    "ast_hash": "2d8793eb16cdefdaef4b9c2dce08ab8f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-outbound-strategist.md": {
+    "mtime": 1792495254.1988797,
+    "seen": 1792496821.0121017,
+    "ast_hash": "78dd8aea15e117fedfa12bde50b290cd",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-outreach.md": {
+    "mtime": 1792495254.2007306,
+    "seen": 1792496821.0121083,
+    "ast_hash": "503a139b7325e83789d475f1f78e57d1",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-pipeline-analyst.md": {
+    "mtime": 1792495254.202747,
+    "seen": 1792496821.0121155,
+    "ast_hash": "96713eeb057db79db4772d407ce87c8d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/sales-proposal-strategist.md": {
+    "mtime": 1792495254.2053087,
+    "seen": 1792496821.0121222,
+    "ast_hash": "e81813b9fe067ab833053add98d83275",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-ai-generated-code-auditor.md": {
+    "mtime": 1792495254.2083404,
+    "seen": 1792496821.0121312,
+    "ast_hash": "3aaf8d4643bf59249bd1fe3b5ddd8255",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-appsec-engineer.md": {
+    "mtime": 1792495254.2113214,
+    "seen": 1792496821.0121393,
+    "ast_hash": "8c1409b2470e05eb77ec0260b31b769d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-architect.md": {
+    "mtime": 1792495254.3066425,
+    "seen": 1792496821.0121472,
+    "ast_hash": "0f3dd2a729d459a322107b5f7cc15c7f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-blockchain-security-auditor.md": {
+    "mtime": 1792495254.3104298,
+    "seen": 1792496821.0121543,
+    "ast_hash": "d543ad8e874e35670446c8e716d4dd75",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-cloud-security-architect.md": {
+    "mtime": 1792495254.3164456,
+    "seen": 1792496821.0121615,
+    "ast_hash": "401490c81bc11579a20f59eab4d6cc66",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-compliance-auditor.md": {
+    "mtime": 1792495254.3175526,
+    "seen": 1792496821.0121686,
+    "ast_hash": "c1b57e785b4e2892f7e787c32c8fed91",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-incident-responder.md": {
+    "mtime": 1792495254.31974,
+    "seen": 1792496821.0121768,
+    "ast_hash": "f39b591118ab78bf1dca716f494f9181",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-penetration-tester.md": {
+    "mtime": 1792495254.3265595,
+    "seen": 1792496821.0121837,
+    "ast_hash": "3ad66067e6af45ec5005620f5d24b18a",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-secrets-credential-engineer.md": {
+    "mtime": 1792495254.3372939,
+    "seen": 1792496821.0121906,
+    "ast_hash": "a7035ec8c5dba00e551c1747a4a625fa",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-senior-secops.md": {
+    "mtime": 1792495254.3383567,
+    "seen": 1792496821.0121984,
+    "ast_hash": "f08fd853e08d6e8d0af1597cf15a63ce",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-threat-detection-engineer.md": {
+    "mtime": 1792495254.340394,
+    "seen": 1792496821.0122054,
+    "ast_hash": "288bb05517b5d7af19852133a09a5180",
+    "semantic_hash": ""
+  },
+  ".claude/agents/security-threat-intelligence-analyst.md": {
+    "mtime": 1792495254.3424084,
+    "seen": 1792496821.012214,
+    "ast_hash": "d452dafd584108734bec2b8d106babf8",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-chief-of-staff.md": {
+    "mtime": 1792495254.3486986,
+    "seen": 1792496821.0122228,
+    "ast_hash": "484364dc8daf4f9824ffc899dcd7d3da",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-civil-engineer.md": {
+    "mtime": 1792495254.3527749,
+    "seen": 1792496821.0122294,
+    "ast_hash": "5e48e4ac535cd90eec36f6ac13374858",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-codebase-archaeologist.md": {
+    "mtime": 1792495254.3547893,
+    "seen": 1792496821.0122375,
+    "ast_hash": "d9ad0e8ec6271a6324589fc1159a7b04",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-cultural-intelligence-strategist.md": {
+    "mtime": 1792495254.355301,
+    "seen": 1792496821.0122461,
+    "ast_hash": "550f22a2f7d35a7409d138dcc00f4092",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-developer-advocate.md": {
+    "mtime": 1792495254.3583312,
+    "seen": 1792496821.0122542,
+    "ast_hash": "6b7753def279995e04258399b1abfab3",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-document-generator.md": {
+    "mtime": 1792495254.3588786,
+    "seen": 1792496821.0122607,
+    "ast_hash": "84c3ceb6aa35662c0145976585e095fd",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-fedramp-rmf-compliance.md": {
+    "mtime": 1792495254.3653457,
+    "seen": 1792496821.0122688,
+    "ast_hash": "22c70e0f909ff014d24220019328132f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-focus-music-architect.md": {
+    "mtime": 1792495254.3724673,
+    "seen": 1792496821.0122764,
+    "ast_hash": "98ed977cb2e95a790bfa7680998fc06c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-french-consulting-market.md": {
+    "mtime": 1792495254.3724673,
+    "seen": 1792496821.0122838,
+    "ast_hash": "f3e4b94659216c57c8f0bcc82a3786ba",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-korean-business-navigator.md": {
+    "mtime": 1792495254.3923118,
+    "seen": 1792496821.01229,
+    "ast_hash": "f5915adc44508e4f3a40e26f757cd463",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-master-plan-architect.md": {
+    "mtime": 1792495254.4004362,
+    "seen": 1792496821.0122976,
+    "ast_hash": "acc19cd6588d447618c24ac2cda94037",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-mcp-builder.md": {
+    "mtime": 1792495254.4055114,
+    "seen": 1792496821.0123053,
+    "ast_hash": "670d7fed051dfd5e465cdc4090bc1e5f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-model-qa.md": {
+    "mtime": 1792495254.4085484,
+    "seen": 1792496821.0123134,
+    "ast_hash": "f5be2bc022bc236acb0be3ee4cdd0a64",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-pricing-analyst.md": {
+    "mtime": 1792495254.4156637,
+    "seen": 1792496821.0123205,
+    "ast_hash": "9bae6af87923d58d0b9d41876fd7d4e1",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-salesforce-architect.md": {
+    "mtime": 1792495254.4176877,
+    "seen": 1792496821.0123284,
+    "ast_hash": "2a17729dc86fc5d95b65eca9af36bed0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-strategy-duel-agent.md": {
+    "mtime": 1792495254.4227753,
+    "seen": 1792496821.0123365,
+    "ast_hash": "8636431b70cd9c5af6544865442831df",
+    "semantic_hash": ""
+  },
+  ".claude/agents/specialized-workflow-architect.md": {
+    "mtime": 1792495254.4329903,
+    "seen": 1792496821.012344,
+    "ast_hash": "df494c1eb42b41640554820af20323cc",
+    "semantic_hash": ""
+  },
+  ".claude/agents/study-abroad-advisor.md": {
+    "mtime": 1792495254.4384863,
+    "seen": 1792496821.0123518,
+    "ast_hash": "cb0da7688a0f63efd525dc2587501f7d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/supply-chain-strategist.md": {
+    "mtime": 1792495254.440546,
+    "seen": 1792496821.01236,
+    "ast_hash": "dcdc20e930f13f76b3be1f10c5b70049",
+    "semantic_hash": ""
+  },
+  ".claude/agents/support-analytics-reporter.md": {
+    "mtime": 1792495254.440546,
+    "seen": 1792496821.012368,
+    "ast_hash": "1ca0f22372491cdcb9bb64e730e1b803",
+    "semantic_hash": ""
+  },
+  ".claude/agents/support-executive-summary-generator.md": {
+    "mtime": 1792495254.442562,
+    "seen": 1792496821.0123754,
+    "ast_hash": "2ceebd8a17749716b6bdea55edb127c0",
+    "semantic_hash": ""
+  },
+  ".claude/agents/support-finance-tracker.md": {
+    "mtime": 1792495254.447609,
+    "seen": 1792496821.0123827,
+    "ast_hash": "0188d51b4dc651ad55f3b64caa696703",
+    "semantic_hash": ""
+  },
+  ".claude/agents/support-infrastructure-maintainer.md": {
+    "mtime": 1792495254.4507113,
+    "seen": 1792496821.0123901,
+    "ast_hash": "bce1eddf1d19386370a533ca9ed9a743",
+    "semantic_hash": ""
+  },
+  ".claude/agents/support-legal-compliance-checker.md": {
+    "mtime": 1792495254.4527242,
+    "seen": 1792496821.0123978,
+    "ast_hash": "bcdeb457c95d538f13482a977e56961c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/support-support-responder.md": {
+    "mtime": 1792495254.4547365,
+    "seen": 1792496821.0124047,
+    "ast_hash": "b74ef20f7def553c3b39ebb3d3c0ea47",
+    "semantic_hash": ""
+  },
+  ".claude/agents/technical-artist.md": {
+    "mtime": 1792495254.5387576,
+    "seen": 1792496821.012413,
+    "ast_hash": "c32bc1a18e3ee59caa1aef12ffa6eb25",
+    "semantic_hash": ""
+  },
+  ".claude/agents/terminal-integration-specialist.md": {
+    "mtime": 1792495254.5408516,
+    "seen": 1792496821.012421,
+    "ast_hash": "bd20d919f89affb9a940d38976026ec6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-accessibility-auditor.md": {
+    "mtime": 1792495254.5408516,
+    "seen": 1792496821.0124285,
+    "ast_hash": "2f0702c14759cc2ed12460eb4c0252ca",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-api-tester.md": {
+    "mtime": 1792495254.542876,
+    "seen": 1792496821.0124352,
+    "ast_hash": "fec65b7e3205b5faa4d1dfb744e777aa",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-evidence-collector.md": {
+    "mtime": 1792495254.5487988,
+    "seen": 1792496821.0124426,
+    "ast_hash": "1f394d3011c438fed7ec1ee78da2dced",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-performance-benchmarker.md": {
+    "mtime": 1792495254.5508606,
+    "seen": 1792496821.012451,
+    "ast_hash": "597824df404d8e808aefb2b84085b11d",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-reality-checker.md": {
+    "mtime": 1792495254.552881,
+    "seen": 1792496821.0124586,
+    "ast_hash": "218755211bd36aea1551e6a9d9d1d25b",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-test-automation-engineer.md": {
+    "mtime": 1792495254.5554147,
+    "seen": 1792496821.012465,
+    "ast_hash": "05a472fb429c89645f84f8f75ec90ce6",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-test-results-analyzer.md": {
+    "mtime": 1792495254.5554147,
+    "seen": 1792496821.0124729,
+    "ast_hash": "f3d5e6176d2128dd115b4d5b641ad83f",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-tool-evaluator.md": {
+    "mtime": 1792495254.55844,
+    "seen": 1792496821.012481,
+    "ast_hash": "57a1a6558833b8bddd4eb6c8fd618282",
+    "semantic_hash": ""
+  },
+  ".claude/agents/testing-workflow-optimizer.md": {
+    "mtime": 1792495254.5652394,
+    "seen": 1792496821.0124884,
+    "ast_hash": "dec20db2372ca32a259004e937ef37bd",
+    "semantic_hash": ""
+  },
+  ".claude/agents/visionos-spatial-engineer.md": {
+    "mtime": 1792495254.5672596,
+    "seen": 1792496821.0124958,
+    "ast_hash": "e39f87817e27ab158c0ecfa34a9cb46c",
+    "semantic_hash": ""
+  },
+  ".claude/agents/xr-cockpit-interaction-specialist.md": {
+    "mtime": 1792495254.5682766,
+    "seen": 1792496821.0125039,
+    "ast_hash": "dee0a510854129ad3291e73f37f45d65",
+    "semantic_hash": ""
+  },
+  ".claude/agents/xr-immersive-developer.md": {
+    "mtime": 1792495254.5703375,
+    "seen": 1792496821.0125115,
+    "ast_hash": "231e504bbf0021287bcdb808e5a03bcc",
+    "semantic_hash": ""
+  },
+  ".claude/agents/xr-interface-architect.md": {
+    "mtime": 1792495254.5723555,
+    "seen": 1792496821.0125175,
+    "ast_hash": "eb330fe52ae9f7bfc3e0851f8b507f77",
+    "semantic_hash": ""
+  },
+  ".claude/agents/zk-steward.md": {
+    "mtime": 1792495254.5723555,
+    "seen": 1792496821.0125253,
+    "ast_hash": "f22c3f2df9959ced1fb5e48d1bea8db2",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/SKILL.md": {
+    "mtime": 1792495254.586638,
+    "seen": 1792496821.0125334,
+    "ast_hash": "656623772f2220fd3e5c2ad36de17bb5",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/add-watch.md": {
+    "mtime": 1792495254.5886528,
+    "seen": 1792496821.0125415,
+    "ast_hash": "44912472585a5053ed051edd41d1b039",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/exports.md": {
+    "mtime": 1792495254.7005413,
+    "seen": 1792496821.0125492,
+    "ast_hash": "ecc0c36852fee4ba6280cdf2b9149039",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/extraction-spec.md": {
+    "mtime": 1792495254.7025516,
+    "seen": 1792496821.0125573,
+    "ast_hash": "024c6f2a3c146b03c72cc871dc56ed3c",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/github-and-merge.md": {
+    "mtime": 1792495254.7055764,
+    "seen": 1792496821.0125642,
+    "ast_hash": "aa0e7ef186392cad062e60483ca7dbbf",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/hooks.md": {
+    "mtime": 1792495254.7076,
+    "seen": 1792496821.0125718,
+    "ast_hash": "0045c2f12c69bff3a641a8908a1ac057",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/query.md": {
+    "mtime": 1792495254.708619,
+    "seen": 1792496821.01258,
+    "ast_hash": "852ef14334d60a75ae666ea103d4c4f0",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/transcribe.md": {
+    "mtime": 1792495254.7133021,
+    "seen": 1792496821.0125887,
+    "ast_hash": "5c6a9af05d12b5797b2fa8b9493dcc37",
+    "semantic_hash": ""
+  },
+  ".claude/skills/graphify/references/update.md": {
+    "mtime": 1792495254.7153215,
+    "seen": 1792496821.012598,
+    "ast_hash": "07bf4293ea21b4e00a9655dd4e7f0af5",
+    "semantic_hash": ""
+  },
+  ".claude/skills/taste-skill/SKILL.md": {
+    "mtime": 1792495254.7183442,
+    "seen": 1792496821.012606,
+    "ast_hash": "c784cc7659e71fd8ef77d272eccee88f",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1792495254.722417,
+    "seen": 1792496821.012615,
+    "ast_hash": "b798771b1c6856245f153ce38966c23d",
+    "semantic_hash": ""
+  },
+  "Claude outputs/ci.yml": {
+    "mtime": 1792495254.7254498,
+    "seen": 1792496821.0126226,
+    "ast_hash": "694792fbeeb58f1273a2d39d52e313aa",
+    "semantic_hash": ""
+  },
+  "Claude outputs/spota-ci.yml": {
+    "mtime": 1792495254.7287257,
+    "seen": 1792496821.01263,
+    "ast_hash": "732e755bbd884105aa1949c4bd140ffe",
+    "semantic_hash": ""
+  },
+  "Claude outputs/spota-production-readiness-plan.md": {
+    "mtime": 1792495254.7307775,
+    "seen": 1792496821.0126376,
+    "ast_hash": "66d31f783f18d676823ed4b76528d3bd",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1780150422.0872905,
+    "seen": 1790713742.655237,
+    "ast_hash": "a28dc4cb878325f3e9e5649f3e1469ac",
+    "semantic_hash": "a28dc4cb878325f3e9e5649f3e1469ac"
+  },
+  "docs/Spota_PRD_Enhancement.md": {
+    "mtime": 1792495255.39724,
+    "seen": 1792496821.0133758,
+    "ast_hash": "d76c2112e93e9dddb9fa7a10b2412155",
+    "semantic_hash": "d76c2112e93e9dddb9fa7a10b2412155"
+  },
+  "docs/product_features.md": {
+    "mtime": 1792495255.3982544,
+    "seen": 1792496821.0133839,
+    "ast_hash": "df385a0ad8394c46852d24260389ad0a",
+    "semantic_hash": ""
+  },
+  "exif_gps_feature_plan.md": {
+    "mtime": 1792495255.4105873,
+    "seen": 1792496821.0134141,
+    "ast_hash": "2c6a2508190a0c89595e210af8d32532",
+    "semantic_hash": ""
+  },
+  "gem_drop_implementation_plan.md": {
+    "mtime": 1792495255.4126022,
+    "seen": 1792496821.0134213,
+    "ast_hash": "ce56ba501fce13b9a21a5e884c9364d6",
+    "semantic_hash": ""
+  },
+  "graphify-out/converted/Spota_PRD_Enhancement_3bab2b6c.md": {
+    "mtime": 1792495255.4186687,
+    "seen": 1792496821.0134287,
+    "ast_hash": "19e8ce2bd909be6839ae4a4d1861c7f2",
+    "semantic_hash": "19e8ce2bd909be6839ae4a4d1861c7f2"
+  },
+  "index.html": {
+    "mtime": 1792495255.508644,
+    "seen": 1792496821.0134358,
+    "ast_hash": "5d5bed9ee9a9dd9ae70e3a95b1cabd08",
+    "semantic_hash": ""
+  },
+  "outputs/map_surface_philosophy.md": {
+    "mtime": 1792495255.5152657,
+    "seen": 1792496821.013445,
+    "ast_hash": "5428ec62d8666d91e97779a8175a16a0",
+    "semantic_hash": ""
+  },
+  "spota_production_readiness_implementation_plan.md": {
+    "mtime": 1792495257.1226928,
+    "seen": 1792496821.0134528,
+    "ast_hash": "fc37afe8a4fadf96fcb4518510463e1e",
+    "semantic_hash": ""
+  },
+  "android/app/src/main/res/drawable-land-hdpi/splash.png": {
+    "mtime": 1792495255.1076272,
+    "seen": 1792496821.0134614,
+    "ast_hash": "f7a80786dd355bd39014e58027aa6e19",
+    "semantic_hash": "f7a80786dd355bd39014e58027aa6e19"
+  },
+  "android/app/src/main/res/drawable-land-mdpi/splash.png": {
+    "mtime": 1792495255.1086419,
+    "seen": 1792496821.0134687,
+    "ast_hash": "acc976d4a36479233371a53021525c0c",
+    "semantic_hash": "acc976d4a36479233371a53021525c0c"
+  },
+  "android/app/src/main/res/drawable-land-xhdpi/splash.png": {
+    "mtime": 1792495255.1157107,
+    "seen": 1792496821.013477,
+    "ast_hash": "b8c72969bc1f78aab71a76035360d4af",
+    "semantic_hash": "b8c72969bc1f78aab71a76035360d4af"
+  },
+  "android/app/src/main/res/drawable-land-xxhdpi/splash.png": {
+    "mtime": 1792495255.118322,
+    "seen": 1792496821.0134845,
+    "ast_hash": "f87e988387b07d843905f38b084929fb",
+    "semantic_hash": "f87e988387b07d843905f38b084929fb"
+  },
+  "android/app/src/main/res/drawable-land-xxxhdpi/splash.png": {
+    "mtime": 1792495255.1203644,
+    "seen": 1792496821.0134928,
+    "ast_hash": "055a69553b16b0bf5f72094a2e459fc7",
+    "semantic_hash": "055a69553b16b0bf5f72094a2e459fc7"
+  },
+  "android/app/src/main/res/drawable-port-hdpi/splash.png": {
+    "mtime": 1792495255.1233952,
+    "seen": 1792496821.0134997,
+    "ast_hash": "5eb10d16c81338abe8bbc033d49638a8",
+    "semantic_hash": "5eb10d16c81338abe8bbc033d49638a8"
+  },
+  "android/app/src/main/res/drawable-port-mdpi/splash.png": {
+    "mtime": 1792495255.125431,
+    "seen": 1792496821.0135074,
+    "ast_hash": "d855a76a5070c8e6fcfd83a27549bdce",
+    "semantic_hash": "d855a76a5070c8e6fcfd83a27549bdce"
+  },
+  "android/app/src/main/res/drawable-port-xhdpi/splash.png": {
+    "mtime": 1792495255.1308508,
+    "seen": 1792496821.013514,
+    "ast_hash": "df100b2a36bdb98b711cca58941728de",
+    "semantic_hash": "df100b2a36bdb98b711cca58941728de"
+  },
+  "android/app/src/main/res/drawable-port-xxhdpi/splash.png": {
+    "mtime": 1792495255.1723673,
+    "seen": 1792496821.0135226,
+    "ast_hash": "2c1b668364e815256f67b71dcdfa4d6e",
+    "semantic_hash": "2c1b668364e815256f67b71dcdfa4d6e"
+  },
+  "android/app/src/main/res/drawable-port-xxxhdpi/splash.png": {
+    "mtime": 1792495255.1753936,
+    "seen": 1792496821.013532,
+    "ast_hash": "b5b1b22b59abe686c1df0d74a423d034",
+    "semantic_hash": "b5b1b22b59abe686c1df0d74a423d034"
+  },
+  "android/app/src/main/res/drawable/splash.png": {
+    "mtime": 1792495255.1825478,
+    "seen": 1792496821.0135412,
+    "ast_hash": "acc976d4a36479233371a53021525c0c",
+    "semantic_hash": "acc976d4a36479233371a53021525c0c"
+  },
+  "android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
+    "mtime": 1792495255.2084064,
+    "seen": 1792496821.0135477,
+    "ast_hash": "1956941339dd5fe36d5c66601c89a08d",
+    "semantic_hash": "1956941339dd5fe36d5c66601c89a08d"
+  },
+  "android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png": {
+    "mtime": 1792495255.214512,
+    "seen": 1792496821.0135546,
+    "ast_hash": "73b1e06d769fa08a9c3b8328cc15fd75",
+    "semantic_hash": "73b1e06d769fa08a9c3b8328cc15fd75"
+  },
+  "android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png": {
+    "mtime": 1792495255.2155328,
+    "seen": 1792496821.0135612,
+    "ast_hash": "f43e5674865a00186dd76183cf1f2f8e",
+    "semantic_hash": "f43e5674865a00186dd76183cf1f2f8e"
+  },
+  "android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
+    "mtime": 1792495255.2175586,
+    "seen": 1792496821.0135694,
+    "ast_hash": "7ed1b3739b83215d0c4a0b4a7f2dcab4",
+    "semantic_hash": "7ed1b3739b83215d0c4a0b4a7f2dcab4"
+  },
+  "android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png": {
+    "mtime": 1792495255.218576,
+    "seen": 1792496821.0135765,
+    "ast_hash": "5b77e8aec8b17eed320a97567c7cb8bf",
+    "semantic_hash": "5b77e8aec8b17eed320a97567c7cb8bf"
+  },
+  "android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png": {
+    "mtime": 1792495255.22064,
+    "seen": 1792496821.0135837,
+    "ast_hash": "a49547a32c7d9b529af607b033811d81",
+    "semantic_hash": "a49547a32c7d9b529af607b033811d81"
+  },
+  "android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
+    "mtime": 1792495255.2226584,
+    "seen": 1792496821.0135903,
+    "ast_hash": "5689511ee4e41a367d0342f37ac48bdf",
+    "semantic_hash": "5689511ee4e41a367d0342f37ac48bdf"
+  },
+  "android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png": {
+    "mtime": 1792495255.2226584,
+    "seen": 1792496821.0135977,
+    "ast_hash": "15cdded29b9877ac98c5931024c5da5d",
+    "semantic_hash": "15cdded29b9877ac98c5931024c5da5d"
+  },
+  "android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png": {
+    "mtime": 1792495255.2256835,
+    "seen": 1792496821.0136056,
+    "ast_hash": "c890fa4af62a63486d5dea62441ce7ab",
+    "semantic_hash": "c890fa4af62a63486d5dea62441ce7ab"
+  },
+  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
+    "mtime": 1792495255.230786,
+    "seen": 1792496821.0136135,
+    "ast_hash": "a3285eeaedda8201f04e7737b9df8421",
+    "semantic_hash": "a3285eeaedda8201f04e7737b9df8421"
+  },
+  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png": {
+    "mtime": 1792495255.2328072,
+    "seen": 1792496821.0165045,
+    "ast_hash": "4e9584ecc16d1fc75afb798688ce576f",
+    "semantic_hash": "4e9584ecc16d1fc75afb798688ce576f"
+  },
+  "android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png": {
+    "mtime": 1792495255.2705917,
+    "seen": 1792496821.0168092,
+    "ast_hash": "14cde87848553e24d7106f56eb8ceb6f",
+    "semantic_hash": "14cde87848553e24d7106f56eb8ceb6f"
+  },
+  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
+    "mtime": 1792495255.2743595,
+    "seen": 1792496821.0168216,
+    "ast_hash": "9e029293ab1ae8e3a6a7b7d0b7177e46",
+    "semantic_hash": "9e029293ab1ae8e3a6a7b7d0b7177e46"
+  },
+  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png": {
+    "mtime": 1792495255.2855496,
+    "seen": 1792496821.016829,
+    "ast_hash": "ed3696b7c52d9747411a475dbe3fa34a",
+    "semantic_hash": "ed3696b7c52d9747411a475dbe3fa34a"
+  },
+  "android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png": {
+    "mtime": 1792495255.2875705,
+    "seen": 1792496821.0168347,
+    "ast_hash": "85addb4159ecd3f76f02fbacd5ec86de",
+    "semantic_hash": "85addb4159ecd3f76f02fbacd5ec86de"
+  },
+  "public/favicon.svg": {
+    "mtime": 1792495255.5244198,
+    "seen": 1792496821.0168417,
+    "ast_hash": "455bfcc0ecfe36d50a66203bc382d646",
+    "semantic_hash": ""
+  },
+  "public/icons.svg": {
+    "mtime": 1780150422.3369062,
+    "seen": 1790713742.6552885,
+    "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
+    "semantic_hash": "3b4fcfcf393eca4d264dca4a4663bc37"
+  },
+  "public/seeded-assets/32nd_avenue_1781375317684.jpg": {
+    "mtime": 1792495255.555318,
+    "seen": 1792496821.017623,
+    "ast_hash": "3cdab9b92ec2460f714919ab9abc1310",
+    "semantic_hash": "3cdab9b92ec2460f714919ab9abc1310"
+  },
+  "public/seeded-assets/32nd_avenue_1781375372819.jpg": {
+    "mtime": 1792495255.5573578,
+    "seen": 1792496821.0176294,
+    "ast_hash": "3cdab9b92ec2460f714919ab9abc1310",
+    "semantic_hash": "3cdab9b92ec2460f714919ab9abc1310"
+  },
+  "public/seeded-assets/aravalli_park_1781375316290.jpg": {
+    "mtime": 1792495255.5614262,
+    "seen": 1792496821.017636,
+    "ast_hash": "4d0aa7c2f6f4f59dab2fc6e6ba86e25c",
+    "semantic_hash": "4d0aa7c2f6f4f59dab2fc6e6ba86e25c"
+  },
+  "public/seeded-assets/aravalli_park_1781375371062.jpg": {
+    "mtime": 1792495255.5654848,
+    "seen": 1792496821.0176427,
+    "ast_hash": "4d0aa7c2f6f4f59dab2fc6e6ba86e25c",
+    "semantic_hash": "4d0aa7c2f6f4f59dab2fc6e6ba86e25c"
+  },
+  "public/seeded-assets/camp_mustang_1781375316934.jpg": {
+    "mtime": 1792495255.5685163,
+    "seen": 1792496821.0176492,
+    "ast_hash": "e9cf95efe412a3aca8ffd15e2ed5c476",
+    "semantic_hash": "e9cf95efe412a3aca8ffd15e2ed5c476"
+  },
+  "public/seeded-assets/camp_mustang_1781375371712.jpg": {
+    "mtime": 1792495255.5705814,
+    "seen": 1792496821.0176554,
+    "ast_hash": "e9cf95efe412a3aca8ffd15e2ed5c476",
+    "semantic_hash": "e9cf95efe412a3aca8ffd15e2ed5c476"
+  },
+  "public/seeded-assets/cyber_hub_1781375317479.jpg": {
+    "mtime": 1792495255.5725951,
+    "seen": 1792496821.017661,
+    "ast_hash": "bccd81c9dc6bea1e4a80577a5c5fa5be",
+    "semantic_hash": "bccd81c9dc6bea1e4a80577a5c5fa5be"
+  },
+  "public/seeded-assets/cyber_hub_1781375372615.jpg": {
+    "mtime": 1792495255.6174803,
+    "seen": 1792496821.0176673,
+    "ast_hash": "bccd81c9dc6bea1e4a80577a5c5fa5be",
+    "semantic_hash": "bccd81c9dc6bea1e4a80577a5c5fa5be"
+  },
+  "public/seeded-assets/damdama_lake_1781375316532.jpg": {
+    "mtime": 1792495255.6220436,
+    "seen": 1792496821.017674,
+    "ast_hash": "0211f9e34b14ad36d54d7a12f679320c",
+    "semantic_hash": "0211f9e34b14ad36d54d7a12f679320c"
+  },
+  "public/seeded-assets/damdama_lake_1781375371300.jpg": {
+    "mtime": 1792495255.6246216,
+    "seen": 1792496821.01768,
+    "ast_hash": "0211f9e34b14ad36d54d7a12f679320c",
+    "semantic_hash": "0211f9e34b14ad36d54d7a12f679320c"
+  },
+  "public/seeded-assets/delhi_38_barracks_restaurant_and_bar_1781988871348.jpg": {
+    "mtime": 1792495255.6329165,
+    "seen": 1792496821.017687,
+    "ast_hash": "fa90cf60f6b9e9ca0d1ecde63447f8e9",
+    "semantic_hash": "fa90cf60f6b9e9ca0d1ecde63447f8e9"
+  },
+  "public/seeded-assets/delhi_aggarwal_restaurant_and_sweets_1781988902075.jpg": {
+    "mtime": 1792495255.6425261,
+    "seen": 1792496821.0176933,
+    "ast_hash": "f7190dec7dd167f0f90286b651489a2f",
+    "semantic_hash": "f7190dec7dd167f0f90286b651489a2f"
+  },
+  "public/seeded-assets/delhi_agrasen_ki_baoli_1781988920299.jpg": {
+    "mtime": 1792495255.6567242,
+    "seen": 1792496821.0177002,
+    "ast_hash": "c02b4a51a3d49dfcd9835fe4743f3697",
+    "semantic_hash": "c02b4a51a3d49dfcd9835fe4743f3697"
+  },
+  "public/seeded-assets/delhi_al_gulzar_restaurant_1781988904856.jpg": {
+    "mtime": 1792495255.663362,
+    "seen": 1792496821.017706,
+    "ast_hash": "b68ba56260d5bef0fc695e313c556a86",
+    "semantic_hash": "b68ba56260d5bef0fc695e313c556a86"
+  },
+  "public/seeded-assets/delhi_anardana_dlf_avenue_saket_1781988868965.jpg": {
+    "mtime": 1792495255.665379,
+    "seen": 1792496821.017712,
+    "ast_hash": "d80c918df3f728f13d386170d4692c0b",
+    "semantic_hash": "d80c918df3f728f13d386170d4692c0b"
+  },
+  "public/seeded-assets/delhi_apni_chaupaal_1781988880647.jpg": {
+    "mtime": 1792495255.668411,
+    "seen": 1792496821.0177178,
+    "ast_hash": "4ab0b28733751330f2cf508c74a8bea9",
+    "semantic_hash": "4ab0b28733751330f2cf508c74a8bea9"
+  },
+  "public/seeded-assets/delhi_asola_bhatti_wildlife_sanctuar_1781988919438.jpg": {
+    "mtime": 1792495255.6704602,
+    "seen": 1792496821.0177238,
+    "ast_hash": "94f95ac96c71133c7d07ea151b85d005",
+    "semantic_hash": "94f95ac96c71133c7d07ea151b85d005"
+  },
+  "public/seeded-assets/delhi_bagh_i_alam_ka_gumbad_1781988921800.jpg": {
+    "mtime": 1792495255.6714725,
+    "seen": 1792496821.01773,
+    "ast_hash": "2defb4e25af7750f93881794fece6465",
+    "semantic_hash": "2defb4e25af7750f93881794fece6465"
+  },
+  "public/seeded-assets/delhi_bah_lotus_temple_1781988886346.jpg": {
+    "mtime": 1792495255.673493,
+    "seen": 1792496821.017736,
+    "ast_hash": "4761eb890b5d668acc439e70e28d5c63",
+    "semantic_hash": "4761eb890b5d668acc439e70e28d5c63"
+  },
+  "public/seeded-assets/delhi_bara_gumbad_1781988887391.jpg": {
+    "mtime": 1792495255.678533,
+    "seen": 1792496821.0177417,
+    "ast_hash": "83e64f7b277b0b98968d329377d25e4f",
+    "semantic_hash": "83e64f7b277b0b98968d329377d25e4f"
+  },
+  "public/seeded-assets/delhi_barbeque_nation_south_extensio_1781988891601.jpg": {
+    "mtime": 1792495255.7404845,
+    "seen": 1792496821.0177474,
+    "ast_hash": "8c57cefc4e57e73f8e049159e8f7eab2",
+    "semantic_hash": "8c57cefc4e57e73f8e049159e8f7eab2"
+  },
+  "public/seeded-assets/delhi_barbeque_nation_southern_park__1781988905382.jpg": {
+    "mtime": 1792495255.742501,
+    "seen": 1792496821.017767,
+    "ast_hash": "31cf91d3b309f996091c423c2bbfaf5d",
+    "semantic_hash": "31cf91d3b309f996091c423c2bbfaf5d"
+  },
+  "public/seeded-assets/delhi_bauna_vedant_point_1781988860900.jpg": {
+    "mtime": 1792495255.7487226,
+    "seen": 1792496821.017777,
+    "ast_hash": "bacff868b345c510eb680cf8b5336ecc",
+    "semantic_hash": "bacff868b345c510eb680cf8b5336ecc"
+  },
+  "public/seeded-assets/delhi_bengali_sweet_centre_1781988932055.jpg": {
+    "mtime": 1792495255.7508197,
+    "seen": 1792496821.017783,
+    "ast_hash": "945ebebb80d9338d49663407fd8f77a7",
+    "semantic_hash": "945ebebb80d9338d49663407fd8f77a7"
+  },
+  "public/seeded-assets/delhi_bhaja_govindam_1781988903197.jpg": {
+    "mtime": 1792495255.7508197,
+    "seen": 1792496821.0177891,
+    "ast_hash": "8d2c6862c98ba89eedf540114f5df815",
+    "semantic_hash": "8d2c6862c98ba89eedf540114f5df815"
+  },
+  "public/seeded-assets/delhi_bharat_darshan_park_1781988908738.jpg": {
+    "mtime": 1792495255.7528405,
+    "seen": 1792496821.0177953,
+    "ast_hash": "08b48d595c6ecd5f4fd2b265b32a769b",
+    "semantic_hash": "08b48d595c6ecd5f4fd2b265b32a769b"
+  },
+  "public/seeded-assets/delhi_big_banana_restaurant_and_bar_1781988934315.jpg": {
+    "mtime": 1792495255.7574165,
+    "seen": 1792496821.0178037,
+    "ast_hash": "bc60467628d892b99bdef2fcab7f60bd",
+    "semantic_hash": "bc60467628d892b99bdef2fcab7f60bd"
+  },
+  "public/seeded-assets/delhi_bikanervala_chandni_chowk_delh_1781988933158.jpg": {
+    "mtime": 1792495255.758429,
+    "seen": 1792496821.0178192,
+    "ast_hash": "40a1b97211bb2693e7728bbc4a2b1b03",
+    "semantic_hash": "40a1b97211bb2693e7728bbc4a2b1b03"
+  },
+  "public/seeded-assets/delhi_bindra_park_1781988909256.jpg": {
+    "mtime": 1792495255.7615106,
+    "seen": 1792496821.0178297,
+    "ast_hash": "a447ebc9234a0c88b77dd0d50dfaebd0",
+    "semantic_hash": "a447ebc9234a0c88b77dd0d50dfaebd0"
+  },
+  "public/seeded-assets/delhi_bistro_55_roof_top_restaurant_1781988875669.jpg": {
+    "mtime": 1792495255.7676234,
+    "seen": 1792496821.017836,
+    "ast_hash": "09f28dbb905c7c6584f566cc82e89626",
+    "semantic_hash": "09f28dbb905c7c6584f566cc82e89626"
+  },
+  "public/seeded-assets/delhi_bloom_cafe_and_cakery_1781988973478.jpg": {
+    "mtime": 1792495255.7686343,
+    "seen": 1792496821.0178413,
+    "ast_hash": "a5dfbf2edcb018d41ef94c49e3992624",
+    "semantic_hash": "a5dfbf2edcb018d41ef94c49e3992624"
+  },
+  "public/seeded-assets/delhi_bloom_cafe_new_delhi_railway_s_1781988964034.jpg": {
+    "mtime": 1792495255.770687,
+    "seen": 1792496821.0178475,
+    "ast_hash": "f0ef9cfeba39b3a12315771c8418117b",
+    "semantic_hash": "f0ef9cfeba39b3a12315771c8418117b"
+  },
+  "public/seeded-assets/delhi_blooms_cafe_and_lounge_1781988958347.jpg": {
+    "mtime": 1792495255.7727075,
+    "seen": 1792496821.017854,
+    "ast_hash": "9bea92bcbd6a766878abe267a69f00b6",
+    "semantic_hash": "9bea92bcbd6a766878abe267a69f00b6"
+  },
+  "public/seeded-assets/delhi_blue_tokai_coffee_roasters_con_1781988969861.jpg": {
+    "mtime": 1792495255.775235,
+    "seen": 1792496821.0178607,
+    "ast_hash": "093cf92332a2fcfa37870e687a02b3cf",
+    "semantic_hash": "093cf92332a2fcfa37870e687a02b3cf"
+  },
+  "public/seeded-assets/delhi_blue_tokai_coffee_roasters_hau_1781988971176.jpg": {
+    "mtime": 1792495255.8204238,
+    "seen": 1792496821.0178666,
+    "ast_hash": "e733ac02e26708807f7ab07fd0f914f8",
+    "semantic_hash": "e733ac02e26708807f7ab07fd0f914f8"
+  },
+  "public/seeded-assets/delhi_blue_tokai_coffee_roasters_kha_1781988967444.jpg": {
+    "mtime": 1792495255.8224418,
+    "seen": 1792496821.0178728,
+    "ast_hash": "1256dd37a28b4895d9b46b2d7d30fdbf",
+    "semantic_hash": "1256dd37a28b4895d9b46b2d7d30fdbf"
+  },
+  "public/seeded-assets/delhi_bobachee_by_chef_yuvraj_kohli_1781988879457.jpg": {
+    "mtime": 1792495255.8244555,
+    "seen": 1792496821.01788,
+    "ast_hash": "76f0f06e057b9cb47fa1bfd4efa4d11b",
+    "semantic_hash": "76f0f06e057b9cb47fa1bfd4efa4d11b"
+  },
+  "public/seeded-assets/delhi_boombox_cafe_restro_amar_colon_1781988942941.jpg": {
+    "mtime": 1792495255.8305619,
+    "seen": 1792496821.0178866,
+    "ast_hash": "241bc61e70b094003124250edd88995f",
+    "semantic_hash": "241bc61e70b094003124250edd88995f"
+  },
+  "public/seeded-assets/delhi_brewtoast_1781988953290.jpg": {
+    "mtime": 1792495255.8345945,
+    "seen": 1792496821.0178936,
+    "ast_hash": "75a575787aec669f20a0595beda15eed",
+    "semantic_hash": "75a575787aec669f20a0595beda15eed"
+  },
+  "public/seeded-assets/delhi_brijwasi_bhoj_thaliwala_1781988925133.jpg": {
+    "mtime": 1792495255.8376248,
+    "seen": 1792496821.0179007,
+    "ast_hash": "1bb56964205762066f3fbaa48c3b548a",
+    "semantic_hash": "1bb56964205762066f3fbaa48c3b548a"
+  },
+  "public/seeded-assets/delhi_brownie_cafe_coffee_shop_delhi_1781988963354.jpg": {
+    "mtime": 1792495255.8386383,
+    "seen": 1792496821.0179079,
+    "ast_hash": "fe393900395d7b786a51e7f7024e700f",
+    "semantic_hash": "fe393900395d7b786a51e7f7024e700f"
+  },
+  "public/seeded-assets/delhi_caf_mescolatte_1781988948363.jpg": {
+    "mtime": 1792495255.840685,
+    "seen": 1792496821.0179148,
+    "ast_hash": "4f617604c8f6f1f215f825eb3a39368c",
+    "semantic_hash": "4f617604c8f6f1f215f825eb3a39368c"
+  },
+  "public/seeded-assets/delhi_cafe_99_coffee_burger_1781988957267.jpg": {
+    "mtime": 1792495255.8452382,
+    "seen": 1792496821.0179214,
+    "ast_hash": "4b428696ee801fa99939416e9fd5e67c",
+    "semantic_hash": "4b428696ee801fa99939416e9fd5e67c"
+  },
+  "public/seeded-assets/delhi_cafe_delhi_heights_1781988969332.jpg": {
+    "mtime": 1792495255.84827,
+    "seen": 1792496821.017928,
+    "ast_hash": "ab30c450b4974844b79da11206ec50da",
+    "semantic_hash": "ab30c450b4974844b79da11206ec50da"
+  },
+  "public/seeded-assets/delhi_cafe_diaries_1781988962120.jpg": {
+    "mtime": 1792495255.8544328,
+    "seen": 1792496821.0179346,
+    "ast_hash": "c200598a02c43189a418452d6aa042be",
+    "semantic_hash": "c200598a02c43189a418452d6aa042be"
+  },
+  "public/seeded-assets/delhi_cafe_festa_1781988954594.jpg": {
+    "mtime": 1792495255.8565073,
+    "seen": 1792496821.0179408,
+    "ast_hash": "6481dbd10b18b42b292e76cfa90cb34d",
+    "semantic_hash": "6481dbd10b18b42b292e76cfa90cb34d"
+  },
+  "public/seeded-assets/delhi_cafe_mrp_1781988982263.jpg": {
+    "mtime": 1792495255.858533,
+    "seen": 1792496821.0179474,
+    "ast_hash": "8daad93785745ac8e0141412188457f9",
+    "semantic_hash": "8daad93785745ac8e0141412188457f9"
+  },
+  "public/seeded-assets/delhi_cafe_pink_hauz_khas_village_1781988956598.jpg": {
+    "mtime": 1792495255.8616292,
+    "seen": 1792496821.017954,
+    "ast_hash": "1348a84d21421d87d006ab797a04d253",
+    "semantic_hash": "1348a84d21421d87d006ab797a04d253"
+  },
+  "public/seeded-assets/delhi_cafe_sandoz_n_block_cp_1781988955873.jpg": {
+    "mtime": 1792495255.8636742,
+    "seen": 1792496821.0179608,
+    "ast_hash": "ae8c95e5fa56e9f5da928dc4c6830048",
+    "semantic_hash": "ae8c95e5fa56e9f5da928dc4c6830048"
+  },
+  "public/seeded-assets/delhi_cafe_sandoz_sda_market_1781988971803.jpg": {
+    "mtime": 1792495255.8844633,
+    "seen": 1792496821.0179667,
+    "ast_hash": "bacb6caafac63280765d59d394306bc3",
+    "semantic_hash": "bacb6caafac63280765d59d394306bc3"
+  },
+  "public/seeded-assets/delhi_cafe_vagabond_1781988944279.jpg": {
+    "mtime": 1792495255.893016,
+    "seen": 1792496821.0179923,
+    "ast_hash": "2c53ae8dc73990dbd2aff83857efe702",
+    "semantic_hash": "2c53ae8dc73990dbd2aff83857efe702"
+  },
+  "public/seeded-assets/delhi_caff_tonino_1781988964550.jpg": {
+    "mtime": 1792495255.9004858,
+    "seen": 1792496821.0179992,
+    "ast_hash": "f3511354240228b8b1acfe7bf5508433",
+    "semantic_hash": "f3511354240228b8b1acfe7bf5508433"
+  },
+  "public/seeded-assets/delhi_chandni_chowk_market_1781988912229.jpg": {
+    "mtime": 1792495255.9165688,
+    "seen": 1792496821.0180056,
+    "ast_hash": "1a6631889652220967ec164babb1154a",
+    "semantic_hash": "1a6631889652220967ec164babb1154a"
+  },
+  "public/seeded-assets/delhi_chandni_chowk_view_point_1781988876820.jpg": {
+    "mtime": 1792495255.920763,
+    "seen": 1792496821.0180118,
+    "ast_hash": "3837cec82ab4bfeb1cc519a9466bfdf3",
+    "semantic_hash": "3837cec82ab4bfeb1cc519a9466bfdf3"
+  },
+  "public/seeded-assets/delhi_charlie_cafe_1781988945446.jpg": {
+    "mtime": 1792495255.922779,
+    "seen": 1792496821.0180185,
+    "ast_hash": "2f50f8283f9dec89de4a6c6039dfa4c1",
+    "semantic_hash": "2f50f8283f9dec89de4a6c6039dfa4c1"
+  },
+  "public/seeded-assets/delhi_chelvies_coffee_cp_m_block_1781988955314.jpg": {
+    "mtime": 1792495255.9253066,
+    "seen": 1792496821.0180252,
+    "ast_hash": "64898da477453f44ffe156320b986151",
+    "semantic_hash": "64898da477453f44ffe156320b986151"
+  },
+  "public/seeded-assets/delhi_chor_bizarre_1781988903766.jpg": {
+    "mtime": 1792495255.932496,
+    "seen": 1792496821.0180326,
+    "ast_hash": "aa953e0d429b943874c66a1d03cea66f",
+    "semantic_hash": "aa953e0d429b943874c66a1d03cea66f"
+  },
+  "public/seeded-assets/delhi_cirrus_9_1781988875103.jpg": {
+    "mtime": 1792495255.9356391,
+    "seen": 1792496821.0180395,
+    "ast_hash": "56ad3249375b75b8114ca7f59af21362",
+    "semantic_hash": "56ad3249375b75b8114ca7f59af21362"
+  },
+  "public/seeded-assets/delhi_classy_cafe_bar_restaurant_1781988878831.jpg": {
+    "mtime": 1792495255.9386704,
+    "seen": 1792496821.0180464,
+    "ast_hash": "2b12c20388b44b982b45c9cf4768efc1",
+    "semantic_hash": "2b12c20388b44b982b45c9cf4768efc1"
+  },
+  "public/seeded-assets/delhi_cloud_star_cafe_1781988949832.jpg": {
+    "mtime": 1792495255.9407284,
+    "seen": 1792496821.0180566,
+    "ast_hash": "29f46f9a452a1627f3c64df999196491",
+    "semantic_hash": "29f46f9a452a1627f3c64df999196491"
+  },
+  "public/seeded-assets/delhi_coast_caf__1781988965052.jpg": {
+    "mtime": 1792495255.946437,
+    "seen": 1792496821.0180647,
+    "ast_hash": "662c2aae348df4df400d057015d46a1b",
+    "semantic_hash": "662c2aae348df4df400d057015d46a1b"
+  },
+  "public/seeded-assets/delhi_colocal_chocolates_khan_market_1781988974517.jpg": {
+    "mtime": 1792495255.9507656,
+    "seen": 1792496821.0180714,
+    "ast_hash": "35bdda5b89fef504c5dea2b5e63d1433",
+    "semantic_hash": "35bdda5b89fef504c5dea2b5e63d1433"
+  },
+  "public/seeded-assets/delhi_common_time_khan_market_1781988957801.jpg": {
+    "mtime": 1792495255.9527903,
+    "seen": 1792496821.0180771,
+    "ast_hash": "cec74d627828c2d5e2e97ff604f7ee4b",
+    "semantic_hash": "cec74d627828c2d5e2e97ff604f7ee4b"
+  },
+  "public/seeded-assets/delhi_connaught_place_social_1781988863347.jpg": {
+    "mtime": 1792495255.9682336,
+    "seen": 1792496821.0180829,
+    "ast_hash": "b8b286c46f362058e4eb2be10e36623b",
+    "semantic_hash": "b8b286c46f362058e4eb2be10e36623b"
+  },
+  "public/seeded-assets/delhi_costa_coffee_1781988947721.jpg": {
+    "mtime": 1792495255.974316,
+    "seen": 1792496821.0180879,
+    "ast_hash": "6db9ac0a979cdf9a414f3b773b85da7b",
+    "semantic_hash": "6db9ac0a979cdf9a414f3b773b85da7b"
+  },
+  "public/seeded-assets/delhi_dabluio_1781988939158.jpg": {
+    "mtime": 1792495255.9753282,
+    "seen": 1792496821.0180943,
+    "ast_hash": "b3cb12282641eac20edd1fe7398e246c",
+    "semantic_hash": "b3cb12282641eac20edd1fe7398e246c"
+  },
+  "public/seeded-assets/delhi_daitchi_1781988930919.jpg": {
+    "mtime": 1792495255.9823792,
+    "seen": 1792496821.0181015,
+    "ast_hash": "75d8791f8e08171818a3dfcb670cb313",
+    "semantic_hash": "75d8791f8e08171818a3dfcb670cb313"
+  },
+  "public/seeded-assets/delhi_darya_khan_s_tomb_1781988911158.jpg": {
+    "mtime": 1792495255.985407,
+    "seen": 1792496821.0181074,
+    "ast_hash": "8a3f130d2937a447cd63f5153adfa2ba",
+    "semantic_hash": "8a3f130d2937a447cd63f5153adfa2ba"
+  },
+  "public/seeded-assets/delhi_dasaprakash_connaught_place_1781988871789.jpg": {
+    "mtime": 1792495255.9884465,
+    "seen": 1792496821.0181131,
+    "ast_hash": "e038bb3a235bb2dd46d73b769c447bad",
+    "semantic_hash": "e038bb3a235bb2dd46d73b769c447bad"
+  },
+  "public/seeded-assets/delhi_dbf_new_delhi_walk_1781988921273.jpg": {
+    "mtime": 1792495255.9884465,
+    "seen": 1792496821.0181184,
+    "ast_hash": "7ed41eac13c398ef3564a08f53f8163f",
+    "semantic_hash": "7ed41eac13c398ef3564a08f53f8163f"
+  },
+  "public/seeded-assets/delhi_dhaba_estd_1986_delhi_saket_1781988934984.jpg": {
+    "mtime": 1792495255.990492,
+    "seen": 1792496821.018124,
+    "ast_hash": "ed04d616c613ae476dda625c86a1d567",
+    "semantic_hash": "ed04d616c613ae476dda625c86a1d567"
+  },
+  "public/seeded-assets/delhi_dilli_haat_ina_1781988895122.jpg": {
+    "mtime": 1792495255.99719,
+    "seen": 1792496821.0181308,
+    "ast_hash": "66bebff7010b9358328ce2e844ea1717",
+    "semantic_hash": "66bebff7010b9358328ce2e844ea1717"
+  },
+  "public/seeded-assets/delhi_diwan_e_aam_delhi_1781988888251.jpg": {
+    "mtime": 1792495255.9986932,
+    "seen": 1792496821.0181377,
+    "ast_hash": "cb74976f0aa287e9354275059e7fb5b0",
+    "semantic_hash": "cb74976f0aa287e9354275059e7fb5b0"
+  },
+  "public/seeded-assets/delhi_downtown_village_delhi_1781988952294.jpg": {
+    "mtime": 1792495256.0027666,
+    "seen": 1792496821.0181432,
+    "ast_hash": "ffc211a7c4f9f3a7c0d13870691223d2",
+    "semantic_hash": "ffc211a7c4f9f3a7c0d13870691223d2"
+  },
+  "public/seeded-assets/delhi_dr_zombie_restaurant_and_beyon_1781988878318.jpg": {
+    "mtime": 1792495256.0052881,
+    "seen": 1792496821.0181494,
+    "ast_hash": "1be61d8f93d6f524885ac0162893113c",
+    "semantic_hash": "1be61d8f93d6f524885ac0162893113c"
+  },
+  "public/seeded-assets/delhi_drunkyards_cafe_1781988981722.jpg": {
+    "mtime": 1792495256.007306,
+    "seen": 1792496821.018156,
+    "ast_hash": "5225e84c4f41e5188f342a4c738152ff",
+    "semantic_hash": "5225e84c4f41e5188f342a4c738152ff"
+  },
+  "public/seeded-assets/delhi_exotic_rooftop_cafe_restaurant_1781988917467.jpg": {
+    "mtime": 1792495256.0083165,
+    "seen": 1792496821.018162,
+    "ast_hash": "3b61f5d591c98afe4f315edc4161b454",
+    "semantic_hash": "3b61f5d591c98afe4f315edc4161b454"
+  },
+  "public/seeded-assets/delhi_fabcafe_by_fabindia_lajpat_nag_1781988976116.jpg": {
+    "mtime": 1792495256.014031,
+    "seen": 1792496821.0181673,
+    "ast_hash": "33aa53e185d3a6fbc7eecccf425e0d8c",
+    "semantic_hash": "33aa53e185d3a6fbc7eecccf425e0d8c"
+  },
+  "public/seeded-assets/delhi_farzi_cafe_1781988982766.jpg": {
+    "mtime": 1792495256.0157373,
+    "seen": 1792496821.0181735,
+    "ast_hash": "f10f4dec13d3643bc216ca1ae8e1519b",
+    "semantic_hash": "f10f4dec13d3643bc216ca1ae8e1519b"
+  },
+  "public/seeded-assets/delhi_fire_ice_1781988944831.jpg": {
+    "mtime": 1792495256.037615,
+    "seen": 1792496821.0181792,
+    "ast_hash": "edb025f70feac5c3654b82da97171ec0",
+    "semantic_hash": "edb025f70feac5c3654b82da97171ec0"
+  },
+  "public/seeded-assets/delhi_flavor_of_southvala_veg_nonveg_1781988907759.jpg": {
+    "mtime": 1792495256.0386305,
+    "seen": 1792496821.018186,
+    "ast_hash": "6d9420d990752119ea5189a2800d05c6",
+    "semantic_hash": "6d9420d990752119ea5189a2800d05c6"
+  },
+  "public/seeded-assets/delhi_flow_brew_dine_1781988872914.jpg": {
+    "mtime": 1792495256.0406983,
+    "seen": 1792496821.018193,
+    "ast_hash": "6388f5bc5766b672ad0ff763673e245c",
+    "semantic_hash": "6388f5bc5766b672ad0ff763673e245c"
+  },
+  "public/seeded-assets/delhi_food_bus_of_india_1781988880008.jpg": {
+    "mtime": 1792495256.0452375,
+    "seen": 1792496821.018199,
+    "ast_hash": "486e2f4bed1273257202bd323353bc0e",
+    "semantic_hash": "486e2f4bed1273257202bd323353bc0e"
+  },
+  "public/seeded-assets/delhi_ganesh_restaurant_1781988926029.jpg": {
+    "mtime": 1792495256.0482774,
+    "seen": 1792496821.0182047,
+    "ast_hash": "09d117a41b1c3949912b7b3b3a0a62c8",
+    "semantic_hash": "09d117a41b1c3949912b7b3b3a0a62c8"
+  },
+  "public/seeded-assets/delhi_ghoomar_traditional_thali_rest_1781988872291.jpg": {
+    "mtime": 1792495256.05035,
+    "seen": 1792496821.0182116,
+    "ast_hash": "52202ce4b8a9aad8413361ee399c2d27",
+    "semantic_hash": "52202ce4b8a9aad8413361ee399c2d27"
+  },
+  "public/seeded-assets/delhi_gole_hatti_1781988933754.jpg": {
+    "mtime": 1792495256.0553913,
+    "seen": 1792496821.0182178,
+    "ast_hash": "8980ef2813bce28a20e8f9766f2b2b94",
+    "semantic_hash": "8980ef2813bce28a20e8f9766f2b2b94"
+  },
+  "public/seeded-assets/delhi_gupta_s_restaurant_1781988931527.jpg": {
+    "mtime": 1792495256.0574117,
+    "seen": 1792496821.0182238,
+    "ast_hash": "4e5babb57f757190b12c2ab8629f35d3",
+    "semantic_hash": "4e5babb57f757190b12c2ab8629f35d3"
+  },
+  "public/seeded-assets/delhi_gurudwara_sisganj_sahib_1781988868256.jpg": {
+    "mtime": 1792495256.0584264,
+    "seen": 1792496821.0182304,
+    "ast_hash": "659221d9c14b81145aa35d234179287d",
+    "semantic_hash": "659221d9c14b81145aa35d234179287d"
+  },
+  "public/seeded-assets/delhi_gypsy_caf__1781988966368.jpg": {
+    "mtime": 1792495256.061497,
+    "seen": 1792496821.0182376,
+    "ast_hash": "f9b1360032412f3e167fc92ca4253225",
+    "semantic_hash": "f9b1360032412f3e167fc92ca4253225"
+  },
+  "public/seeded-assets/delhi_haldiram_s_chandni_chowk_1781988932591.jpg": {
+    "mtime": 1792495256.0655723,
+    "seen": 1792496821.0182436,
+    "ast_hash": "22c1067a0be0eb454111701267a5538b",
+    "semantic_hash": "22c1067a0be0eb454111701267a5538b"
+  },
+  "public/seeded-assets/delhi_haldiram_s_karol_bagh_1781988907178.jpg": {
+    "mtime": 1792495256.0685966,
+    "seen": 1792496821.01825,
+    "ast_hash": "acb6a21695bb3daf7d3453e845c6b0ff",
+    "semantic_hash": "acb6a21695bb3daf7d3453e845c6b0ff"
+  },
+  "public/seeded-assets/delhi_hauz_khas_complex_1781988894158.jpg": {
+    "mtime": 1792495256.0685966,
+    "seen": 1792496821.018256,
+    "ast_hash": "dad597d9bce2a057b763ecb5f759be68",
+    "semantic_hash": "dad597d9bce2a057b763ecb5f759be68"
+  },
+  "public/seeded-assets/delhi_hauz_khas_forest_1781988895554.jpg": {
+    "mtime": 1792495256.072672,
+    "seen": 1792496821.0182624,
+    "ast_hash": "6e5f4af030c9e030e8c5f7547bdd15c2",
+    "semantic_hash": "6e5f4af030c9e030e8c5f7547bdd15c2"
+  },
+  "public/seeded-assets/delhi_hauz_khas_social_1781988965936.jpg": {
+    "mtime": 1792495256.1153657,
+    "seen": 1792496821.0182774,
+    "ast_hash": "49d9ecb5e8d9214030248ef8e07f4524",
+    "semantic_hash": "49d9ecb5e8d9214030248ef8e07f4524"
+  },
+  "public/seeded-assets/delhi_haveli_mirza_ghalib_1781988899926.jpg": {
+    "mtime": 1792495256.117419,
+    "seen": 1792496821.0182867,
+    "ast_hash": "f98ba08804782635dc0c1df801d824cd",
+    "semantic_hash": "f98ba08804782635dc0c1df801d824cd"
+  },
+  "public/seeded-assets/delhi_havemore_restaurant_1781988862200.jpg": {
+    "mtime": 1792495256.1204684,
+    "seen": 1792496821.018293,
+    "ast_hash": "327c0355cd79856489d1871148a3ca38",
+    "semantic_hash": "327c0355cd79856489d1871148a3ca38"
+  },
+  "public/seeded-assets/delhi_hira_mahal_new_delhi_1781988911698.jpg": {
+    "mtime": 1792495256.123506,
+    "seen": 1792496821.0183012,
+    "ast_hash": "65ff24881fc9ae1b76cb36d72248091d",
+    "semantic_hash": "65ff24881fc9ae1b76cb36d72248091d"
+  },
+  "public/seeded-assets/delhi_hotel_maaidah_changezi_chicken_1781988904312.jpg": {
+    "mtime": 1792495256.125558,
+    "seen": 1792496821.0183094,
+    "ast_hash": "61a17b519a4ef443c28345db81700bc3",
+    "semantic_hash": "61a17b519a4ef443c28345db81700bc3"
+  },
+  "public/seeded-assets/delhi_house_of_boho_1781988923392.jpg": {
+    "mtime": 1792495256.1306584,
+    "seen": 1792496821.0183156,
+    "ast_hash": "8c2fef1180f6ee29cc83e70144dd627f",
+    "semantic_hash": "8c2fef1180f6ee29cc83e70144dd627f"
+  },
+  "public/seeded-assets/delhi_humayun_s_tomb_1781988886847.jpg": {
+    "mtime": 1792495256.1326754,
+    "seen": 1792496821.0183225,
+    "ast_hash": "aed2c8362a338788d774c7f57cd7f79f",
+    "semantic_hash": "aed2c8362a338788d774c7f57cd7f79f"
+  },
+  "public/seeded-assets/delhi_i_love_delhi_1781988876274.jpg": {
+    "mtime": 1792495256.135704,
+    "seen": 1792496821.0183291,
+    "ast_hash": "fb181cab4fa6b1700ed2260b39966a67",
+    "semantic_hash": "fb181cab4fa6b1700ed2260b39966a67"
+  },
+  "public/seeded-assets/delhi_imperial_cafe_1781988950540.jpg": {
+    "mtime": 1792495256.1382937,
+    "seen": 1792496821.0183358,
+    "ast_hash": "8f9ca00fef121cdb2a5524f548b3eb46",
+    "semantic_hash": "8f9ca00fef121cdb2a5524f548b3eb46"
+  },
+  "public/seeded-assets/delhi_india_gate_1781988873909.jpg": {
+    "mtime": 1792495256.1403508,
+    "seen": 1792496821.0183423,
+    "ast_hash": "bebda0584ae374719d23d2ebfb0c829d",
+    "semantic_hash": "bebda0584ae374719d23d2ebfb0c829d"
+  },
+  "public/seeded-assets/delhi_indraprastha_park_1781988919870.jpg": {
+    "mtime": 1792495256.1413615,
+    "seen": 1792496821.01835,
+    "ast_hash": "cebe6e2e51866c7a6c826f6eafe68bcc",
+    "semantic_hash": "cebe6e2e51866c7a6c826f6eafe68bcc"
+  },
+  "public/seeded-assets/delhi_isa_khan_s_tomb_delhi_1781988898906.jpg": {
+    "mtime": 1792495256.1469026,
+    "seen": 1792496821.018357,
+    "ast_hash": "a601d5861f657be3c7760c0be855bc29",
+    "semantic_hash": "a601d5861f657be3c7760c0be855bc29"
+  },
+  "public/seeded-assets/delhi_istanbul_cafe_1781988981061.jpg": {
+    "mtime": 1792495256.148476,
+    "seen": 1792496821.0183632,
+    "ast_hash": "8f7826f56be8ee12fce16d7c9b23b296",
+    "semantic_hash": "8f7826f56be8ee12fce16d7c9b23b296"
+  },
+  "public/seeded-assets/delhi_ito_skywalk_1781988874487.jpg": {
+    "mtime": 1792495256.1526446,
+    "seen": 1792496821.0183697,
+    "ast_hash": "12024bd3fce8f5b288d2e595a5af474f",
+    "semantic_hash": "12024bd3fce8f5b288d2e595a5af474f"
+  },
+  "public/seeded-assets/delhi_jama_masjid_1781988888686.jpg": {
+    "mtime": 1792495256.195289,
+    "seen": 1792496821.0183759,
+    "ast_hash": "2313a1d757705de13b6c351c691d2f80",
+    "semantic_hash": "2313a1d757705de13b6c351c691d2f80"
+  },
+  "public/seeded-assets/delhi_jantar_mantar_1781988920727.jpg": {
+    "mtime": 1792495256.1983192,
+    "seen": 1792496821.0183823,
+    "ast_hash": "249bfcef5b7032a4ec12993962fef4d5",
+    "semantic_hash": "249bfcef5b7032a4ec12993962fef4d5"
+  },
+  "public/seeded-assets/delhi_jawahar_hotel_1781988881197.jpg": {
+    "mtime": 1792495256.2003653,
+    "seen": 1792496821.018389,
+    "ast_hash": "0dcf1af84c53dbfe94e9e4667fd705c4",
+    "semantic_hash": "0dcf1af84c53dbfe94e9e4667fd705c4"
+  },
+  "public/seeded-assets/delhi_just_coffee_1781988941115.jpg": {
+    "mtime": 1792495256.2023795,
+    "seen": 1792496821.0183964,
+    "ast_hash": "ba63d6e0f8a4d26e98bb736f6931b71a",
+    "semantic_hash": "ba63d6e0f8a4d26e98bb736f6931b71a"
+  },
+  "public/seeded-assets/delhi_kake_di_hatti_1781988924421.jpg": {
+    "mtime": 1792495256.2054076,
+    "seen": 1792496821.0184028,
+    "ast_hash": "c0deae1183d50f5c0ca58bae1d325514",
+    "semantic_hash": "c0deae1183d50f5c0ca58bae1d325514"
+  },
+  "public/seeded-assets/delhi_kake_di_hatti_karol_bagh_1781988866142.jpg": {
+    "mtime": 1792495256.2069428,
+    "seen": 1792496821.0184095,
+    "ast_hash": "78498681e9eb1e143f7daf1553aa9998",
+    "semantic_hash": "78498681e9eb1e143f7daf1553aa9998"
+  },
+  "public/seeded-assets/delhi_kalandak_rooftop_1781988908311.jpg": {
+    "mtime": 1792495256.208507,
+    "seen": 1792496821.0184162,
+    "ast_hash": "0c5a6a7603521f31a07ba50a9fe37c0b",
+    "semantic_hash": "0c5a6a7603521f31a07ba50a9fe37c0b"
+  },
+  "public/seeded-assets/delhi_kathi_junction_pvr_anupam_sake_1781988865068.jpg": {
+    "mtime": 1792495256.2145927,
+    "seen": 1792496821.0184224,
+    "ast_hash": "69f48ff79405d1c043113912cd6a0f9c",
+    "semantic_hash": "69f48ff79405d1c043113912cd6a0f9c"
+  },
+  "public/seeded-assets/delhi_kenangan_coffee_1781988941716.jpg": {
+    "mtime": 1792495256.2156088,
+    "seen": 1792496821.018429,
+    "ast_hash": "6a3ce1fff38953114726cda3c037b758",
+    "semantic_hash": "6a3ce1fff38953114726cda3c037b758"
+  },
+  "public/seeded-assets/delhi_khan_market_1781988897915.jpg": {
+    "mtime": 1792495256.2203996,
+    "seen": 1792496821.018436,
+    "ast_hash": "945fdb5785756004fe244839ca4eb1d9",
+    "semantic_hash": "945fdb5785756004fe244839ca4eb1d9"
+  },
+  "public/seeded-assets/delhi_khas_mahal_1781988894692.jpg": {
+    "mtime": 1792495256.2224162,
+    "seen": 1792496821.0184424,
+    "ast_hash": "96e866ee22e357e67b6b1c542958184d",
+    "semantic_hash": "96e866ee22e357e67b6b1c542958184d"
+  },
+  "public/seeded-assets/delhi_klap_1781988975302.jpg": {
+    "mtime": 1792495256.225446,
+    "seen": 1792496821.0184488,
+    "ast_hash": "d13cae815511c8b6381e803f8271a44c",
+    "semantic_hash": "d13cae815511c8b6381e803f8271a44c"
+  },
+  "public/seeded-assets/delhi_krishna_rooftop_cafe_1781988916854.jpg": {
+    "mtime": 1792495256.2284796,
+    "seen": 1792496821.0184553,
+    "ast_hash": "9ecb453866828ea90d2154f7ed2b394b",
+    "semantic_hash": "9ecb453866828ea90d2154f7ed2b394b"
+  },
+  "public/seeded-assets/delhi_kunzum_hauz_khas_village_1781988966890.jpg": {
+    "mtime": 1792495256.2325497,
+    "seen": 1792496821.0184617,
+    "ast_hash": "f02a796a29300d9aff1e322193d1281a",
+    "semantic_hash": "f02a796a29300d9aff1e322193d1281a"
+  },
+  "public/seeded-assets/delhi_lakhori_1781988902609.jpg": {
+    "mtime": 1792495256.2554934,
+    "seen": 1792496821.018468,
+    "ast_hash": "416081fcc07e9ac0c3b53a1a4cafbdd8",
+    "semantic_hash": "416081fcc07e9ac0c3b53a1a4cafbdd8"
+  },
+  "public/seeded-assets/delhi_landing_point_1781988893660.jpg": {
+    "mtime": 1792495256.2554934,
+    "seen": 1792496821.0184743,
+    "ast_hash": "7ce8f2f657905700263bf1622f626b7e",
+    "semantic_hash": "7ce8f2f657905700263bf1622f626b7e"
+  },
+  "public/seeded-assets/delhi_lavonne_caf__1781988962821.jpg": {
+    "mtime": 1792495256.258526,
+    "seen": 1792496821.01848,
+    "ast_hash": "4ea9eaf49c31287418e87afcd14991e7",
+    "semantic_hash": "4ea9eaf49c31287418e87afcd14991e7"
+  },
+  "public/seeded-assets/delhi_lazeez_affaire_cp_1781988928628.jpg": {
+    "mtime": 1792495256.263463,
+    "seen": 1792496821.018486,
+    "ast_hash": "a0b6d41abfe0cb42d97e28b94d77198b",
+    "semantic_hash": "a0b6d41abfe0cb42d97e28b94d77198b"
+  },
+  "public/seeded-assets/delhi_local_1781988929207.jpg": {
+    "mtime": 1792495256.2655013,
+    "seen": 1792496821.0184922,
+    "ast_hash": "29281788dc1b1dad3699c46dd3ffa4b6",
+    "semantic_hash": "29281788dc1b1dad3699c46dd3ffa4b6"
+  },
+  "public/seeded-assets/delhi_lodhi_garden_1781988885466.jpg": {
+    "mtime": 1792495256.2685878,
+    "seen": 1792496821.018499,
+    "ast_hash": "c89949049b5a8ed75aa1308982a5ea44",
+    "semantic_hash": "c89949049b5a8ed75aa1308982a5ea44"
+  },
+  "public/seeded-assets/delhi_madan_cafe_1781988976710.jpg": {
+    "mtime": 1792495256.272661,
+    "seen": 1792496821.0185053,
+    "ast_hash": "5d015d821ddef8f78c107bbe8fda496b",
+    "semantic_hash": "5d015d821ddef8f78c107bbe8fda496b"
+  },
+  "public/seeded-assets/delhi_madras_cafe_1781988890357.jpg": {
+    "mtime": 1792495256.2873724,
+    "seen": 1792496821.0185113,
+    "ast_hash": "fecb082430c3d312624c3bcf9e7092a5",
+    "semantic_hash": "fecb082430c3d312624c3bcf9e7092a5"
+  },
+  "public/seeded-assets/delhi_mazi_the_rooftop_1781988937479.jpg": {
+    "mtime": 1792495256.2904377,
+    "seen": 1792496821.018518,
+    "ast_hash": "3d092561ab39d260549869dd6b3b0363",
+    "semantic_hash": "3d092561ab39d260549869dd6b3b0363"
+  },
+  "public/seeded-assets/delhi_mehrauli_archaeological_park_w_1781988895985.jpg": {
+    "mtime": 1792495256.292463,
+    "seen": 1792496821.018524,
+    "ast_hash": "ca4b87f76cc87ea612ad26691862cb54",
+    "semantic_hash": "ca4b87f76cc87ea612ad26691862cb54"
+  },
+  "public/seeded-assets/delhi_moonshine_cafe_and_bar_hauz_kh_1781988983313.jpg": {
+    "mtime": 1792495256.2985396,
+    "seen": 1792496821.01853,
+    "ast_hash": "590f4360fed1a6ad57622126f0fe9cde",
+    "semantic_hash": "590f4360fed1a6ad57622126f0fe9cde"
+  },
+  "public/seeded-assets/delhi_moti_mahal_delux_1781988922400.jpg": {
+    "mtime": 1792495256.3006,
+    "seen": 1792496821.018536,
+    "ast_hash": "71514d0a6219e02a1c95c6c6d59a5a5e",
+    "semantic_hash": "71514d0a6219e02a1c95c6c6d59a5a5e"
+  },
+  "public/seeded-assets/delhi_mughlai_junction_1781988900974.jpg": {
+    "mtime": 1792495256.3026156,
+    "seen": 1792496821.0185423,
+    "ast_hash": "e1ba8dea4fa654c8bf9b3f9999f5169d",
+    "semantic_hash": "e1ba8dea4fa654c8bf9b3f9999f5169d"
+  },
+  "public/seeded-assets/delhi_my_delhi_my_pride_1781988870909.jpg": {
+    "mtime": 1792495256.3046253,
+    "seen": 1792496821.0185483,
+    "ast_hash": "e39ce78c2eb2d00d283299d4e08a716a",
+    "semantic_hash": "e39ce78c2eb2d00d283299d4e08a716a"
+  },
+  "public/seeded-assets/delhi_national_rail_museum_1781988897396.jpg": {
+    "mtime": 1792495256.3056424,
+    "seen": 1792496821.0185544,
+    "ast_hash": "8c6e1d95824db673f39e17626f4dddf5",
+    "semantic_hash": "8c6e1d95824db673f39e17626f4dddf5"
+  },
+  "public/seeded-assets/delhi_national_zoological_park_delhi_1781988928123.jpg": {
+    "mtime": 1792495256.3086793,
+    "seen": 1792496821.018561,
+    "ast_hash": "7a2621daf1d8680acad0190d902e0c66",
+    "semantic_hash": "7a2621daf1d8680acad0190d902e0c66"
+  },
+  "public/seeded-assets/delhi_no_25_cafe_1781988953934.jpg": {
+    "mtime": 1792495256.3486264,
+    "seen": 1792496821.0185668,
+    "ast_hash": "312e1a0537ac5eccaac455dafa96dbc1",
+    "semantic_hash": "312e1a0537ac5eccaac455dafa96dbc1"
+  },
+  "public/seeded-assets/delhi_nothing_before_coffee_connaugh_1781988946512.jpg": {
+    "mtime": 1792495256.350674,
+    "seen": 1792496821.0185738,
+    "ast_hash": "de95e13e7f22cec5caebf2f7fb55f805",
+    "semantic_hash": "de95e13e7f22cec5caebf2f7fb55f805"
+  },
+  "public/seeded-assets/delhi_oh_pind_1781988883848.jpg": {
+    "mtime": 1792495256.3547049,
+    "seen": 1792496821.0185804,
+    "ast_hash": "6757f617a57a2cc77366fc79e4548958",
+    "semantic_hash": "6757f617a57a2cc77366fc79e4548958"
+  },
+  "public/seeded-assets/delhi_open_deck_ihc_1781988866950.jpg": {
+    "mtime": 1792495256.3582685,
+    "seen": 1792496821.0185866,
+    "ast_hash": "5ab8428b3f092b9caf461d1c56fa13a8",
+    "semantic_hash": "5ab8428b3f092b9caf461d1c56fa13a8"
+  },
+  "public/seeded-assets/delhi_open_house_cafe_1781988978425.jpg": {
+    "mtime": 1792495256.365297,
+    "seen": 1792496821.018593,
+    "ast_hash": "84d55d6cac44728115eeeb38e5e44074",
+    "semantic_hash": "84d55d6cac44728115eeeb38e5e44074"
+  },
+  "public/seeded-assets/delhi_organic_bistro_1781988942283.jpg": {
+    "mtime": 1792495256.3673134,
+    "seen": 1792496821.0185983,
+    "ast_hash": "e8015372aa1a7fb06f2051ea2dd09129",
+    "semantic_hash": "e8015372aa1a7fb06f2051ea2dd09129"
+  },
+  "public/seeded-assets/delhi_out_of_the_box_1781988979475.jpg": {
+    "mtime": 1792495256.3683255,
+    "seen": 1792496821.0186045,
+    "ast_hash": "dce8e150155c851934b137185a67eee3",
+    "semantic_hash": "dce8e150155c851934b137185a67eee3"
+  },
+  "public/seeded-assets/delhi_pa_pa_ya_1781988892158.jpg": {
+    "mtime": 1792495256.370426,
+    "seen": 1792496821.0186107,
+    "ast_hash": "af95f2b23daf88aa24e25ed7ee2076d9",
+    "semantic_hash": "af95f2b23daf88aa24e25ed7ee2076d9"
+  },
+  "public/seeded-assets/delhi_paharganj_chai_garam_cafe_1781988943542.jpg": {
+    "mtime": 1792495256.3754773,
+    "seen": 1792496821.0186172,
+    "ast_hash": "2c56bba90377ae8ae7d87cf2a6dddad6",
+    "semantic_hash": "2c56bba90377ae8ae7d87cf2a6dddad6"
+  },
+  "public/seeded-assets/delhi_paranga_best_restaurant_in_kar_1781988865599.jpg": {
+    "mtime": 1792495256.3785143,
+    "seen": 1792496821.0186238,
+    "ast_hash": "d9505762ec90e0e0d0a14441e6e16223",
+    "semantic_hash": "d9505762ec90e0e0d0a14441e6e16223"
+  },
+  "public/seeded-assets/delhi_parikrama_the_revolving_restau_1781988938080.jpg": {
+    "mtime": 1792495256.381585,
+    "seen": 1792496821.0186305,
+    "ast_hash": "04281c387ee831463e67557bb9cfc323",
+    "semantic_hash": "04281c387ee831463e67557bb9cfc323"
+  },
+  "public/seeded-assets/delhi_peace_of_mind_cafe_1781988940484.jpg": {
+    "mtime": 1792495256.3835971,
+    "seen": 1792496821.0186367,
+    "ast_hash": "9350decc99616acbb051e54f733a5d3c",
+    "semantic_hash": "9350decc99616acbb051e54f733a5d3c"
+  },
+  "public/seeded-assets/delhi_perch_wine_coffee_bar_1781988960660.jpg": {
+    "mtime": 1792495256.4188416,
+    "seen": 1792496821.0186431,
+    "ast_hash": "df8d1ac47c15bb74b38824806f56c3e7",
+    "semantic_hash": "df8d1ac47c15bb74b38824806f56c3e7"
+  },
+  "public/seeded-assets/delhi_pind_balluchi_regal_building_c_1781988912786.jpg": {
+    "mtime": 1792495256.4208753,
+    "seen": 1792496821.0186493,
+    "ast_hash": "711b73cd34dae0fe77714d19aec55fe6",
+    "semantic_hash": "711b73cd34dae0fe77714d19aec55fe6"
+  },
+  "public/seeded-assets/delhi_ping_s_cafe_orient_1781988935505.jpg": {
+    "mtime": 1792495256.4228895,
+    "seen": 1792496821.0186563,
+    "ast_hash": "0629212e1808ada17bb784006cef47c2",
+    "semantic_hash": "0629212e1808ada17bb784006cef47c2"
+  },
+  "public/seeded-assets/delhi_plum_coffee_and_cocktails_1781988978950.jpg": {
+    "mtime": 1792495256.4264588,
+    "seen": 1792496821.0186625,
+    "ast_hash": "b22278ab8f34a3d1c64fe00b46e66344",
+    "semantic_hash": "b22278ab8f34a3d1c64fe00b46e66344"
+  },
+  "public/seeded-assets/delhi_punjab_grill_select_citywalk_m_1781988882773.jpg": {
+    "mtime": 1792495256.4325655,
+    "seen": 1792496821.0186687,
+    "ast_hash": "061cfa109c74058eba36ee719b708cd3",
+    "semantic_hash": "061cfa109c74058eba36ee719b708cd3"
+  },
+  "public/seeded-assets/delhi_purana_qila_1781988918435.jpg": {
+    "mtime": 1792495256.4345858,
+    "seen": 1792496821.0186741,
+    "ast_hash": "0c1ea91bc1cbaf095eb2a3854dee7d8e",
+    "semantic_hash": "0c1ea91bc1cbaf095eb2a3854dee7d8e"
+  },
+  "public/seeded-assets/delhi_pure_shudh_1781988873481.jpg": {
+    "mtime": 1792495256.4355974,
+    "seen": 1792496821.01868,
+    "ast_hash": "5cbd0bd10cdbfa6c7295b4fcc324a9b2",
+    "semantic_hash": "5cbd0bd10cdbfa6c7295b4fcc324a9b2"
+  },
+  "public/seeded-assets/delhi_pusa_hill_forest_1781988910198.jpg": {
+    "mtime": 1792495256.4386282,
+    "seen": 1792496821.018687,
+    "ast_hash": "22aa4ddbc352ecefd4f50880d70a6ae7",
+    "semantic_hash": "22aa4ddbc352ecefd4f50880d70a6ae7"
+  },
+  "public/seeded-assets/delhi_qureshi_s_kabab_corner_1781988923917.jpg": {
+    "mtime": 1792495256.4406796,
+    "seen": 1792496821.0186942,
+    "ast_hash": "65b0428bf0ccd8b4d89861ea038f0974",
+    "semantic_hash": "65b0428bf0ccd8b4d89861ea038f0974"
+  },
+  "public/seeded-assets/delhi_qutb_minar_1781988884873.jpg": {
+    "mtime": 1792495256.4424489,
+    "seen": 1792496821.0187008,
+    "ast_hash": "dd67bf76a4bb56f85240fc89981359d3",
+    "semantic_hash": "dd67bf76a4bb56f85240fc89981359d3"
+  },
+  "public/seeded-assets/delhi_rang_mahal_new_delhi_1781988899421.jpg": {
+    "mtime": 1792495256.4480028,
+    "seen": 1792496821.018708,
+    "ast_hash": "7c76425410a1da7fe67867dbc9b23131",
+    "semantic_hash": "7c76425410a1da7fe67867dbc9b23131"
+  },
+  "public/seeded-assets/delhi_red_fort_1781988885910.jpg": {
+    "mtime": 1792495256.4485424,
+    "seen": 1792496821.0187144,
+    "ast_hash": "b77eb17da4ceca6a9e6f2aeaf8f0da1b",
+    "semantic_hash": "b77eb17da4ceca6a9e6f2aeaf8f0da1b"
+  },
+  "public/seeded-assets/delhi_refections_cafe_lajpat_nagar_1781988968171.jpg": {
+    "mtime": 1792495256.4506154,
+    "seen": 1792496821.0187206,
+    "ast_hash": "50b586c21838b8e3943770e6f0a30e0f",
+    "semantic_hash": "50b586c21838b8e3943770e6f0a30e0f"
+  },
+  "public/seeded-assets/delhi_rehmatullah_hotel_1781988864212.jpg": {
+    "mtime": 1792495256.4526293,
+    "seen": 1792496821.018731,
+    "ast_hash": "f9cdcfc0849781ec6f97f414c64e0ddf",
+    "semantic_hash": "f9cdcfc0849781ec6f97f414c64e0ddf"
+  },
+  "public/seeded-assets/delhi_rooftop_restaurant_and_cafe_1781988916328.jpg": {
+    "mtime": 1792495256.4565039,
+    "seen": 1792496821.01874,
+    "ast_hash": "40d6c0206c7ea3b728873ab463446063",
+    "semantic_hash": "40d6c0206c7ea3b728873ab463446063"
+  },
+  "public/seeded-assets/delhi_rooftop_the_view_1781988867588.jpg": {
+    "mtime": 1792495256.4575186,
+    "seen": 1792496821.0187469,
+    "ast_hash": "982b723e341d50cf513ddec8286e8f47",
+    "semantic_hash": "982b723e341d50cf513ddec8286e8f47"
+  },
+  "public/seeded-assets/delhi_sababa_cafe_1781988977469.jpg": {
+    "mtime": 1792495256.4723964,
+    "seen": 1792496821.0187533,
+    "ast_hash": "f2354212b2978088957f9f1b1c180b84",
+    "semantic_hash": "f2354212b2978088957f9f1b1c180b84"
+  },
+  "public/seeded-assets/delhi_safdarjung_tomb_delhi_1781988896590.jpg": {
+    "mtime": 1792495256.482568,
+    "seen": 1792496821.01876,
+    "ast_hash": "ec70cb7b758a420b6af9450768f670be",
+    "semantic_hash": "ec70cb7b758a420b6af9450768f670be"
+  },
+  "public/seeded-assets/delhi_saket_social_1781988914277.jpg": {
+    "mtime": 1792495256.4845815,
+    "seen": 1792496821.0187674,
+    "ast_hash": "7e714d3587ed2c2a1638f36dec73781a",
+    "semantic_hash": "7e714d3587ed2c2a1638f36dec73781a"
+  },
+  "public/seeded-assets/delhi_sambarpot_1781988861460.jpg": {
+    "mtime": 1792495256.4855938,
+    "seen": 1792496821.0187745,
+    "ast_hash": "37f66a223c2a4e9aabb8af9575150705",
+    "semantic_hash": "37f66a223c2a4e9aabb8af9575150705"
+  },
+  "public/seeded-assets/delhi_sandoz_restaurant_dbg_road_kar_1781988906649.jpg": {
+    "mtime": 1792495256.4886272,
+    "seen": 1792496821.0187812,
+    "ast_hash": "a24b1bffcd90b0badd68351114f9f474",
+    "semantic_hash": "a24b1bffcd90b0badd68351114f9f474"
+  },
+  "public/seeded-assets/delhi_saravana_bhavan_1781988889749.jpg": {
+    "mtime": 1792495256.4903717,
+    "seen": 1792496821.0187879,
+    "ast_hash": "55d89bda5a2a7de929115d7dce5a3200",
+    "semantic_hash": "55d89bda5a2a7de929115d7dce5a3200"
+  },
+  "public/seeded-assets/delhi_sardar_ji_bakhsh_coffee_lajpat_1781988958968.jpg": {
+    "mtime": 1792495256.4954193,
+    "seen": 1792496821.018794,
+    "ast_hash": "725bd13dda496f8bbbe6e1a30c5fffeb",
+    "semantic_hash": "725bd13dda496f8bbbe6e1a30c5fffeb"
+  },
+  "public/seeded-assets/delhi_shah_tomb_delhi_1781988898361.jpg": {
+    "mtime": 1792495256.4984937,
+    "seen": 1792496821.018801,
+    "ast_hash": "993931e736097110642188dd180b545d",
+    "semantic_hash": "993931e736097110642188dd180b545d"
+  },
+  "public/seeded-assets/delhi_shahi_mehfil_restaurant_1781988913738.jpg": {
+    "mtime": 1792495256.5005476,
+    "seen": 1792496821.0188076,
+    "ast_hash": "48614ed7a9420cde8eaf880f1221e28e",
+    "semantic_hash": "48614ed7a9420cde8eaf880f1221e28e"
+  },
+  "public/seeded-assets/delhi_shellbeacon_cafe_bar_kitchen_1781988951728.jpg": {
+    "mtime": 1792495256.502561,
+    "seen": 1792496821.0188136,
+    "ast_hash": "06a9712adb2406d1356033751b2995a7",
+    "semantic_hash": "06a9712adb2406d1356033751b2995a7"
+  },
+  "public/seeded-assets/delhi_sikandar_lodi_tomb_new_delhi_1781988887826.jpg": {
+    "mtime": 1792495256.5055897,
+    "seen": 1792496821.0188196,
+    "ast_hash": "1b89090eb4ec3e909e61ecaaffe4714d",
+    "semantic_hash": "1b89090eb4ec3e909e61ecaaffe4714d"
+  },
+  "public/seeded-assets/delhi_sky_garden_delhi_1781988926622.jpg": {
+    "mtime": 1792495256.5086327,
+    "seen": 1792496821.0188262,
+    "ast_hash": "ed62064610082b1797fc215defe3b1e9",
+    "semantic_hash": "ed62064610082b1797fc215defe3b1e9"
+  },
+  "public/seeded-assets/delhi_somewhere_delhi_1781988929769.jpg": {
+    "mtime": 1792495256.510694,
+    "seen": 1792496821.018833,
+    "ast_hash": "6cc042180e8f611d958d54fdbcee5274",
+    "semantic_hash": "6cc042180e8f611d958d54fdbcee5274"
+  },
+  "public/seeded-assets/delhi_south_part_of_central_ridge_fo_1781988910728.jpg": {
+    "mtime": 1792495256.515509,
+    "seen": 1792496821.0188398,
+    "ast_hash": "6b9bf4f41585a274522e30387c1ade20",
+    "semantic_hash": "6b9bf4f41585a274522e30387c1ade20"
+  },
+  "public/seeded-assets/delhi_sri_saravana_bhavan_1781988936881.jpg": {
+    "mtime": 1792495256.5582788,
+    "seen": 1792496821.0188468,
+    "ast_hash": "fdf41dad004dc337e4a5b14276d717bf",
+    "semantic_hash": "fdf41dad004dc337e4a5b14276d717bf"
+  },
+  "public/seeded-assets/delhi_ssky_bar_lounge_1781988918001.jpg": {
+    "mtime": 1792495256.5618365,
+    "seen": 1792496821.0188527,
+    "ast_hash": "ddbd50d21a8fd8f95f51fdd940c3230d",
+    "semantic_hash": "ddbd50d21a8fd8f95f51fdd940c3230d"
+  },
+  "public/seeded-assets/delhi_studio_xo_bar_1781988922955.jpg": {
+    "mtime": 1792495256.563929,
+    "seen": 1792496821.0188591,
+    "ast_hash": "8f2cdb3f7c52ae48073984a03f5b39e2",
+    "semantic_hash": "8f2cdb3f7c52ae48073984a03f5b39e2"
+  },
+  "public/seeded-assets/delhi_summer_house_delhi_1781988972335.jpg": {
+    "mtime": 1792495256.5654454,
+    "seen": 1792496821.0188653,
+    "ast_hash": "62f47a31f6c81b0d8e3ea2779ba96452",
+    "semantic_hash": "62f47a31f6c81b0d8e3ea2779ba96452"
+  },
+  "public/seeded-assets/delhi_sunset_rooftop_1781988870215.jpg": {
+    "mtime": 1792495256.568477,
+    "seen": 1792496821.0188718,
+    "ast_hash": "270e3c4ba3c04488e53f954b3fc16585",
+    "semantic_hash": "270e3c4ba3c04488e53f954b3fc16585"
+  },
+  "public/seeded-assets/delhi_suruchi_restaurant_1781988915346.jpg": {
+    "mtime": 1792495256.5705295,
+    "seen": 1792496821.0188782,
+    "ast_hash": "9715e397944290d3459fab2396e26c75",
+    "semantic_hash": "9715e397944290d3459fab2396e26c75"
+  },
+  "public/seeded-assets/delhi_swarn_jayanti_park_1781988909689.jpg": {
+    "mtime": 1792495256.5735636,
+    "seen": 1792496821.018885,
+    "ast_hash": "7b0098ee74cc72b2dd18467c60ce8187",
+    "semantic_hash": "7b0098ee74cc72b2dd18467c60ce8187"
+  },
+  "public/seeded-assets/delhi_tamasha_1781988930300.jpg": {
+    "mtime": 1792495256.5750809,
+    "seen": 1792496821.0188913,
+    "ast_hash": "e858901f3b3fa7c425b017f4ba353b97",
+    "semantic_hash": "e858901f3b3fa7c425b017f4ba353b97"
+  },
+  "public/seeded-assets/delhi_tamra_restaurant_1781988889219.jpg": {
+    "mtime": 1792495256.580745,
+    "seen": 1792496821.0188973,
+    "ast_hash": "9f7ab2a8455957b3dae7fe3c3c1d5379",
+    "semantic_hash": "9f7ab2a8455957b3dae7fe3c3c1d5379"
+  },
+  "public/seeded-assets/delhi_tan_coffee_connaught_place_del_1781988950996.jpg": {
+    "mtime": 1792495256.5827549,
+    "seen": 1792496821.0189037,
+    "ast_hash": "c56b7d4417c9a99699e055f89dafb355",
+    "semantic_hash": "c56b7d4417c9a99699e055f89dafb355"
+  },
+  "public/seeded-assets/delhi_te_amo_restaurant_bar_1781988891063.jpg": {
+    "mtime": 1792495256.5852795,
+    "seen": 1792496821.0189106,
+    "ast_hash": "098f14737749b906ddbf6b82974d38d6",
+    "semantic_hash": "098f14737749b906ddbf6b82974d38d6"
+  },
+  "public/seeded-assets/delhi_the_b_tech_restaurant_in_saket_1781988893123.jpg": {
+    "mtime": 1792495256.5852795,
+    "seen": 1792496821.0189168,
+    "ast_hash": "adf6b8afc9a068bc920fbbad3705d851",
+    "semantic_hash": "adf6b8afc9a068bc920fbbad3705d851"
+  },
+  "public/seeded-assets/delhi_the_big_chill_1781988881928.jpg": {
+    "mtime": 1792495256.589377,
+    "seen": 1792496821.018923,
+    "ast_hash": "3b537d36d9f00f756978be4a767181ab",
+    "semantic_hash": "3b537d36d9f00f756978be4a767181ab"
+  },
+  "public/seeded-assets/delhi_the_big_chill_1781988959689.jpg": {
+    "mtime": 1792495256.5913932,
+    "seen": 1792496821.018929,
+    "ast_hash": "83e80ea80f9af8316d079297301b2576",
+    "semantic_hash": "83e80ea80f9af8316d079297301b2576"
+  },
+  "public/seeded-assets/delhi_the_big_chill_cafe_1781988960130.jpg": {
+    "mtime": 1792495256.5954201,
+    "seen": 1792496821.0189354,
+    "ast_hash": "5b2b235961dbec0945a3db39bb747bac",
+    "semantic_hash": "5b2b235961dbec0945a3db39bb747bac"
+  },
+  "public/seeded-assets/delhi_the_big_chill_cakery_1781988961228.jpg": {
+    "mtime": 1792495256.6043763,
+    "seen": 1792496821.0189424,
+    "ast_hash": "372171eaff5618d5fc2be0b7464c6f1a",
+    "semantic_hash": "372171eaff5618d5fc2be0b7464c6f1a"
+  },
+  "public/seeded-assets/delhi_the_blue_door_cafe_1781988972875.jpg": {
+    "mtime": 1792495256.6124945,
+    "seen": 1792496821.0189488,
+    "ast_hash": "26c38736117a41a2d1599fa1b71e8218",
+    "semantic_hash": "26c38736117a41a2d1599fa1b71e8218"
+  },
+  "public/seeded-assets/delhi_the_buzzing_terrace_best_rooft_1781988862774.jpg": {
+    "mtime": 1792495256.6145062,
+    "seen": 1792496821.0189555,
+    "ast_hash": "8bd7605e69b9bc1bf8cc89e18f372bea",
+    "semantic_hash": "8bd7605e69b9bc1bf8cc89e18f372bea"
+  },
+  "public/seeded-assets/delhi_the_chatter_house_1781988973993.jpg": {
+    "mtime": 1792495256.616026,
+    "seen": 1792496821.018962,
+    "ast_hash": "63bcc7be9d166007a3450cea29edc1d7",
+    "semantic_hash": "63bcc7be9d166007a3450cea29edc1d7"
+  },
+  "public/seeded-assets/delhi_the_cheesy_story_1781988949047.jpg": {
+    "mtime": 1792495256.6185853,
+    "seen": 1792496821.0189679,
+    "ast_hash": "f817624e4b4e672a2ff07dea150d38dc",
+    "semantic_hash": "f817624e4b4e672a2ff07dea150d38dc"
+  },
+  "public/seeded-assets/delhi_the_colony_bistro_1781988980233.jpg": {
+    "mtime": 1792495256.620639,
+    "seen": 1792496821.0189743,
+    "ast_hash": "667fcc3b1cd03f9978961803036518dd",
+    "semantic_hash": "667fcc3b1cd03f9978961803036518dd"
+  },
+  "public/seeded-assets/delhi_the_dhaba_junction_restaurant__1781988914811.jpg": {
+    "mtime": 1792495256.624661,
+    "seen": 1792496821.0189815,
+    "ast_hash": "9c5c294002609315c097b3ddc9fa1d4c",
+    "semantic_hash": "9c5c294002609315c097b3ddc9fa1d4c"
+  },
+  "public/seeded-assets/delhi_the_garden_of_five_senses_1781988927066.jpg": {
+    "mtime": 1792495256.6302829,
+    "seen": 1792496821.018988,
+    "ast_hash": "f48f6ff2d070cdc8e52041debe77768a",
+    "semantic_hash": "f48f6ff2d070cdc8e52041debe77768a"
+  },
+  "public/seeded-assets/delhi_the_gt_road_1781988901520.jpg": {
+    "mtime": 1792495256.632297,
+    "seen": 1792496821.0189939,
+    "ast_hash": "5fef30f513d7b45cd1a287a473d06af0",
+    "semantic_hash": "5fef30f513d7b45cd1a287a473d06af0"
+  },
+  "public/seeded-assets/delhi_the_imperial_spice_1781988877785.jpg": {
+    "mtime": 1792495256.6353214,
+    "seen": 1792496821.0190003,
+    "ast_hash": "b5f36c782b6406cc52a4218fdb56e38b",
+    "semantic_hash": "b5f36c782b6406cc52a4218fdb56e38b"
+  },
+  "public/seeded-assets/delhi_the_potbelly_hauz_khas_1781988965510.jpg": {
+    "mtime": 1792495256.6403978,
+    "seen": 1792496821.0190067,
+    "ast_hash": "e725170472c320021b056be0b7823325",
+    "semantic_hash": "e725170472c320021b056be0b7823325"
+  },
+  "public/seeded-assets/delhi_the_roof_sky_restaurant_cafe_1781988915781.jpg": {
+    "mtime": 1792495256.6424127,
+    "seen": 1792496821.0190132,
+    "ast_hash": "65e844f1bf61d2e36343b6fcee457a15",
+    "semantic_hash": "65e844f1bf61d2e36343b6fcee457a15"
+  },
+  "public/seeded-assets/delhi_the_spice_route_1781988877354.jpg": {
+    "mtime": 1792495256.6583815,
+    "seen": 1792496821.01902,
+    "ast_hash": "7461e62f6d052bbe865e027a14821c96",
+    "semantic_hash": "7461e62f6d052bbe865e027a14821c96"
+  },
+  "public/seeded-assets/delhi_the_taste_of_amritsar_best_res_1781988869630.jpg": {
+    "mtime": 1792495256.6655185,
+    "seen": 1792496821.0190263,
+    "ast_hash": "fc79a4803c0dafe384954423445a2005",
+    "semantic_hash": "fc79a4803c0dafe384954423445a2005"
+  },
+  "public/seeded-assets/delhi_the_taste_of_amritsar_best_res_1781988936185.jpg": {
+    "mtime": 1792495256.6706154,
+    "seen": 1792496821.0190322,
+    "ast_hash": "2ea8b4b7b3949ba0e67672ae86a2543b",
+    "semantic_hash": "2ea8b4b7b3949ba0e67672ae86a2543b"
+  },
+  "public/seeded-assets/delhi_the_tea_room_from_blossom_koch_1781988970546.jpg": {
+    "mtime": 1792495256.6726358,
+    "seen": 1792496821.0190387,
+    "ast_hash": "6cd66975e62ff48b5f412c5a4cb77ccf",
+    "semantic_hash": "6cd66975e62ff48b5f412c5a4cb77ccf"
+  },
+  "public/seeded-assets/delhi_the_village_rooftop_1781988884370.jpg": {
+    "mtime": 1792495256.675678,
+    "seen": 1792496821.0190454,
+    "ast_hash": "b0c50cbf695beea8f80096a941b5a9d4",
+    "semantic_hash": "b0c50cbf695beea8f80096a941b5a9d4"
+  },
+  "public/seeded-assets/delhi_third_wave_coffee_1781988947048.jpg": {
+    "mtime": 1792495256.68034,
+    "seen": 1792496821.0190525,
+    "ast_hash": "12937697ed2edbbf2b3e4e00d78e9267",
+    "semantic_hash": "12937697ed2edbbf2b3e4e00d78e9267"
+  },
+  "public/seeded-assets/delhi_tomatello_cucina_italiana_1781988860236.jpg": {
+    "mtime": 1792495256.683374,
+    "seen": 1792496821.019059,
+    "ast_hash": "5a2be4e2d1e985f385e1bfb0c372f905",
+    "semantic_hash": "5a2be4e2d1e985f385e1bfb0c372f905"
+  },
+  "public/seeded-assets/delhi_tughlaqabad_fort_1781988918941.jpg": {
+    "mtime": 1792495256.6908338,
+    "seen": 1792496821.0190654,
+    "ast_hash": "1eae8d04c9a7b043548d5d8358153468",
+    "semantic_hash": "1eae8d04c9a7b043548d5d8358153468"
+  },
+  "public/seeded-assets/delhi_united_coffee_house_1781988968805.jpg": {
+    "mtime": 1792495256.6928632,
+    "seen": 1792496821.0190725,
+    "ast_hash": "76197a1c88c732c653ceea88f91eb590",
+    "semantic_hash": "76197a1c88c732c653ceea88f91eb590"
+  },
+  "public/seeded-assets/delhi_warehouse_cafe_1781988977976.jpg": {
+    "mtime": 1792495256.6984906,
+    "seen": 1792496821.0190787,
+    "ast_hash": "1f87184fe51d3bf1c1fa8af355e5339c",
+    "semantic_hash": "1f87184fe51d3bf1c1fa8af355e5339c"
+  },
+  "public/seeded-assets/delhi_white_and_greens_cafe_1781988939947.jpg": {
+    "mtime": 1792495256.7000258,
+    "seen": 1792496821.0190854,
+    "ast_hash": "e76382aebf6ec02ed1664d3ce82cf20e",
+    "semantic_hash": "e76382aebf6ec02ed1664d3ce82cf20e"
+  },
+  "public/seeded-assets/delhi_wok_in_the_clouds_connaught_pl_1781988913241.jpg": {
+    "mtime": 1792495256.7020574,
+    "seen": 1792496821.0190914,
+    "ast_hash": "a1e9f5531bd1bfec1026999dfa11587b",
+    "semantic_hash": "a1e9f5531bd1bfec1026999dfa11587b"
+  },
+  "public/seeded-assets/delhi_xero_degrees_1781988946000.jpg": {
+    "mtime": 1792495256.720301,
+    "seen": 1792496821.0190976,
+    "ast_hash": "38d7c0c484123a467f746078814f81c2",
+    "semantic_hash": "38d7c0c484123a467f746078814f81c2"
+  },
+  "public/seeded-assets/delhi_yamuna_ghat_1781988927542.jpg": {
+    "mtime": 1792495256.725338,
+    "seen": 1792496821.0191038,
+    "ast_hash": "f3fc4332c0dfcb12711a776de091561b",
+    "semantic_hash": "f3fc4332c0dfcb12711a776de091561b"
+  },
+  "public/seeded-assets/delhi_yeti_the_himalayan_kitchen_sak_1781988883310.jpg": {
+    "mtime": 1792495256.735625,
+    "seen": 1792496821.01911,
+    "ast_hash": "460bde449f6b546c0b1517f670052546",
+    "semantic_hash": "460bde449f6b546c0b1517f670052546"
+  },
+  "public/seeded-assets/delhi_youmee_dlf_avenue_saket_1781988906119.jpg": {
+    "mtime": 1792495256.7386546,
+    "seen": 1792496821.0191169,
+    "ast_hash": "b1187adced09e0b7fe05333ccfc953dd",
+    "semantic_hash": "b1187adced09e0b7fe05333ccfc953dd"
+  },
+  "public/seeded-assets/delhi_zafar_mahal_1781988900455.jpg": {
+    "mtime": 1792495256.7407005,
+    "seen": 1792496821.0191243,
+    "ast_hash": "2f74dfeec385f463374cc97c6c218707",
+    "semantic_hash": "2f74dfeec385f463374cc97c6c218707"
+  },
+  "public/seeded-assets/delhi_zahra_restaurant_caf_saket_1781988892696.jpg": {
+    "mtime": 1792495256.7505755,
+    "seen": 1792496821.0191314,
+    "ast_hash": "da9130df2acf32cac95437bc2b170f13",
+    "semantic_hash": "da9130df2acf32cac95437bc2b170f13"
+  },
+  "public/seeded-assets/di_ghent_cafe_1781375312665.jpg": {
+    "mtime": 1792495256.7556117,
+    "seen": 1792496821.0191379,
+    "ast_hash": "b53d0076556a33be03395adfc1d6c4d0",
+    "semantic_hash": "b53d0076556a33be03395adfc1d6c4d0"
+  },
+  "public/seeded-assets/di_ghent_cafe_1781375368013.jpg": {
+    "mtime": 1792495256.7576234,
+    "seen": 1792496821.0191436,
+    "ast_hash": "b53d0076556a33be03395adfc1d6c4d0",
+    "semantic_hash": "b53d0076556a33be03395adfc1d6c4d0"
+  },
+  "public/seeded-assets/di_ghent_cafe_1781375400636.jpg": {
+    "mtime": 1792495256.7586346,
+    "seen": 1792496821.0191498,
+    "ast_hash": "b53d0076556a33be03395adfc1d6c4d0",
+    "semantic_hash": "b53d0076556a33be03395adfc1d6c4d0"
+  },
+  "public/seeded-assets/greenr_cafe_1781375315535.jpg": {
+    "mtime": 1792495256.8385837,
+    "seen": 1792496821.0191562,
+    "ast_hash": "540e6fa924cf982be4e21e2b63d86099",
+    "semantic_hash": "540e6fa924cf982be4e21e2b63d86099"
+  },
+  "public/seeded-assets/greenr_cafe_1781375370501.jpg": {
+    "mtime": 1792495256.8426566,
+    "seen": 1792496821.0191622,
+    "ast_hash": "540e6fa924cf982be4e21e2b63d86099",
+    "semantic_hash": "540e6fa924cf982be4e21e2b63d86099"
+  },
+  "public/seeded-assets/guftagu_cafe_1781375313426.jpg": {
+    "mtime": 1792495256.848467,
+    "seen": 1792496821.0191681,
+    "ast_hash": "53331edf1037e7c944186c002205aab4",
+    "semantic_hash": "53331edf1037e7c944186c002205aab4"
+  },
+  "public/seeded-assets/guftagu_cafe_1781375368727.jpg": {
+    "mtime": 1792495256.8505256,
+    "seen": 1792496821.019174,
+    "ast_hash": "53331edf1037e7c944186c002205aab4",
+    "semantic_hash": "53331edf1037e7c944186c002205aab4"
+  },
+  "public/seeded-assets/guftagu_cafe_1781375401075.jpg": {
+    "mtime": 1792495256.8545494,
+    "seen": 1792496821.0191808,
+    "ast_hash": "53331edf1037e7c944186c002205aab4",
+    "semantic_hash": "53331edf1037e7c944186c002205aab4"
+  },
+  "public/seeded-assets/hamoni_cafe_1781375402081.jpg": {
+    "mtime": 1792495256.8653536,
+    "seen": 1792496821.0191941,
+    "ast_hash": "50d5bc253fa249990cd0f9c6a617df84",
+    "semantic_hash": "50d5bc253fa249990cd0f9c6a617df84"
+  },
+  "public/seeded-assets/leisure_valley_1781375317282.jpg": {
+    "mtime": 1792495256.8744688,
+    "seen": 1792496821.0192034,
+    "ast_hash": "71ebb5b723772630d07b28b1e230a9cc",
+    "semantic_hash": "71ebb5b723772630d07b28b1e230a9cc"
+  },
+  "public/seeded-assets/leisure_valley_1781375372412.jpg": {
+    "mtime": 1792495256.9203022,
+    "seen": 1792496821.01921,
+    "ast_hash": "71ebb5b723772630d07b28b1e230a9cc",
+    "semantic_hash": "71ebb5b723772630d07b28b1e230a9cc"
+  },
+  "public/seeded-assets/leopard_trail_1781375318039.jpg": {
+    "mtime": 1792495256.9253478,
+    "seen": 1792496821.0192163,
+    "ast_hash": "b99e501fc97c176b93e8be52683356ec",
+    "semantic_hash": "b99e501fc97c176b93e8be52683356ec"
+  },
+  "public/seeded-assets/leopard_trail_1781375373058.jpg": {
+    "mtime": 1792495256.932467,
+    "seen": 1792496821.0192242,
+    "ast_hash": "b99e501fc97c176b93e8be52683356ec",
+    "semantic_hash": "b99e501fc97c176b93e8be52683356ec"
+  },
+  "public/seeded-assets/mangar_forest_1781375318238.jpg": {
+    "mtime": 1792495256.9354937,
+    "seen": 1792496821.019232,
+    "ast_hash": "2de9b587aa1adf98a165c4a6fd2389b4",
+    "semantic_hash": "2de9b587aa1adf98a165c4a6fd2389b4"
+  },
+  "public/seeded-assets/mangar_forest_1781375373258.jpg": {
+    "mtime": 1792495256.9375477,
+    "seen": 1792496821.0192387,
+    "ast_hash": "2de9b587aa1adf98a165c4a6fd2389b4",
+    "semantic_hash": "2de9b587aa1adf98a165c4a6fd2389b4"
+  },
+  "public/seeded-assets/roots_cafe_1781375311839.jpg": {
+    "mtime": 1792495256.9385595,
+    "seen": 1792496821.019245,
+    "ast_hash": "21e7d27fd384d92ad6bac24d0c12f268",
+    "semantic_hash": "21e7d27fd384d92ad6bac24d0c12f268"
+  },
+  "public/seeded-assets/roots_cafe_1781375367312.jpg": {
+    "mtime": 1792495256.9426186,
+    "seen": 1792496821.0192506,
+    "ast_hash": "21e7d27fd384d92ad6bac24d0c12f268",
+    "semantic_hash": "21e7d27fd384d92ad6bac24d0c12f268"
+  },
+  "public/seeded-assets/roots_cafe_1781375400130.jpg": {
+    "mtime": 1792495256.9456408,
+    "seen": 1792496821.019257,
+    "ast_hash": "21e7d27fd384d92ad6bac24d0c12f268",
+    "semantic_hash": "21e7d27fd384d92ad6bac24d0c12f268"
+  },
+  "public/seeded-assets/sultanpur_sanctuary_1781375316737.jpg": {
+    "mtime": 1792495256.9552598,
+    "seen": 1792496821.0192635,
+    "ast_hash": "be17684711974b8ea5159c2eb6c55a97",
+    "semantic_hash": "be17684711974b8ea5159c2eb6c55a97"
+  },
+  "public/seeded-assets/sultanpur_sanctuary_1781375371502.jpg": {
+    "mtime": 1792495256.9984167,
+    "seen": 1792496821.0192702,
+    "ast_hash": "be17684711974b8ea5159c2eb6c55a97",
+    "semantic_hash": "be17684711974b8ea5159c2eb6c55a97"
+  },
+  "public/seeded-assets/under_the_neem_1781375314152.jpg": {
+    "mtime": 1792495257.0010457,
+    "seen": 1792496821.0192764,
+    "ast_hash": "fb3892e48e1297dca432f0cc5d220a85",
+    "semantic_hash": "fb3892e48e1297dca432f0cc5d220a85"
+  },
+  "public/seeded-assets/under_the_neem_1781375369442.jpg": {
+    "mtime": 1792495257.0010457,
+    "seen": 1792496821.019282,
+    "ast_hash": "fb3892e48e1297dca432f0cc5d220a85",
+    "semantic_hash": "fb3892e48e1297dca432f0cc5d220a85"
+  },
+  "public/seeded-assets/under_the_neem_1781375401502.jpg": {
+    "mtime": 1792495257.003057,
+    "seen": 1792496821.0192883,
+    "ast_hash": "fb3892e48e1297dca432f0cc5d220a85",
+    "semantic_hash": "fb3892e48e1297dca432f0cc5d220a85"
+  },
+  "spota_gem_drop_ux_design.png": {
+    "mtime": 1792495257.102444,
+    "seen": 1792496821.0192945,
+    "ast_hash": "adcc68dfdb2dc658c29c1ee96addd497",
+    "semantic_hash": "adcc68dfdb2dc658c29c1ee96addd497"
+  },
+  "spota_genz_templates.png": {
+    "mtime": 1792495257.1084955,
+    "seen": 1792496821.0193014,
+    "ast_hash": "b8b0d6943e63c71d2f9988da15109b9d",
+    "semantic_hash": "b8b0d6943e63c71d2f9988da15109b9d"
+  },
+  "spota_map_ux_design.png": {
+    "mtime": 1792495257.1206765,
+    "seen": 1792496821.0193079,
+    "ast_hash": "607796dd625a273bec56728a2f76be87",
+    "semantic_hash": "607796dd625a273bec56728a2f76be87"
+  },
+  "src/assets/hero.png": {
+    "mtime": 1780150422.1549802,
+    "seen": 1790713742.6556604,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": "aead493361b27e7510691c5d7072dfc1"
+  },
+  "src/assets/react.svg": {
+    "mtime": 1780150422.4169142,
+    "seen": 1790713742.6556618,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": "f0402b67b6ce880f65666bb49e841696"
+  },
+  "src/assets/vite.svg": {
+    "mtime": 1780150422.483974,
+    "seen": 1790713742.655663,
+    "ast_hash": "9960a24288958394ac50e57ff638b036",
+    "semantic_hash": "9960a24288958394ac50e57ff638b036"
+  },
+  "public/seeded-assets/di_ghent_cafe_1781375400687.mp4": {
+    "mtime": 1792495256.8355522,
+    "seen": 1792496821.0213819,
+    "ast_hash": "198918f40ecc7cab0fc4231adaf67c96",
+    "semantic_hash": "198918f40ecc7cab0fc4231adaf67c96"
+  },
+  "public/seeded-assets/guftagu_cafe_1781375401122.mp4": {
+    "mtime": 1792495256.8622496,
+    "seen": 1792496821.0213892,
+    "ast_hash": "3cf571d4cf2a4c4b2df823a27852a7d5",
+    "semantic_hash": "3cf571d4cf2a4c4b2df823a27852a7d5"
+  },
+  "public/seeded-assets/hamoni_cafe_1781375402114.mp4": {
+    "mtime": 1792495256.8704429,
+    "seen": 1792496821.0213962,
+    "ast_hash": "3cf571d4cf2a4c4b2df823a27852a7d5",
+    "semantic_hash": "3cf571d4cf2a4c4b2df823a27852a7d5"
+  },
+  "public/seeded-assets/roots_cafe_1781375400236.mp4": {
+    "mtime": 1792495256.9527335,
+    "seen": 1792496821.0214036,
+    "ast_hash": "3cf571d4cf2a4c4b2df823a27852a7d5",
+    "semantic_hash": "3cf571d4cf2a4c4b2df823a27852a7d5"
+  },
+  "public/seeded-assets/under_the_neem_1781375401544.mp4": {
+    "mtime": 1792495257.0206852,
+    "seen": 1792496821.0214105,
+    "ast_hash": "198918f40ecc7cab0fc4231adaf67c96",
+    "semantic_hash": "198918f40ecc7cab0fc4231adaf67c96"
+  },
+  "src/components/AgencyChallengesPanel.jsx": {
+    "mtime": 1792495257.1343548,
+    "seen": 1792496821.0083098,
+    "ast_hash": "68f5fad492c859d87adab31bfe8a11e9",
+    "semantic_hash": ""
+  },
+  "src/components/ChallengesList.jsx": {
+    "mtime": 1792495257.197348,
+    "seen": 1792496821.0083227,
+    "ast_hash": "489ae6c937179bec93b43b3e0a272f27",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionCompleteModal.jsx": {
+    "mtime": 1792495257.206974,
+    "seen": 1792496821.0083416,
+    "ast_hash": "f98393bc87ad89a01653e4cab423da80",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionPicker.jsx": {
+    "mtime": 1792495257.2125864,
+    "seen": 1792496821.0083473,
+    "ast_hash": "45915b6a37974ca2e528c72476f5c448",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionProfileCard.jsx": {
+    "mtime": 1792495257.215617,
+    "seen": 1792496821.0083532,
+    "ast_hash": "4d561178eef49b990a5c3035480c0437",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionReviewPanel.jsx": {
+    "mtime": 1792495257.2176418,
+    "seen": 1792496821.008359,
+    "ast_hash": "78e422fc7eac07998f77dbd535cb64b0",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionStatsPanel.jsx": {
+    "mtime": 1792495257.2186584,
+    "seen": 1792496821.008365,
+    "ast_hash": "39065f240a7ca3ec356bc994bd421f6b",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionTracker.jsx": {
+    "mtime": 1792495257.2208998,
+    "seen": 1792496821.0083702,
+    "ast_hash": "29dc85ab718636fc608f320315868f6f",
+    "semantic_hash": ""
+  },
+  "src/components/ExpeditionVouches.jsx": {
+    "mtime": 1792495257.2208998,
+    "seen": 1792496821.0083764,
+    "ast_hash": "af964b59571d5dd3f4c5c869ced05ce6",
+    "semantic_hash": ""
+  },
+  "src/components/RouteSubmissionsPanel.jsx": {
+    "mtime": 1792495257.3502574,
+    "seen": 1792496821.008415,
+    "ast_hash": "32ad17020cf35373c354d9249c910f0c",
+    "semantic_hash": ""
+  },
+  "src/components/SuggestRouteForm.jsx": {
+    "mtime": 1792495257.5077636,
+    "seen": 1792496821.0084789,
+    "ast_hash": "067c6b19c33cfc6770fdba3d16205375",
+    "semantic_hash": ""
+  },
+  "src/components/TierBadge.jsx": {
+    "mtime": 1792495257.5082765,
+    "seen": 1792496821.0084846,
+    "ast_hash": "7cf0401086a67fc4103c1a3c6a68d12c",
+    "semantic_hash": ""
+  },
+  "src/components/__tests__/ExpeditionV2.test.jsx": {
+    "mtime": 1792495257.5505137,
+    "seen": 1792496821.0085227,
+    "ast_hash": "9b4db8a3f520413258ec1b6b82223f37",
+    "semantic_hash": ""
+  },
+  "src/components/ui/CategoryGlyph.jsx": {
+    "mtime": 1792495257.612745,
+    "seen": 1792496821.010079,
+    "ast_hash": "3d976e5ba52a3266fb326eae8e2b304b",
+    "semantic_hash": ""
+  },
+  "src/components/ui/DiscoveryReveal.jsx": {
+    "mtime": 1792495257.618298,
+    "seen": 1792496821.0100858,
+    "ast_hash": "e2110c1f5e204cd0242970aba52d64c1",
+    "semantic_hash": ""
+  },
+  "src/components/ui/SpotMarker.jsx": {
+    "mtime": 1792495257.6203578,
+    "seen": 1792496821.010092,
+    "ast_hash": "47bc34463bad695ed7e4b70208ae8600",
+    "semantic_hash": ""
+  },
+  "src/components/ui/Wordmark.jsx": {
+    "mtime": 1792496062.2457511,
+    "seen": 1792496821.0100977,
+    "ast_hash": "d187477f98732a75508735bae60ed0e6",
+    "semantic_hash": ""
+  },
+  "src/hooks/useGeolocation.js": {
+    "mtime": 1792495257.6325312,
+    "seen": 1792496821.010116,
+    "ast_hash": "5f3c43ab3235e57147a30e48eb32a324",
+    "semantic_hash": ""
+  },
+  "src/hooks/useSheetDrag.js": {
+    "mtime": 1792495257.6576319,
+    "seen": 1792496821.0101285,
+    "ast_hash": "95cdc12352a9a99ea291fb75d4465703",
+    "semantic_hash": ""
+  },
+  "src/hooks/useSpots.js": {
+    "mtime": 1792495257.6586723,
+    "seen": 1792496821.0101347,
+    "ast_hash": "84a2f005c6aecd14e0e4033c728d0117",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/adventureCatalog.test.js": {
+    "mtime": 1792495257.6667674,
+    "seen": 1792496821.0101407,
+    "ast_hash": "40a6b5cc3e131a04938648122a07dfac",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/analytics.test.js": {
+    "mtime": 1792495257.6684694,
+    "seen": 1792496821.0101464,
+    "ast_hash": "d3dc8ac6636630df5f284db263da4343",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/apFormula.test.js": {
+    "mtime": 1792495257.6705182,
+    "seen": 1792496821.0101519,
+    "ast_hash": "b0a4e9eaab10b595dbdef2f533fe5ae8",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/badgeEngine.expeditions.test.js": {
+    "mtime": 1792495257.6705182,
+    "seen": 1792496821.0101573,
+    "ast_hash": "05e9b367fd526b576061b5f9f28ea5a8",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/communityService.test.js": {
+    "mtime": 1792495257.6725311,
+    "seen": 1792496821.010169,
+    "ast_hash": "2ebeb184a8b8b66329f15a1526f149bf",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/exifUtils.test.js": {
+    "mtime": 1792495257.6755602,
+    "seen": 1792496821.0101748,
+    "ast_hash": "a900ff09832fa86e6914dbba31d85ca2",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/expeditionService.test.js": {
+    "mtime": 1792495257.6755602,
+    "seen": 1792496821.0101802,
+    "ast_hash": "44152ebc665863fb5eba05aada2d6f58",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/tiers.test.js": {
+    "mtime": 1792495257.6824164,
+    "seen": 1792496821.0102055,
+    "ast_hash": "379581d66976ce23411f450dbff99019",
+    "semantic_hash": ""
+  },
+  "src/lib/__tests__/trackRecorder.test.js": {
+    "mtime": 1792495257.6844382,
+    "seen": 1792496821.010213,
+    "ast_hash": "98ba5b320f5878a0889cbfa66b8754d2",
+    "semantic_hash": ""
+  },
+  "src/lib/adventureCatalog.js": {
+    "mtime": 1792495257.685453,
+    "seen": 1792496821.0102184,
+    "ast_hash": "2b31fba476136a57fbc761a42e5c1589",
+    "semantic_hash": ""
+  },
+  "src/lib/analytics.js": {
+    "mtime": 1792495257.6874678,
+    "seen": 1792496821.010224,
+    "ast_hash": "27dc49e0d9c7a8d2b40628c85c8e253e",
+    "semantic_hash": ""
+  },
+  "src/lib/apFormula.js": {
+    "mtime": 1792495257.68848,
+    "seen": 1792496821.0102308,
+    "ast_hash": "298156f4dc5b014f54e754543e6c7477",
+    "semantic_hash": ""
+  },
+  "src/lib/communityService.js": {
+    "mtime": 1792495257.713334,
+    "seen": 1792496821.0102515,
+    "ast_hash": "49cb8fabc0db695ab58fcafb7136d21e",
+    "semantic_hash": ""
+  },
+  "src/lib/expeditionService.js": {
+    "mtime": 1792495257.7153509,
+    "seen": 1792496821.0102694,
+    "ast_hash": "ff2a438c457bc8dc7c8e90bec0d5a02b",
+    "semantic_hash": ""
+  },
+  "src/lib/expeditionStore.js": {
+    "mtime": 1792495257.7184122,
+    "seen": 1792496821.010276,
+    "ast_hash": "4a63c4c834b7a4953b1bf3b0014d0536",
+    "semantic_hash": ""
+  },
+  "src/lib/format.js": {
+    "mtime": 1792495257.7204702,
+    "seen": 1792496821.0102835,
+    "ast_hash": "8a235d0ba861bb33c9526f152e1cb125",
+    "semantic_hash": ""
+  },
+  "src/lib/indiaStates.js": {
+    "mtime": 1792495257.7326899,
+    "seen": 1792496821.010335,
+    "ast_hash": "7e45f143b170bfc9dce96cf60f852408",
+    "semantic_hash": ""
+  },
+  "src/lib/leaderboardService.js": {
+    "mtime": 1792495257.7347043,
+    "seen": 1792496821.0103402,
+    "ast_hash": "015a505a274abb6021e7bca003334600",
+    "semantic_hash": ""
+  },
+  "src/lib/rankCard.js": {
+    "mtime": 1792496062.3186445,
+    "seen": 1792496821.0103567,
+    "ast_hash": "74385f3fb65e2cac351070556146f8f7",
+    "semantic_hash": ""
+  },
+  "src/lib/tiers.js": {
+    "mtime": 1792495257.7473598,
+    "seen": 1792496821.010381,
+    "ast_hash": "2b3383a5b7a83f4d040d3c996a3768a5",
+    "semantic_hash": ""
+  },
+  "src/lib/trackRecorder.js": {
+    "mtime": 1792495257.7483723,
+    "seen": 1792496821.0103867,
+    "ast_hash": "654bf3301ebffd71dfcf6102495cad05",
+    "semantic_hash": ""
+  },
+  "src/pages/DesignPreview.jsx": {
+    "mtime": 1792496062.3884356,
+    "seen": 1792496821.0104394,
+    "ast_hash": "9fbd1c764d625f9a746af4a31cfb8430",
+    "semantic_hash": ""
+  },
+  "src/pages/ExpeditionsView.jsx": {
+    "mtime": 1792495257.83234,
+    "seen": 1792496821.0104454,
+    "ast_hash": "e309676efe11f02eb678c62e90c0ee99",
+    "semantic_hash": ""
+  },
+  "src/pages/HomeView.jsx": {
+    "mtime": 1792496098.7603643,
+    "seen": 1792496821.0104563,
+    "ast_hash": "620bf55daf3eaa23325afa4eccd3c5ea",
+    "semantic_hash": ""
+  },
+  "src/pages/LeaderboardView.jsx": {
+    "mtime": 1792495257.8825197,
+    "seen": 1792496821.0104675,
+    "ast_hash": "21841df3d4d5898d4c9ee6b8cbe23e6e",
+    "semantic_hash": ""
+  },
+  "src/pages/__tests__/LeaderboardView.test.jsx": {
+    "mtime": 1792495257.9475813,
+    "seen": 1792496821.0105214,
+    "ast_hash": "2978b64fb2d479ba6d278216af90f842",
+    "semantic_hash": ""
+  },
+  "src/pages/__tests__/SafeTrekView.expedition.test.jsx": {
+    "mtime": 1792495257.9485948,
+    "seen": 1792496821.010527,
+    "ast_hash": "dd21a6bbcc373c856323506e32010e4e",
+    "semantic_hash": ""
+  },
+  "src/pages/steps/StepReview.jsx": {
+    "mtime": 1792495257.9683883,
+    "seen": 1792496821.0105612,
+    "ast_hash": "7b6207cd3666554c85c779017096cf3f",
+    "semantic_hash": ""
+  },
+  "test-results/.last-run.json": {
+    "mtime": 1792407301.4628642,
+    "seen": 1792496821.0105784,
+    "ast_hash": "f196824657d8858bc7fa44eecbba38b1",
+    "semantic_hash": ""
+  },
+  "docs/spota-2-redesign.md": {
+    "mtime": 1792495255.401406,
+    "seen": 1792496821.0133913,
+    "ast_hash": "4c79e25e69873a37f0292f21e3ce59a7",
+    "semantic_hash": ""
+  },
+  "docs/spota-expeditions-brd.md": {
+    "mtime": 1792495255.401406,
+    "seen": 1792496821.013399,
+    "ast_hash": "ce2b23c41321f77f0067aae90f9d1d96",
+    "semantic_hash": ""
+  },
+  "docs/spota-expeditions-implementation-plan.md": {
+    "mtime": 1792495255.4034438,
+    "seen": 1792496821.0134063,
+    "ast_hash": "ec40f4a459322b41e21f91523a3e0649",
+    "semantic_hash": ""
+  }
+}

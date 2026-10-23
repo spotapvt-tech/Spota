@@ -1,260 +1,258 @@
-import { useState, useEffect, useRef } from 'react';
-import { X, Navigation, Compass, CameraOff } from 'lucide-react';
-import { haversineDistance } from '../lib/utils';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { X, Navigation, Compass, CameraOff, LocateFixed } from 'lucide-react';
+import useDeviceHeading from '../hooks/useDeviceHeading';
+import useLiveLocation from '../hooks/useLiveLocation';
+import { arCandidates, fieldOfView, layoutMarkers, lerpAngle, normalizeAngle, AR_RADIUS_KM } from '../lib/arMath';
+import { formatDistance } from '../lib/format';
+import { CategoryIcon } from '../components/ui/CategoryGlyph';
 import './ARView.css';
 
-// Helper to compute bearing from user (lat1, lon1) to spot (lat2, lon2)
-function getBearing(lat1, lon1, lat2, lon2) {
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const lat1Rad = (lat1 * Math.PI) / 180;
-  const lat2Rad = (lat2 * Math.PI) / 180;
-  const y = Math.sin(dLon) * Math.cos(lat2Rad);
-  const x =
-    Math.cos(lat1Rad) * Math.sin(lat2Rad) -
-    Math.sin(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon);
-  const brng = (Math.atan2(y, x) * 180) / Math.PI;
-  return (brng + 360) % 360;
+const SMOOTHING = 0.2;   // low-pass factor per frame for heading/pitch
+const DRAG_DEG_PER_PX = 0.25;
+
+function isLandscapeNow() {
+  return window.innerWidth > window.innerHeight;
 }
 
 export default function ARView({ spots, userLocation, onClose, onSelectSpot }) {
-  const [stream, setStream] = useState(null);
   const [cameraError, setCameraError] = useState(false);
-  const [heading, setHeading] = useState(0); // 0 = North, 90 = East, etc.
-  const [dragOffset, setDragOffset] = useState(0); // Manual look offset for desktop drag
-  const [isDragging, setIsDragging] = useState(false);
-  const startDragX = useRef(0);
+  const [isLandscape, setIsLandscape] = useState(isLandscapeNow);
+  const [anyVisible, setAnyVisible] = useState(true);
   const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const headingTextRef = useRef(null);
+  const markerNodes = useRef(new Map());
 
-  const targetHeading = useRef(0);
-  const currentHeadingSmooth = useRef(0);
+  const { sensorRef, status: sensorStatus, requestPermission } = useDeviceHeading();
+  const live = useLiveLocation({ highAccuracy: true, minMoveMeters: 3 });
+  // Live high-accuracy fix first; the map's last fix seeds it while GPS warms up.
+  const coords = live.coords || userLocation;
 
-  // Field of View in degrees
-  const FOV = 60;
+  // Manual look-around is only a fallback when there's no usable compass
+  // (desktop, sensor-less devices, denied permission) — on a phone with a
+  // working compass a stray swipe must not skew every label permanently.
+  const dragEnabled = sensorStatus === 'unavailable';
+  const dragOffsetRef = useRef(0);
+  const dragStartX = useRef(null);
 
-  // 1. Initialize Camera
+  // 1. Camera — stream kept in a ref so cleanup always sees the live stream.
   useEffect(() => {
-    async function startCamera() {
+    let cancelled = false;
+
+    const stop = () => {
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    };
+
+    const start = async () => {
+      if (streamRef.current || !navigator.mediaDevices?.getUserMedia) {
+        if (!navigator.mediaDevices?.getUserMedia) setCameraError(true);
+        return;
+      }
       try {
-        const mediaStream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }
-        });
-        setStream(mediaStream);
-        if (videoRef.current) {
-          videoRef.current.srcObject = mediaStream;
-        }
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+        streamRef.current = stream;
+        if (videoRef.current) videoRef.current.srcObject = stream;
+        setCameraError(false);
       } catch (err) {
         console.error('Camera access error:', err);
-        setCameraError(true);
+        if (!cancelled) setCameraError(true);
       }
-    }
-    startCamera();
+    };
 
+    // Release the camera when the app is backgrounded (also fires on
+    // Capacitor/Android pause) and reacquire it on return.
+    const onVisibility = () => (document.hidden ? stop() : start());
+
+    start();
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop());
-      }
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVisibility);
+      stop();
     };
   }, []);
 
-  // 2. Track Orientation Sensor and LERP heading smoothly
   useEffect(() => {
-    const handleOrientation = (e) => {
-      let currentVal = e.alpha;
-      if (e.webkitCompassHeading) {
-        currentVal = e.webkitCompassHeading;
-      }
-      if (currentVal !== null && currentVal !== undefined) {
-        // webkitCompassHeading is aligned to magnetic north.
-        // Standard alpha is counter-clockwise, compass heading is clockwise.
-        targetHeading.current = (360 - currentVal + 360) % 360;
-      }
-    };
-
-    window.addEventListener('deviceorientation', handleOrientation, true);
-    window.addEventListener('deviceorientationabsolute', handleOrientation, true);
-
-    // Run animation frame loop to smoothly transition heading to target (lerp)
-    let animFrame;
-    const lerpAngle = (current, target, step) => {
-      let diff = target - current;
-      while (diff < -180) diff += 360;
-      while (diff > 180) diff -= 360;
-      return (current + diff * step + 360) % 360;
-    };
-
-    const updateSmoothHeading = () => {
-      const nextHeading = lerpAngle(currentHeadingSmooth.current, targetHeading.current, 0.15);
-      currentHeadingSmooth.current = nextHeading;
-      setHeading(nextHeading);
-      animFrame = requestAnimationFrame(updateSmoothHeading);
-    };
-
-    animFrame = requestAnimationFrame(updateSmoothHeading);
-
+    const onResize = () => setIsLandscape(isLandscapeNow());
+    window.addEventListener('resize', onResize);
+    window.addEventListener('orientationchange', onResize);
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation);
-      window.removeEventListener('deviceorientationabsolute', handleOrientation);
-      cancelAnimationFrame(animFrame);
+      window.removeEventListener('resize', onResize);
+      window.removeEventListener('orientationchange', onResize);
     };
   }, []);
 
-  // 3. Desktop Drag to look handlers
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    startDragX.current = e.clientX;
+  // 2. Distance/bearing computed once per location change — not per frame.
+  const candidates = useMemo(() => arCandidates(spots, coords), [spots, coords]);
+
+  // 3. Animation loop: smooth the sensor and write transforms straight to the
+  // marker nodes. React only re-renders when the candidate set changes.
+  useEffect(() => {
+    const fov = fieldOfView(isLandscape);
+    let frame;
+    let heading = dragEnabled ? dragOffsetRef.current : (sensorRef.current.heading ?? 0);
+    let pitch = sensorRef.current.pitch ?? 0;
+    let lastHeading = null;
+    let lastPitch = null;
+    let lastLabel = '';
+    let lastAnyVisible = null;
+
+    const tick = () => {
+      const sensor = sensorRef.current;
+      const target = dragEnabled || sensor.heading == null
+        ? dragOffsetRef.current
+        : sensor.heading;
+      const targetPitch = dragEnabled ? 0 : sensor.pitch;
+      heading = lerpAngle(heading, target, SMOOTHING);
+      pitch += (targetPitch - pitch) * SMOOTHING;
+
+      const moved = lastHeading == null
+        || Math.abs(heading - lastHeading) > 0.05
+        || Math.abs(pitch - lastPitch) > 0.05;
+
+      if (moved) {
+        lastHeading = heading;
+        lastPitch = pitch;
+        const layout = layoutMarkers(candidates, {
+          heading, pitch, width: window.innerWidth, height: window.innerHeight, fov,
+        });
+        let visibleCount = 0;
+        layout.forEach((p, i) => {
+          const node = markerNodes.current.get(candidates[i].spot.id);
+          if (!node) return;
+          if (!p.visible) {
+            node.style.visibility = 'hidden';
+            return;
+          }
+          visibleCount += 1;
+          node.style.visibility = 'visible';
+          node.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) translate(-50%, -50%) scale(${p.scale.toFixed(3)})`;
+          node.style.opacity = String(p.opacity);
+          node.style.zIndex = String(p.zIndex);
+        });
+
+        const shown = normalizeAngle(Math.round(heading));
+        const label = `${shown}° ${getCompassDirection(shown)}`;
+        if (label !== lastLabel && headingTextRef.current) {
+          headingTextRef.current.textContent = label;
+          lastLabel = label;
+        }
+        const any = visibleCount > 0;
+        if (any !== lastAnyVisible) {
+          lastAnyVisible = any;
+          setAnyVisible(any);
+        }
+      }
+      frame = requestAnimationFrame(tick);
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [candidates, isLandscape, dragEnabled, sensorRef]);
+
+  // 4. Drag-to-look (fallback only)
+  const onPointerDown = (e) => {
+    if (!dragEnabled) return;
+    dragStartX.current = e.clientX;
   };
-
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
-    const deltaX = e.clientX - startDragX.current;
-    // Map screen movement to degrees offset (e.g. 1px = 0.25deg)
-    setDragOffset((prev) => (prev - deltaX * 0.25 + 360) % 360);
-    startDragX.current = e.clientX;
+  const onPointerMove = (e) => {
+    if (!dragEnabled || dragStartX.current == null) return;
+    const dx = e.clientX - dragStartX.current;
+    dragOffsetRef.current = normalizeAngle(dragOffsetRef.current - dx * DRAG_DEG_PER_PX);
+    dragStartX.current = e.clientX;
   };
+  const onPointerUp = () => { dragStartX.current = null; };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
+  const setMarkerNode = useCallback((id, node) => {
+    if (node) markerNodes.current.set(id, node);
+    else markerNodes.current.delete(id);
+  }, []);
 
-  // 4. Calculate positions of visible spots
-  const effectiveHeading = (heading + dragOffset + 360) % 360;
-
-  // Mock a user location if browser geolocation was denied (for testing/desktop)
-  const userCoords = userLocation || [28.6139, 77.2090]; // Default to Delhi
-
-  const visibleSpots = spots
-    .map((spot) => {
-      const distance = haversineDistance(
-        userCoords[0],
-        userCoords[1],
-        spot.latitude,
-        spot.longitude
-      );
-      
-      const bearing = getBearing(
-        userCoords[0],
-        userCoords[1],
-        spot.latitude,
-        spot.longitude
-      );
-
-      // Angle relative to our heading
-      let diff = bearing - effectiveHeading;
-      // Normalise to [-180, 180]
-      if (diff > 180) diff -= 360;
-      if (diff < -180) diff += 360;
-
-      return {
-        ...spot,
-        distance,
-        bearing,
-        relativeAngle: diff,
-        visible: Math.abs(diff) < (FOV / 2) + 5
-      };
-    })
-    .filter((spot) => spot.visible);
+  let helper = null;
+  if (sensorStatus === 'needs-permission') helper = 'Compass access is needed to place SPOTAs around you';
+  else if (sensorStatus === 'pending') helper = 'Calibrating compass…';
+  else if (dragEnabled) helper = 'No compass found — drag left/right to look around';
 
   return (
-    <div 
-      className="ar-view-container"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onTouchStart={(e) => handleMouseDown({ clientX: e.touches[0].clientX })}
-      onTouchMove={(e) => handleMouseMove({ clientX: e.touches[0].clientX })}
-      onTouchEnd={handleMouseUp}
+    <div
+      className={`ar-view-container ${dragEnabled ? 'is-draggable' : ''}`}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
     >
-      {/* Full-Screen Camera Feed */}
       {!cameraError ? (
-        <video 
-          ref={videoRef} 
-          autoPlay 
-          playsInline 
-          muted 
-          className="ar-camera-feed"
-        />
+        <video ref={videoRef} autoPlay playsInline muted className="ar-camera-feed" />
       ) : (
         <div className="ar-camera-fallback">
           <CameraOff size={48} />
           <h3>Camera Feed Unavailable</h3>
-          <p>Please check camera permissions. Drag left/right to look around the virtual radar.</p>
+          <p>Please check camera permissions. SPOTAs are still placed around you below.</p>
         </div>
       )}
 
-      {/* Compass HUD */}
       <div className="ar-hud">
         <div className="hud-heading">
           <Compass size={18} className="hud-icon" />
-          <span>{Math.round(effectiveHeading)}° {getCompassDirection(effectiveHeading)}</span>
+          <span ref={headingTextRef}>—</span>
         </div>
-        <div className="hud-helper">
-          <Navigation size={12} />
-          <span>Drag screen left/right to rotate camera manually</span>
-        </div>
+        {helper && (
+          <div className="hud-helper">
+            <Navigation size={12} />
+            <span>{helper}</span>
+          </div>
+        )}
+        {sensorStatus === 'needs-permission' && (
+          <button
+            className="sp-btn sp-btn--primary sp-btn--sm ar-permission-btn"
+            onPointerDown={(e) => e.stopPropagation()}
+            onClick={requestPermission}
+          >
+            <Compass size={14} /> Enable compass
+          </button>
+        )}
       </div>
 
-      <button className="ar-close-btn glass-panel" onClick={onClose}>
+      <button className="ar-close-btn" onClick={onClose} aria-label="Close AR finder">
         <X size={24} />
       </button>
 
-      {/* Floating Spot Labels Container */}
       <div className="ar-overlay">
-        {visibleSpots.map((spot) => {
-          // Horizontal offset percent (from -50% to +50%)
-          const xPercent = (spot.relativeAngle / (FOV / 2)) * 50 + 50; 
-          
-          // Vertical offset scales based on distance (closer = lower/bigger, further = higher/smaller)
-          const scale = Math.max(0.6, Math.min(1.2, 1 / (spot.distance + 0.1)));
-          const yOffset = 150 + spot.distance * 80; // Distance shifts spot lower
+        {candidates.map(({ spot, distance }) => (
+          <button
+            key={spot.id}
+            ref={(node) => setMarkerNode(spot.id, node)}
+            className="ar-spot-marker"
+            onClick={() => onSelectSpot(spot)}
+            aria-label={`${spot.title}, ${formatDistance(distance)} away`}
+          >
+            <span className="ar-marker-card">
+              <span className="ar-marker-icon"><CategoryIcon category={spot.category} size={18} /></span>
+              <span className="ar-marker-details">
+                <strong>{spot.title}</strong>
+                <span className="sp-mono">{formatDistance(distance)} away</span>
+              </span>
+            </span>
+          </button>
+        ))}
 
-          // Smoothly fade out spots near the screen edge (within the +5 degree extra buffer)
-          const boundary = FOV / 2;
-          const fadeStart = boundary - 5;
-          const absAngle = Math.abs(spot.relativeAngle);
-          let opacity = 1;
-          if (absAngle > fadeStart) {
-            opacity = Math.max(0, 1 - (absAngle - fadeStart) / (boundary + 5 - fadeStart));
-          }
-
-          return (
-            <div
-              key={spot.id}
-              className="ar-spot-marker clickable"
-              onClick={() => onSelectSpot(spot)}
-              style={{
-                left: `${xPercent}%`,
-                top: `${Math.min(yOffset, window.innerHeight - 200)}px`,
-                transform: `translate(-50%, -50%) scale(${scale})`,
-                zIndex: Math.round(100 - spot.distance * 10),
-                opacity: opacity
-              }}
-            >
-              <div className="ar-marker-card glass-panel">
-                <span className="ar-marker-emoji">
-                  {spot.category === 'cafe' ? '☕' : (spot.category === 'viewpoint' ? '🌅' : '💎')}
-                </span>
-                <div className="ar-marker-details">
-                  <h4>{spot.title}</h4>
-                  <span>{spot.distance.toFixed(2)} km away</span>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-
-        {visibleSpots.length === 0 && (
-          <div className="ar-no-spots animate-pulse">
-            <span>Scan around for nearby spots...</span>
+        {!coords ? (
+          <div className="ar-no-spots" role="status">
+            <LocateFixed size={14} className="animate-pulse" /> Waiting for GPS…
           </div>
+        ) : candidates.length === 0 ? (
+          <div className="ar-no-spots" role="status">No SPOTAs within {AR_RADIUS_KM} km of you yet</div>
+        ) : !anyVisible && (
+          <div className="ar-no-spots animate-pulse" role="status">Scan around for nearby SPOTAs…</div>
         )}
       </div>
     </div>
   );
 }
 
-// Compass direction labels
 function getCompassDirection(deg) {
   const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  const index = Math.round(((deg % 360) / 45)) % 8;
-  return directions[index];
+  return directions[Math.round(deg / 45) % 8];
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback, memo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { GoogleMap, Circle } from '@react-google-maps/api';
 import {
@@ -14,6 +14,9 @@ import ARView from './ARView';
 import AIVibeMatcher from '../components/AIVibeMatcher';
 import OfflineModal from '../components/OfflineModal';
 import useOfflineSpots from '../hooks/useOfflineSpots';
+import useLiveLocation from '../hooks/useLiveLocation';
+import { requestOrientationPermission } from '../hooks/useDeviceHeading';
+import { buildMapItems } from '../lib/mapClustering';
 import { spotPopularity } from '../hooks/useSpots';
 import { categories, getCategoryById } from '../lib/categoryConfig';
 import { formatDistance } from '../lib/format';
@@ -24,6 +27,7 @@ import CategoryGlyph, { CategoryIcon } from '../components/ui/CategoryGlyph';
 import './MapView.css';
 
 const RANGES = ['All', '1', '5', '10', '25'];
+const CLUSTER_THRESHOLD = 60; // above this many pins in view, group them into grid cells
 
 export default function MapView() {
   const { isLoaded, loadError } = useSpotaGoogleMaps();
@@ -34,8 +38,6 @@ export default function MapView() {
   const [spots, setSpots] = useState([]);
   const [fetchState, setFetchState] = useState('loading'); // loading | ready | error
   const [center, setCenter] = useState([28.6139, 77.2090]); // Default Delhi, India
-  const [userLocation, setUserLocation] = useState(null);
-  const [geoStatus, setGeoStatus] = useState('idle'); // idle | locating | granted | denied | unavailable
   const [selectedRange, setSelectedRange] = useState(incoming.focusSpotId ? 'All' : '5');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpot, setSelectedSpot] = useState(null); // full details modal
@@ -56,10 +58,23 @@ export default function MapView() {
   const placeAbortRef = useRef(null);
   const searchContainerRef = useRef(null);
   const mapRef = useRef(null);
+  const rootRef = useRef(null);
+  const centerRef = useRef(center);
+  useEffect(() => { centerRef.current = center; }, [center]);
+  const [viewport, setViewport] = useState(null); // { bounds, zoom } at last map idle
   const focusAppliedRef = useRef(false);
   // A deep link ("Take me there" from Home) owns the initial camera; GPS
   // must not yank the map away from it.
   const skipAutoCenterRef = useRef(Boolean(incoming.focusSpotId));
+  // "Follow me" after the user taps recenter; cleared as soon as they pan.
+  const followRef = useRef(false);
+  const firstFixRef = useRef(false);
+
+  // Live position (watchPosition) so the "you are here" dot follows the
+  // explorer. Paused while AR is open — AR runs its own high-accuracy watch.
+  const live = useLiveLocation({ enabled: !showAR });
+  const userLocation = live.coords;
+  const geoStatus = live.status; // locating | granted | denied | unavailable
 
   const { isOffline, offlineSpots, refreshCache } = useOfflineSpots();
 
@@ -85,29 +100,24 @@ export default function MapView() {
     }
   }, []);
 
-  const locate = useCallback((recenter = true) => {
-    if (!('geolocation' in navigator)) { setGeoStatus('unavailable'); return; }
-    setGeoStatus('locating');
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const latLng = [position.coords.latitude, position.coords.longitude];
-        setUserLocation(latLng);
-        setGeoStatus('granted');
-        if (recenter && !skipAutoCenterRef.current) setCenter(latLng);
-      },
-      (err) => setGeoStatus(err && err.code === 1 ? 'denied' : 'unavailable'),
-      { timeout: 12000, maximumAge: 60000 }
-    );
-  }, []);
-
-  // Fetch spots + center on the user (the map is an explicit "where am I" surface)
+  // Fetch spots (location is watched by useLiveLocation above)
   useEffect(() => {
     const t = setTimeout(() => {
       if (!isOffline) fetchSpots();
-      locate(true);
     }, 0);
     return () => clearTimeout(t);
-  }, [isOffline, fetchSpots, locate]);
+  }, [isOffline, fetchSpots]);
+
+  // Centre on the first GPS fix (the map is an explicit "where am I" surface),
+  // then only keep following while the user is in follow-me mode.
+  useEffect(() => {
+    if (!userLocation) return undefined;
+    const first = !firstFixRef.current;
+    firstFixRef.current = true;
+    if (!(first && !skipAutoCenterRef.current) && !followRef.current) return undefined;
+    const t = setTimeout(() => setCenter(userLocation), 0);
+    return () => clearTimeout(t);
+  }, [userLocation]);
 
   // Center map on last offline spot if offline mode becomes active
   useEffect(() => {
@@ -120,7 +130,9 @@ export default function MapView() {
     return undefined;
   }, [isOffline, offlineSpots]);
 
-  // Pan the map whenever `center` changes
+  // Pan the map whenever `center` changes. The map is uncontrolled: passing
+  // `center` as a prop made the library call setCenter() on every render
+  // (new object each time), snapping the map back mid-pan.
   useEffect(() => {
     if (center && mapRef.current) {
       mapRef.current.panTo({ lat: center[0], lng: center[1] });
@@ -264,41 +276,106 @@ export default function MapView() {
   };
 
   const recenterOnMe = () => {
+    followRef.current = true;
     if (userLocation) {
       setCenter([userLocation[0], userLocation[1]]);
       if (mapRef.current) mapRef.current.setZoom(14);
     } else {
       skipAutoCenterRef.current = false;
-      locate(true);
+      firstFixRef.current = false;
+      live.retry();
     }
+  };
+
+  // While the camera moves, drop the glass blur on chrome over the map (it is
+  // re-blurred every frame). Toggled on the DOM directly — no React render.
+  const markMoving = useCallback(() => rootRef.current?.classList.add('is-moving'), []);
+  const handleDragStart = useCallback(() => {
+    followRef.current = false;
+    markMoving();
+  }, [markMoving]);
+  const handleIdle = useCallback(() => {
+    rootRef.current?.classList.remove('is-moving');
+    const map = mapRef.current;
+    const b = map?.getBounds();
+    if (!b) return;
+    const ne = b.getNorthEast();
+    const sw = b.getSouthWest();
+    const next = { bounds: { north: ne.lat(), east: ne.lng(), south: sw.lat(), west: sw.lng() }, zoom: map.getZoom() };
+    setViewport((prev) => (prev
+      && prev.zoom === next.zoom
+      && prev.bounds.north === next.bounds.north && prev.bounds.south === next.bounds.south
+      && prev.bounds.east === next.bounds.east && prev.bounds.west === next.bounds.west
+      ? prev : next));
+  }, []);
+  const handleMapLoad = useCallback((map) => {
+    mapRef.current = map;
+    const [lat, lng] = centerRef.current;
+    map.setCenter({ lat, lng });
+  }, []);
+  const handleMapClick = useCallback(() => setActiveSpotId(null), []);
+
+  const zoomToCluster = useCallback((cluster) => {
+    const map = mapRef.current;
+    if (!map || !window.google) return;
+    const { north, south, east, west } = cluster.bounds;
+    if (north - south < 1e-4 && east - west < 1e-4) {
+      map.panTo({ lat: cluster.lat, lng: cluster.lng });
+      map.setZoom((map.getZoom() || 13) + 2);
+    } else {
+      map.fitBounds(new window.google.maps.LatLngBounds({ lat: south, lng: west }, { lat: north, lng: east }), 64);
+    }
+  }, []);
+
+  // Only pins in the padded viewport are mounted; dense views are clustered.
+  const mapItems = useMemo(
+    () => buildMapItems(filteredSpots, viewport, { threshold: CLUSTER_THRESHOLD, keepIds: [activeSpotId, nearbySpotId] }),
+    [filteredSpots, viewport, activeSpotId, nearbySpotId]
+  );
+
+  const userPosition = useMemo(
+    () => (userLocation ? { lat: userLocation[0], lng: userLocation[1] } : null),
+    [userLocation]
+  );
+  const rangeCenter = useMemo(
+    () => (referenceCoords ? { lat: referenceCoords[0], lng: referenceCoords[1] } : null),
+    [referenceCoords]
+  );
+
+  const openAR = () => {
+    // iOS needs the motion-sensor prompt inside this tap's user gesture.
+    requestOrientationPermission();
+    setShowAR(true);
   };
 
   const mapUnavailable = Boolean(loadError) || (!isLoaded && !navigator.onLine);
   const effectiveView = mapUnavailable ? 'list' : viewMode;
 
   return (
-    <div className={`explore ${effectiveView === 'list' ? 'is-list' : ''}`}>
+    <div ref={rootRef} className={`explore ${effectiveView === 'list' ? 'is-list' : ''} ${showAR ? 'is-ar' : ''}`}>
       {/* ---------- Map canvas ---------- */}
       <div className="explore-map" aria-hidden={effectiveView === 'list'}>
         {!isLoaded && !loadError && <div className="explore-map__placeholder"><span className="sp-eyebrow">Loading terrain…</span></div>}
         {isLoaded && (
           <GoogleMap
             mapContainerClassName="full-screen-map"
-            center={{ lat: center[0], lng: center[1] }}
             zoom={13}
             options={DEFAULT_MAP_OPTIONS}
-            onLoad={(map) => { mapRef.current = map; }}
-            onClick={() => setActiveSpotId(null)}
+            onLoad={handleMapLoad}
+            onClick={handleMapClick}
+            onDragStart={handleDragStart}
+            onZoomChanged={markMoving}
+            onIdle={handleIdle}
           >
-            {userLocation && (
-              <GemMarkerOverlay position={{ lat: userLocation[0], lng: userLocation[1] }} width={18} height={18} zIndex={5}>
+            {userPosition && (
+              <GemMarkerOverlay position={userPosition} width={18} height={18} zIndex={5} anchor="center">
                 <div className="user-location-dot" title="You are here" />
               </GemMarkerOverlay>
             )}
 
-            {selectedRange !== 'All' && referenceCoords && (
+            {selectedRange !== 'All' && rangeCenter && (
               <Circle
-                center={{ lat: referenceCoords[0], lng: referenceCoords[1] }}
+                center={rangeCenter}
                 radius={Number(selectedRange) * 1000}
                 options={{
                   fillColor: '#3E6B4F',
@@ -311,25 +388,23 @@ export default function MapView() {
               />
             )}
 
-            {filteredSpots.map((spot) => (
-              <GemMarkerOverlay
-                key={spot.id}
-                position={{ lat: spot.latitude, lng: spot.longitude }}
-                width={40}
-                height={48}
-                zIndex={spot.id === activeSpotId ? 20 : 1}
-                onClick={(e) => { e?.stopPropagation?.(); setActiveSpotId(spot.id); }}
-              >
-                <SpotMarker
-                  category={spot.category}
-                  selected={spot.id === activeSpotId}
-                  trending={spotPopularity(spot) >= 5}
-                  nearby={spot.id === nearbySpotId}
-                  pending={spot.status === 'pending'}
-                  label={spot.title}
-                />
-              </GemMarkerOverlay>
-            ))}
+            {mapItems.map((item) => (item.type === 'cluster' ? (
+              <MapClusterPin key={item.id} cluster={item} onSelect={zoomToCluster} />
+            ) : (
+              <MapSpotPin
+                key={item.spot.id}
+                id={item.spot.id}
+                lat={item.spot.latitude}
+                lng={item.spot.longitude}
+                category={item.spot.category}
+                title={item.spot.title}
+                selected={item.spot.id === activeSpotId}
+                trending={spotPopularity(item.spot) >= 5}
+                nearby={item.spot.id === nearbySpotId}
+                pending={item.spot.status === 'pending'}
+                onSelect={setActiveSpotId}
+              />
+            )))}
           </GoogleMap>
         )}
       </div>
@@ -418,7 +493,7 @@ export default function MapView() {
           <button className="explore-fab sp-glass" onClick={recenterOnMe} aria-label="Center on my location" title="My location">
             <LocateFixed size={20} className={geoStatus === 'locating' ? 'animate-pulse' : ''} />
           </button>
-          <button className="explore-fab sp-glass" onClick={() => setShowAR(true)} aria-label="Open AR finder" title="AR finder">
+          <button className="explore-fab sp-glass" onClick={openAR} aria-label="Open AR finder" title="AR finder">
             <Camera size={20} />
           </button>
           {!isOffline && (
@@ -553,6 +628,31 @@ export default function MapView() {
     </div>
   );
 }
+
+// Memoised on primitives so a MapView re-render (typing, GPS fix, reaction
+// event) doesn't re-render every OverlayView on the map.
+const MapSpotPin = memo(function MapSpotPin({ id, lat, lng, category, title, selected, trending, nearby, pending, onSelect }) {
+  const position = useMemo(() => ({ lat, lng }), [lat, lng]);
+  const handleClick = useCallback((e) => { e?.stopPropagation?.(); onSelect(id); }, [id, onSelect]);
+  return (
+    <GemMarkerOverlay position={position} width={40} height={48} zIndex={selected ? 20 : 1} onClick={handleClick}>
+      <SpotMarker category={category} selected={selected} trending={trending} nearby={nearby} pending={pending} label={title} />
+    </GemMarkerOverlay>
+  );
+});
+
+const MapClusterPin = memo(function MapClusterPin({ cluster, onSelect }) {
+  const position = useMemo(() => ({ lat: cluster.lat, lng: cluster.lng }), [cluster.lat, cluster.lng]);
+  const handleClick = useCallback((e) => { e?.stopPropagation?.(); onSelect(cluster); }, [cluster, onSelect]);
+  const size = cluster.count >= 100 ? 52 : cluster.count >= 20 ? 46 : 40;
+  return (
+    <GemMarkerOverlay position={position} width={size} height={size} zIndex={2} onClick={handleClick} anchor="center">
+      <span className="explore-cluster sp-mono" role="button" aria-label={`${cluster.count} SPOTAs here, zoom in`}>
+        {cluster.count}
+      </span>
+    </GemMarkerOverlay>
+  );
+});
 
 function directionsUrl(spot) {
   return `https://www.google.com/maps/dir/?api=1&destination=${spot.latitude},${spot.longitude}`;

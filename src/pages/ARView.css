@@ -1,22 +1,20 @@
 .ar-view-container {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   z-index: 2000;
   overflow: hidden;
   background-color: var(--ink-1000);
   user-select: none;
+  touch-action: none;
 }
+.ar-view-container.is-draggable { cursor: grab; }
 
 .ar-camera-feed {
   width: 100%;
   height: 100%;
   object-fit: cover;
   position: absolute;
-  top: 0;
-  left: 0;
+  inset: 0;
 }
 
 .ar-camera-fallback {
@@ -27,11 +25,11 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  color: rgba(23, 52, 42, 0.6);
+  color: var(--text-muted);
   padding: 40px;
   text-align: center;
   font-family: var(--font-family-base);
-  background: radial-gradient(circle, #2C3531 0%, #111714 100%);
+  background: var(--bg-sunken);
 }
 
 .ar-camera-fallback h3 {
@@ -45,32 +43,28 @@
   max-width: 320px;
 }
 
+/* Chrome over the camera feed is opaque: a backdrop blur over live video is
+   re-rendered every frame and was a major source of AR jank. */
 .ar-close-btn {
   position: absolute;
-  top: 20px;
+  top: calc(20px + env(safe-area-inset-top, 0px));
   right: 20px;
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.62);
-  border: 1px solid rgba(23, 52, 42, 0.15);
+  background: var(--glass-solid);
+  border: 1px solid var(--line);
   color: var(--text-strong);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 2005;
-  transition: all 0.2s ease;
-}
-
-.ar-close-btn:hover {
-  background: rgba(255, 255, 255, 0.62);
-  transform: scale(1.05);
 }
 
 .ar-hud {
   position: absolute;
-  top: 20px;
+  top: calc(20px + env(safe-area-inset-top, 0px));
   left: 50%;
   transform: translateX(-50%);
   z-index: 2004;
@@ -80,13 +74,13 @@
   gap: 6px;
   pointer-events: none;
   font-family: var(--font-family-base);
+  max-width: calc(100vw - 150px);
 }
 
 .hud-heading {
   font-family: var(--font-display);
-  background: rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(23, 52, 42, 0.1);
+  background: var(--glass-solid);
+  border: 1px solid var(--line);
   color: var(--text-strong);
   padding: 6px 14px;
   border-radius: var(--radius-full);
@@ -95,87 +89,109 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: var(--shadow-md);
+  font-variant-numeric: tabular-nums;
 }
 
-.hud-icon {
-  color: var(--color-accent);
-}
+.hud-icon { color: var(--accent); }
 
 .hud-helper {
-  color: rgba(23, 52, 42, 0.5);
+  color: var(--text-strong);
+  background: var(--glass-solid);
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
   font-size: var(--font-size-2xs);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   display: flex;
   align-items: center;
   gap: 4px;
+  text-align: center;
 }
+
+.ar-permission-btn { pointer-events: auto; }
 
 .ar-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   pointer-events: none;
   z-index: 2002;
 }
 
+/* Positioned only through transform (written per frame by ARView), so moving
+   a label never triggers layout. No transitions: the rAF loop already smooths. */
 .ar-spot-marker {
   position: absolute;
-  pointer-events: auto; /* enable click events on the actual floating labels */
-  transition: left 0.04s ease-out, top 0.04s ease-out, opacity 0.2s ease, transform 0.2s ease-out; /* Snappy tracking updates */
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: auto;
+  will-change: transform, opacity;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
 }
 
 .ar-marker-card {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.62);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(23, 52, 42, 0.2);
+  background: var(--glass-solid);
+  border: 1px solid var(--line-strong);
   padding: 8px 14px;
   border-radius: var(--radius-md);
   color: var(--text-strong);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  box-shadow: var(--shadow-md);
   white-space: nowrap;
   font-family: var(--font-family-base);
-  transition: all 0.2s ease;
+  text-align: left;
 }
 
-.ar-marker-card:hover {
-  background: rgba(62, 107, 79, 0.75);
-  border-color: rgba(23, 52, 42, 0.4);
-  transform: translateY(-4px);
+.ar-spot-marker:active .ar-marker-card { border-color: var(--accent); }
+
+.ar-marker-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background: var(--grad-accent, var(--accent));
+  color: var(--accent-ink);
 }
 
-.ar-marker-emoji {
-  font-size: var(--font-size-lg);
-}
+.ar-marker-details { display: flex; flex-direction: column; }
 
-.ar-marker-details h4 {
-  margin: 0;
+.ar-marker-details strong {
   font-size: var(--font-size-sm);
   font-weight: 600;
   line-height: 1.2;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .ar-marker-details span {
   font-size: var(--font-size-2xs);
-  color: rgba(23, 52, 42, 0.6);
+  color: var(--text-muted);
 }
 
 .ar-no-spots {
   position: absolute;
-  bottom: 120px;
+  bottom: calc(120px + env(safe-area-inset-bottom, 0px));
   left: 50%;
   transform: translateX(-50%);
-  color: rgba(23, 52, 42, 0.65);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  color: var(--text-body);
   font-family: var(--font-family-base);
   font-size: var(--font-size-sm);
   font-weight: 500;
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--glass-solid);
   padding: 8px 18px;
   border-radius: var(--radius-full);
 }

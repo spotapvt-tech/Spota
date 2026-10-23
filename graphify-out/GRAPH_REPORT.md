@@ -1,22 +1,22 @@
-# Graph Report - Spota claude project  (2026-10-20)
+# Graph Report - Spota claude project  (2026-10-23)
 
 ## Corpus Check
-- 468 files · ~1,448,959 words
+- 480 files · ~1,455,568 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 81 file(s) not represented in the graph (top: .css 50, .xml 10, (none) 6)
+- Unclassified: 86 file(s) not represented in the graph (top: .css 50, .xml 15, (none) 6)
 
 ## Summary
-- 2335 nodes · 3561 edges · 285 communities (184 shown, 101 thin omitted)
-- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 606 edges (avg confidence: 0.83)
+- 2409 nodes · 3732 edges · 293 communities (193 shown, 100 thin omitted)
+- Extraction: 83% EXTRACTED · 17% INFERRED · 0% AMBIGUOUS · INFERRED: 616 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9f902a0f`
+- Built from commit: `0f3abe3e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- react
+- ARView.jsx
 - AddGemView.jsx
 - Multi-Platform Publisher
 - Sales Coach Agent
@@ -72,7 +72,7 @@
 - Language Translator
 - Developer Advocate Agent
 - seed_delhi_spots.js
-- SafeTrekView.jsx
+- trackRecorder.js
 - Real Estate Buyer & Seller Agent
 - Recruitment Specialist Agent
 - Cloud Security Architect
@@ -163,7 +163,7 @@
 - Roots Cafe
 - Under the Neem
 - vite
-- inspect_ids.js
+- expeditionService.js
 - seed_gurgaon_spots.js
 - Change Management Consultant Agent
 - Customer Success Manager Agent
@@ -187,7 +187,7 @@
 - Leopard Trail (night camping)
 - Mangar Forest
 - Sultanpur Sanctuary
-- list_buckets.js
+- vitest
 - test_auth.js
 - Corporate Training Designer Agent
 - Data Consolidation Agent
@@ -216,7 +216,7 @@
 - Delhi Zafar Mahal 1781988900455
 - Delhi Zahra Restaurant Caf Saket 1781988892696
 - Hamoni Cafe 1781375402081
-- MapView.jsx
+- HomeView.jsx
 - React logo (Vite template asset)
 - vercel.json
 - Anthropologist Agent
@@ -278,47 +278,55 @@
 - The Blue Door Cafe
 - React + Vite Template README
 - Hero isometric layered squares illustration
-- App.jsx
+- react
 - Spota Expeditions — Business Requirements Document (BRD)
-- TripBoardView.jsx
+- googleMaps.js
 - communityService.js
-- SpotDetailsModal
+- SafeTrekView.jsx
 - leaderboardService.js
 - expeditionStore.js
 - ExpeditionProfileCard.jsx
-- SuggestRouteForm.jsx
+- ExpeditionsView.jsx
 - track
 - TierBadge
 - adventureCatalog.js
 - SPOTA 2.0 — Redesign notes (Oct 2026)
 - main.jsx
 - ChallengesList.jsx
-- drawTripRecapCanvas
+- MapView.jsx
 - DesignPreview.jsx
+- gemService.js
+- make-icons.cjs
+- RCA + Fix Plan — AR finder spots misrender, map lags while the phone moves
+- mapClustering.test.js
+- SafeTrekView.expedition.test.jsx
+- index.ts
+- check_db.js
+- inspect_urls.js
 
 ## God Nodes (most connected - your core abstractions)
-1. `react` - 63 edges
+1. `react` - 67 edges
 2. `lucide-react` - 51 edges
-3. `supabase` - 40 edges
+3. `supabase` - 41 edges
 4. `useAuth()` - 39 edges
-5. `SafeTrekView()` - 33 edges
+5. `SafeTrekView()` - 34 edges
 6. `react-router-dom` - 29 edges
 7. `track()` - 28 edges
 8. `Seeded Delhi Place Photos` - 28 edges
 9. `SpotDetailsModal()` - 27 edges
-10. `Spota Blue Gradient Cross/X Logo Mark` - 27 edges
+10. `MapView()` - 27 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Phase 1 — AR correctness (P0)` --references--> `App()`  [INFERRED]
+  docs/ar-map-rendering-rca.md → src/App.jsx
+- `Phase 2 — AR performance (P0)` --references--> `CategoryIcon()`  [INFERRED]
+  docs/ar-map-rendering-rca.md → src/components/ui/CategoryGlyph.jsx
+- `5. Priority and effort` --references--> `useOfflineSpots()`  [INFERRED]
+  docs/ar-map-rendering-rca.md → src/hooks/useOfflineSpots.js
 - `10. Change log` --references--> `track()`  [INFERRED]
   docs/spota-expeditions-implementation-plan.md → src/lib/analytics.js
 - `1. Architecture` --references--> `track()`  [INFERRED]
   docs/spota-expeditions-implementation-plan.md → src/lib/analytics.js
-- `FR-6 Tiers & rewards` --references--> `triggerBadgeCelebration()`  [INFERRED]
-  docs/spota-expeditions-brd.md → src/lib/badgeEngine.js
-- `9. Open items` --references--> `extractExifMeta()`  [INFERRED]
-  docs/spota-expeditions-implementation-plan.md → src/lib/exifUtils.js
-- `Phase 2 — Leaderboards, tiers, profile — built 14 Oct 2026` --references--> `ExpeditionProfileCard()`  [INFERRED]
-  docs/spota-expeditions-implementation-plan.md → src/components/ExpeditionProfileCard.jsx
 
 ## Import Cycles
 - None detected.
@@ -394,15 +402,15 @@
 - **XR / Spatial Computing Agent Family** — _claude_agents_xr_cockpit_interaction_specialist_xr_cockpit_interaction_specialist, _claude_agents_xr_immersive_developer_xr_immersive_developer, _claude_agents_xr_interface_architect_xr_interface_architect, _claude_agents_visionos_spatial_engineer_visionos_spatial_engineer [INFERRED 0.85]
 - **Paid Media Agent Suite** — _claude_agents_paid_media_auditor_paid_media_auditor, _claude_agents_paid_media_creative_strategist_ad_creative_strategist, _claude_agents_paid_media_paid_social_strategist_paid_social_strategist, _claude_agents_paid_media_ppc_strategist_ppc_campaign_strategist, _claude_agents_paid_media_programmatic_buyer_programmatic___display_buyer, _claude_agents_paid_media_search_query_analyst_search_query_analyst, _claude_agents_paid_media_tracking_specialist_tracking___measurement_specialist [INFERRED 0.95]
 
-## Communities (285 total, 101 thin omitted)
+## Communities (293 total, 100 thin omitted)
 
-### Community 0 - "react"
-Cohesion: 0.24
-Nodes (11): lucide-react, react, react-router-dom, BadgeDisplay(), FrictionlessCheckIn(), getDistance(), GemImpactCard(), REACTION_EMOJIS (+3 more)
+### Community 0 - "ARView.jsx"
+Cohesion: 0.16
+Nodes (24): @testing-library/react, permissionListeners, requestOrientationPermission(), useDeviceHeading(), angleDiff(), AR_MAX_SPOTS, AR_RADIUS_KM, arCandidates() (+16 more)
 
 ### Community 1 - "AddGemView.jsx"
-Cohesion: 0.07
-Nodes (39): canvas-confetti, @capacitor/camera, @capacitor/core, GemWizardCTA(), NEXT_HINT, GemWizardProgress(), STEP_LABELS, extractExifGps() (+31 more)
+Cohesion: 0.12
+Nodes (23): canvas-confetti, GemWizardCTA(), NEXT_HINT, GemWizardProgress(), STEP_LABELS, AI_SUGGESTIONS_MAP, getSuggestedDescription(), RECOMMENDED_TAGS_MAP (+15 more)
 
 ### Community 2 - "Multi-Platform Publisher"
 Cohesion: 0.05
@@ -422,7 +430,7 @@ Nodes (41): Accounts Payable Agent, Payment Audit Trail, Payment Idempotency, Ag
 
 ### Community 6 - "badgeEngine.js"
 Cohesion: 0.06
-Nodes (50): 0. Codebase baseline (audited 13 Oct 2026), 10. Change log, 1. Architecture, 2.6 RLS, 2.7 Functions, 2.8 Leaderboard materialized views, 2. Data model — migration `supabase_expeditions_setup.sql`, 3. Server: Edge Function `verify-attempt` (+42 more)
+Nodes (51): FR-6 Tiers & rewards, 0. Codebase baseline (audited 13 Oct 2026), 10. Change log, 1. Architecture, 2.6 RLS, 2.7 Functions, 2.8 Leaderboard materialized views, 2. Data model — migration `supabase_expeditions_setup.sql` (+43 more)
 
 ### Community 7 - "Pricing Analyst Agent"
 Cohesion: 0.07
@@ -542,7 +550,7 @@ Nodes (16): CI Workflow (lint + build), Spota CI Workflow (lint + test + build),
 
 ### Community 36 - "dependencies"
 Cohesion: 0.09
-Nodes (22): dependencies, canvas-confetti, @capacitor/android, @capacitor/app, @capacitor/camera, @capacitor/cli, @capacitor-community/background-geolocation, @capacitor/core (+14 more)
+Nodes (23): dependencies, canvas-confetti, @capacitor/android, @capacitor/app, @capacitor/camera, @capacitor/cli, @capacitor-community/background-geolocation, @capacitor/core (+15 more)
 
 ### Community 37 - "devDependencies"
 Cohesion: 0.12
@@ -569,8 +577,8 @@ Cohesion: 0.18
 Nodes (13): Hardcoded Secrets Detection, Secrets & Credential Hygiene Engineer, A Leaked Secret Is Already Burned, Rotate on Schedule and on Every Leak, Secret Scanning at Commit and CI Gate, Senior SecOps Engineer, Rule: Every Auth Route Has Rate Limiting, Automatic Security Scan on Every Invocation (+5 more)
 
 ### Community 43 - "@supabase/supabase-js"
-Cohesion: 0.15
-Nodes (5): @supabase/supabase-js, supabase, supabase, supabase, supabase
+Cohesion: 0.14
+Nodes (6): @supabase/supabase-js, supabase, supabase, supabase, tables, supabase
 
 ### Community 44 - "IT Service Manager"
 Cohesion: 0.18
@@ -620,9 +628,9 @@ Nodes (10): Conference Talk Proposal, Developer Advocate Agent, DX Audit: Time-t
 Cohesion: 0.31
 Nodes (9): RFC-4180, ref_http, authenticate(), downloadToBuffer(), getSafeFilename(), mapCategory(), parseCSV(), runSeeding() (+1 more)
 
-### Community 56 - "SafeTrekView.jsx"
-Cohesion: 0.06
-Nodes (62): 4.1 New files, Phase 0 — Foundations (Week 1–2) — code complete 13 Oct 2026, exifr, fake-indexeddb, @testing-library/react, vitest, CheckInModal(), ExpeditionCompleteModal() (+54 more)
+### Community 56 - "trackRecorder.js"
+Cohesion: 0.14
+Nodes (25): ExpeditionTracker(), ACTIVE_EXPEDITION_KEY, attachSource(), backgroundSource(), computeTrackStats(), DEFAULT_SAMPLE_MS, defaultSource(), discardRecording() (+17 more)
 
 ### Community 57 - "Real Estate Buyer & Seller Agent"
 Cohesion: 0.22
@@ -694,7 +702,7 @@ Nodes (8): Peace Of Mind Cafe (Delhi photo), Perch Wine Coffee Bar (Delhi photo)
 
 ### Community 74 - "seed_gurgaon_assets.js"
 Cohesion: 0.32
-Nodes (7): ref_https, ref_path, authenticate(), downloadToBuffer(), main(), spots, supabase
+Nodes (7): ref_fs, ref_https, authenticate(), downloadToBuffer(), main(), spots, supabase
 
 ### Community 75 - "China Network Engineer"
 Cohesion: 0.29
@@ -886,7 +894,7 @@ Nodes (5): Accessibility Audit Report Template, Accessibility Auditor Agent, Key
 
 ### Community 122 - "upload_assets_to_storage.js"
 Cohesion: 0.50
-Nodes (4): ref_fs, authenticate(), main(), supabase
+Nodes (4): ref_path, authenticate(), main(), supabase
 
 ### Community 123 - "migrate_seeded_assets.js"
 Cohesion: 0.60
@@ -980,6 +988,10 @@ Nodes (4): Roots Cafe 1781375311839, Roots Cafe 1781375367312, Roots Cafe 178137
 Cohesion: 0.50
 Nodes (4): Under The Neem 1781375314152, Under The Neem 1781375369442, Under The Neem 1781375401502, Under the Neem
 
+### Community 147 - "expeditionService.js"
+Cohesion: 0.21
+Nodes (15): 4.1 New files, Phase 0 — Foundations (Week 1–2) — code complete 13 Oct 2026, completeAttempt(), dequeue(), enqueue(), extensionFor(), getPendingAttemptIds(), isOnline() (+7 more)
+
 ### Community 149 - "Change Management Consultant Agent"
 Cohesion: 0.67
 Nodes (3): Business Strategist Agent, ADKAR, Kotter and Prosci Frameworks, Change Management Consultant Agent
@@ -1015,6 +1027,10 @@ Nodes (3): 36 Chinese Stratagems, Game Theory Duel, Strategy Duel Agent Agent
 ### Community 157 - "Test Results Analyzer Agent"
 Cohesion: 0.67
 Nodes (3): Quality Risk Assessment and Release Readiness, Test Results Analysis Report Template, Test Results Analyzer Agent
+
+### Community 158 - "MainActivity.java"
+Cohesion: 0.32
+Nodes (6): MainActivity, android.os.Bundle, com.getcapacitor.BridgeActivity, Override, splashscreen, systemclock
 
 ### Community 160 - "Hauz Khas Complex"
 Cohesion: 0.67
@@ -1060,33 +1076,37 @@ Nodes (3): Mangar Forest 1781375318238, Mangar Forest 1781375373258, Mangar Fore
 Cohesion: 0.67
 Nodes (3): Sultanpur Sanctuary 1781375316737, Sultanpur Sanctuary 1781375371502, Sultanpur Sanctuary
 
-### Community 200 - "MapView.jsx"
-Cohesion: 0.11
-Nodes (36): AIVibeMatcher(), OfflineModal(), CategoryGlyph(), CategoryIcon(), ICONS, SpotMarker(), useGeolocation(), useSheetDrag() (+28 more)
+### Community 171 - "vitest"
+Cohesion: 0.15
+Nodes (13): @capacitor/camera, @capacitor/core, @capacitor/push-notifications, exifr, vitest, ExpeditionCompleteModal(), extractExifGps(), extractExifMeta() (+5 more)
 
-### Community 268 - "App.jsx"
-Cohesion: 0.11
-Nodes (31): Phase 2 — Leaderboards, tiers, profile — built 14 Oct 2026, App(), AppContent(), DirectMessageView(), SpotVibeCard(), Wordmark(), AuthProvider(), useAuth() (+23 more)
+### Community 200 - "HomeView.jsx"
+Cohesion: 0.18
+Nodes (22): CategoryGlyph(), CategoryIcon(), ICONS, SpotMarker(), useGeolocation(), spotPopularity(), useSpots(), getCategoryById() (+14 more)
+
+### Community 268 - "react"
+Cohesion: 0.06
+Nodes (64): lucide-react, react, react-dom, react-router-dom, App(), AppContent(), AIVibeMatcher(), DirectMessageView() (+56 more)
 
 ### Community 269 - "Spota Expeditions — Business Requirements Document (BRD)"
 Cohesion: 0.07
-Nodes (27): 10. Risks & mitigations, 11. Dependencies, 12. Release plan (summary), 13. Change log, 1. Problem statement, 2. Vision, 3. Business objectives, 4. Personas (+19 more)
+Nodes (26): 10. Risks & mitigations, 11. Dependencies, 12. Release plan (summary), 13. Change log, 1. Problem statement, 2. Vision, 3. Business objectives, 4. Personas (+18 more)
 
-### Community 270 - "TripBoardView.jsx"
-Cohesion: 0.17
-Nodes (18): @react-google-maps/api, GemMarkerOverlay(), src_components_map_mapchrome, TripInviteModal(), NOMINATIM_HEADERS, reverseGeocode(), searchPlaces(), DEFAULT_MAP_OPTIONS (+10 more)
+### Community 270 - "googleMaps.js"
+Cohesion: 0.21
+Nodes (11): @react-google-maps/api, src_components_map_mapchrome, NOMINATIM_HEADERS, reverseGeocode(), searchPlaces(), DEFAULT_MAP_OPTIONS, GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_LIBRARIES (+3 more)
 
 ### Community 271 - "communityService.js"
-Cohesion: 0.20
-Nodes (18): AgencyChallengesPanel(), EMPTY(), plusDays(), today(), AgencyPartnersPanel(), RouteSubmissionsPanel(), Submission(), challengeScopeLabel() (+10 more)
+Cohesion: 0.19
+Nodes (19): AgencyChallengesPanel(), EMPTY(), plusDays(), today(), AgencyPartnersPanel(), RouteSubmissionsPanel(), Submission(), challengeScopeLabel() (+11 more)
 
-### Community 272 - "SpotDetailsModal"
-Cohesion: 0.21
-Nodes (13): react-dom, DailyVibeDropModal(), ADVENTURE_PATHS, BottomNav(), Tab(), Layout(), NotificationPanel(), TopBar() (+5 more)
+### Community 272 - "SafeTrekView.jsx"
+Cohesion: 0.24
+Nodes (14): CheckInModal(), src_components_expeditionmode, ExpeditionPicker(), GRADE_LABEL, DiscoveryReveal(), registerPushToken(), calculateTimeRemaining(), clearActiveTrekLocal() (+6 more)
 
 ### Community 273 - "leaderboardService.js"
-Cohesion: 0.20
-Nodes (15): src_components_expeditionmode, Attempt(), CHECKS, ExpeditionReviewPanel(), CHECK_LABEL, ExpeditionStatsPanel(), Stat(), cacheKey() (+7 more)
+Cohesion: 0.21
+Nodes (14): Attempt(), CHECKS, ExpeditionReviewPanel(), CHECK_LABEL, ExpeditionStatsPanel(), Stat(), cacheKey(), getExpeditionStats() (+6 more)
 
 ### Community 274 - "expeditionStore.js"
 Cohesion: 0.33
@@ -1096,9 +1116,9 @@ Nodes (15): addPhoto(), appendPoint(), clearExpeditionStore(), deleteAttempt(), 
 Cohesion: 0.25
 Nodes (13): ExpeditionProfileCard(), STATUS_LABEL, IncomingVouches(), STATUS, VouchRequestForm(), VouchStatus(), canRequestVouch(), listVouches() (+5 more)
 
-### Community 276 - "SuggestRouteForm.jsx"
-Cohesion: 0.21
-Nodes (12): 6. Phased delivery, Phase 1 — Verification + AP — built 14 Oct 2026, Phase 3 — Beta & launch (Week 7–8) — tooling built 14 Oct 2026, V2 — Community & partners — built 16 Oct 2026, EMPTY, fix(), STATUS, SuggestRouteForm() (+4 more)
+### Community 276 - "ExpeditionsView.jsx"
+Cohesion: 0.16
+Nodes (16): 6. Phased delivery, Phase 1 — Verification + AP — built 14 Oct 2026, Phase 2 — Leaderboards, tiers, profile — built 14 Oct 2026, Phase 3 — Beta & launch (Week 7–8) — tooling built 14 Oct 2026, V2 — Community & partners — built 16 Oct 2026, EMPTY, fix(), STATUS (+8 more)
 
 ### Community 277 - "track"
 Cohesion: 0.29
@@ -1124,13 +1144,37 @@ Nodes (7): @fontsource-variable/inter, @fontsource-variable/sora, @fontsource-va
 Cohesion: 0.43
 Nodes (5): ChallengesList(), daysLeft(), startsIn(), getChallenges(), joinChallenge()
 
-### Community 283 - "drawTripRecapCanvas"
-Cohesion: 0.43
-Nodes (6): TripRecapModal(), cacheImage(), drawTripRecapCanvas(), getWrappedTitleLines(), imageCache, wrapText()
+### Community 283 - "MapView.jsx"
+Cohesion: 0.25
+Nodes (14): Phase 3 — Map smoothness (P1), GemMarkerOverlay(), OfflineModal(), useLiveLocation(), useSheetDrag(), categories, adjustOverlappingCoordinates(), haversineDistance() (+6 more)
 
 ### Community 284 - "DesignPreview.jsx"
-Cohesion: 0.43
-Nodes (6): DiscoveryReveal(), contrast(), DesignPreview(), DIRECTIONS, lum(), Specimen()
+Cohesion: 0.53
+Nodes (5): contrast(), DesignPreview(), DIRECTIONS, lum(), Specimen()
+
+### Community 285 - "gemService.js"
+Cohesion: 0.28
+Nodes (9): dropGem(), getImageDataForQueue(), queuePendingGem(), submitGem(), syncPendingGems(), uploadImage(), uploadQueuedImage(), fileToBase64() (+1 more)
+
+### Community 286 - "make-icons.cjs"
+Cohesion: 0.20
+Nodes (10): ref_playwright, { chromium }, dens, eye(), fg, fs, path, rd (+2 more)
+
+### Community 287 - "RCA + Fix Plan — AR finder spots misrender, map lags while the phone moves"
+Cohesion: 0.20
+Nodes (9): 1. Summary, 2. Root causes — AR finder, 3. Root causes — map lag while moving, 4. Fix plan, 5. Priority and effort, Phase 1 — AR correctness (P0), Phase 2 — AR performance (P0), Phase 4 — Verification (+1 more)
+
+### Community 288 - "mapClustering.test.js"
+Cohesion: 0.50
+Nodes (5): buildMapItems(), inBounds(), padBounds(), projectToWorld(), viewport
+
+### Community 289 - "SafeTrekView.expedition.test.jsx"
+Cohesion: 0.29
+Nodes (5): fake-indexeddb, adventureRow, calls, stableUser, T0
+
+### Community 290 - "index.ts"
+Cohesion: 0.33
+Nodes (4): ref_npm_jose_5, ref_npm_supabase, db, sa
 
 ## Ambiguous Edges - Review These
 - `Outdoor Categories` → `Geographer Agent`  [AMBIGUOUS]
@@ -1153,9 +1197,9 @@ Nodes (6): DiscoveryReveal(), contrast(), DesignPreview(), DIRECTIONS, lum(), Sp
   public/seeded-assets/delhi_brijwasi_bhoj_thaliwala_1781988925133.jpg · relation: references
 
 ## Knowledge Gaps
-- **780 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+775 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1081 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **101 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **797 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+792 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1108 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **100 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_

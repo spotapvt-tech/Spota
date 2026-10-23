@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 0 2px var(--bg-canvas), 0 6px 14px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0 2px var(--bg-canvas), 0 3px 6px rgba(0, 0, 0, 0.35);
   position: relative;
   z-index: 1;
 }
@@ -48,12 +48,12 @@
 }
 .spot-marker.is-selected { transform: scale(1.22) translateY(-2px); z-index: 10; }
 .spot-marker.is-selected .spot-marker__tile {
-  box-shadow: 0 0 0 2px var(--bg-canvas), 0 0 0 4.5px var(--accent), 0 10px 22px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 0 2px var(--bg-canvas), 0 0 0 4.5px var(--accent), 0 5px 10px rgba(0, 0, 0, 0.4);
 }
 .spot-marker.is-pending .spot-marker__tile {
   background: var(--bg-hover);
   color: var(--mk);
-  box-shadow: 0 0 0 1.5px var(--mk), 0 6px 14px rgba(0, 0, 0, 0.55);
+  box-shadow: 0 0 0 1.5px var(--mk), 0 3px 6px rgba(0, 0, 0, 0.35);
   outline: 1.5px dashed color-mix(in srgb, var(--mk) 70%, transparent);
   outline-offset: 2px;
 }
@@ -74,7 +74,7 @@
   0% { transform: scale(1); opacity: 0.8; }
   100% { transform: scale(1.9); opacity: 0; }
 }
-.spot-marker.is-nearby .spot-marker__tile { box-shadow: 0 0 0 2px var(--bg-canvas), 0 0 0 3.5px var(--accent), 0 6px 14px rgba(0, 0, 0, 0.55); }
+.spot-marker.is-nearby .spot-marker__tile { box-shadow: 0 0 0 2px var(--bg-canvas), 0 0 0 3.5px var(--accent), 0 3px 6px rgba(0, 0, 0, 0.35); }
 
 /* User location */
 .user-location-dot {
