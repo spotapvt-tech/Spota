@@ -79,7 +79,7 @@
   left: 20px;
   right: 80px; /* Leave space for sidebar */
   z-index: 3;
-  color: var(--text-strong);
+  color: var(--ink-950); /* light text: sits on dark media + black shade */
   pointer-events: none;
 }
 
@@ -104,7 +104,7 @@
 .vibe-creator-username {
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--text-strong);
+  color: var(--ink-950);
   margin-bottom: 6px;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   opacity: 0.95;
@@ -123,6 +123,7 @@
   font-family: var(--font-display);
   font-size: var(--font-size-lg);
   font-weight: 700;
+  color: inherit; /* beat global h2 colour */
   margin: 0 0 6px 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   word-break: break-word;
@@ -185,7 +186,7 @@
 .action-count {
   font-size: var(--font-size-2xs);
   font-weight: 600;
-  color: var(--text-strong);
+  color: var(--ink-950);
   margin-top: 4px;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
 }

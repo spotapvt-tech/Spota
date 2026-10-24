@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
@@ -114,6 +115,8 @@ export default function SpotVibeCard({ spot, isActive }) {
 
   // Double Tap gesture
   const handleDoubleTap = useCallback((e) => {
+    // React bubbles portal clicks (details modal) up here; ignore taps outside the card
+    if (!e.currentTarget.contains(e.target)) return;
     const now = Date.now();
     const DOUBLE_PRESS_DELAY = 300;
     if (now - lastTap.current < DOUBLE_PRESS_DELAY) {
@@ -325,8 +328,10 @@ export default function SpotVibeCard({ spot, isActive }) {
         </div>
       </div>
 
-      {showDetails && (
-        <SpotDetailsModal spot={spot} onClose={() => setShowDetails(false)} />
+      {/* Portal: keeps the fixed modal out of the feed's scroll container */}
+      {showDetails && createPortal(
+        <SpotDetailsModal spot={spot} onClose={() => setShowDetails(false)} />,
+        document.body
       )}
     </div>
   );

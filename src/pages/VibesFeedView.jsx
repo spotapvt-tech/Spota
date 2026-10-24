@@ -11,9 +11,7 @@ export default function VibesFeedView() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  const touchStart = useRef(0);
-  const mouseDownY = useRef(0);
-  const wheelCooldown = useRef(false);
+  const feedRef = useRef(null);
 
   // Fetch approved spots
   const fetchSpots = useCallback(async (showLoading = false) => {
@@ -44,67 +42,19 @@ export default function VibesFeedView() {
     return () => clearTimeout(timer);
   }, [fetchSpots]);
 
-  // Slides navigation
-  const nextSlide = () => {
-    if (activeIndex < spots.length - 1) {
-      setActiveIndex(prev => prev + 1);
-    }
-  };
-
-  const prevSlide = () => {
-    if (activeIndex > 0) {
-      setActiveIndex(prev => prev - 1);
-    }
-  };
-
-  // Touch Swipe Handlers
-  const handleTouchStart = (e) => {
-    touchStart.current = e.touches[0].clientY;
-  };
-
-  const handleTouchEnd = (e) => {
-    const touchEnd = e.changedTouches[0].clientY;
-    const diff = touchStart.current - touchEnd;
-    if (diff > 50) {
-      nextSlide();
-    } else if (diff < -50) {
-      prevSlide();
-    }
-  };
-
-  // Mouse Drag Handlers (for desktop browser simulation)
-  const handleMouseDown = (e) => {
-    mouseDownY.current = e.clientY;
-  };
-
-  const handleMouseUp = (e) => {
-    const diff = mouseDownY.current - e.clientY;
-    if (diff > 50) {
-      nextSlide();
-    } else if (diff < -50) {
-      prevSlide();
-    }
-  };
-
-  // Mouse Wheel / Trackpad Scroll Handler
-  const handleWheel = (e) => {
-    if (wheelCooldown.current) return;
-    
-    if (e.deltaY > 30) {
-      nextSlide();
-      triggerCooldown();
-    } else if (e.deltaY < -30) {
-      prevSlide();
-      triggerCooldown();
-    }
-  };
-
-  const triggerCooldown = () => {
-    wheelCooldown.current = true;
-    setTimeout(() => {
-      wheelCooldown.current = false;
-    }, 450); // Cooldown to make swiping deliberate
-  };
+  // Native scroll-snap does the swiping; we only track which card is on screen
+  // (drives video play/pause and which neighbours get rendered).
+  useEffect(() => {
+    const root = feedRef.current;
+    if (!root || spots.length === 0) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) setActiveIndex(Number(entry.target.dataset.index));
+      });
+    }, { root, threshold: 0.6 });
+    root.querySelectorAll('.vibe-slide-item').forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [spots]);
 
   if (loading) {
     return (
@@ -131,33 +81,20 @@ export default function VibesFeedView() {
   }
 
   return (
-    <div 
+    <div
+      ref={feedRef}
       className="vibes-feed-container"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onWheel={handleWheel}
+      tabIndex={0}
+      aria-label="Community vibes feed"
     >
-      <div 
-        className="vibes-slider"
-        style={{ transform: `translateY(-${activeIndex * 100}%)` }}
-      >
-        {spots.map((spot, idx) => {
-          const isNear = Math.abs(idx - activeIndex) <= 1;
-          if (!isNear) {
-            return <div key={spot.id} className="vibe-slide-item empty"></div>;
-          }
-          return (
-            <div key={spot.id} className="vibe-slide-item">
-              <SpotVibeCard 
-                spot={spot} 
-                isActive={idx === activeIndex} 
-              />
-            </div>
-          );
-        })}
-      </div>
+      {spots.map((spot, idx) => (
+        <div key={spot.id} className="vibe-slide-item" data-index={idx}>
+          {/* ponytail: windowed render, all slide shells still mount; paginate the fetch if the feed grows past a few thousand */}
+          {Math.abs(idx - activeIndex) <= 2 && (
+            <SpotVibeCard spot={spot} isActive={idx === activeIndex} />
+          )}
+        </div>
+      ))}
     </div>
   );
 }
