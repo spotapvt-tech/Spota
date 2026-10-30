@@ -18,14 +18,14 @@
 .home-mast {
   margin-top: -60px;
   padding: calc(80px + var(--safe-top)) var(--gutter) 56px;
-  background: linear-gradient(160deg, #DDF0E3 0%, #CBE6D3 100%);
+  background: linear-gradient(160deg, var(--ink-750) 0%, var(--ink-700) 100%);
 }
 .home-sheet {
   position: relative;
   margin-top: -32px;
   padding: 20px 0 0;
   border-radius: 28px 28px 0 0;
-  background: linear-gradient(180deg, #FBFEFC, #EEF7F0);
+  background: linear-gradient(180deg, var(--ink-850), var(--ink-800));
   box-shadow: 0 -10px 28px rgba(47, 84, 64, 0.14);
 }
 .home-mast__meta {
@@ -55,6 +55,13 @@
   font-style: normal;
   color: var(--accent);
 }
+.home-mast__lede {
+  margin-top: 10px;
+  max-width: 34ch;
+  font-size: var(--font-size-sm);
+  line-height: 1.45;
+  color: var(--text-body);
+}
 .home-mast__sub {
   margin-top: 10px;
   display: flex;
@@ -76,7 +83,7 @@
 .home-hero {
   position: relative;
   margin: 4px var(--gutter) 0;
-  height: 300px;
+  height: 248px; /* keeps the Explore / Drop actions inside a 375×812 first viewport */
   border-radius: var(--radius-lg);
   overflow: hidden;
   cursor: pointer;
@@ -170,6 +177,77 @@
 .home-action--drop small { color: rgba(10, 15, 13, 0.7); }
 .home-action--drop:hover { background: var(--grad-accent-hover); }
 
+/* ---- Trek in progress -------------------------------------------------- */
+.home-trek {
+  margin: 0 var(--gutter) 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--accent-line);
+  background: var(--accent-wash);
+  color: var(--text-strong);
+}
+.home-trek__icon { color: var(--accent); display: flex; }
+.home-trek__body { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.home-trek__body strong { font-size: var(--font-size-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.home-trek__body small { font-size: var(--font-size-xs); color: var(--text-muted); }
+
+/* ---- First-visit intro ------------------------------------------------- */
+.home-intro {
+  margin: 14px var(--gutter) 0;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+}
+.home-intro header { display: flex; align-items: center; justify-content: space-between; }
+.home-intro h2 { font-size: var(--font-size-sm); font-weight: 800; }
+.home-intro ol { list-style: none; padding: 0; margin-top: 8px; display: grid; gap: 10px; }
+.home-intro li { display: flex; gap: 10px; align-items: flex-start; font-size: var(--font-size-xs); color: var(--text-body); line-height: 1.4; }
+.home-intro li svg { color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+.home-intro strong { color: var(--text-strong); }
+
+.home-section .sp-section-head h2 svg { vertical-align: -2px; color: var(--accent); }
+
+/* ---- Offline upload queue ---------------------------------------------- */
+.home-queue {
+  margin: 0 var(--gutter) 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--line-strong);
+  font-size: var(--font-size-xs);
+  color: var(--text-body);
+}
+.home-queue svg { color: var(--accent); flex-shrink: 0; }
+
+/* ---- Your drops -------------------------------------------------------- */
+.home-mine {
+  margin: 16px var(--gutter) 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: var(--bg-raised);
+  color: var(--text-strong);
+}
+.home-mine__count { font-size: var(--font-size-h3); font-weight: 600; color: var(--accent); min-width: 2ch; text-align: center; }
+.home-mine__body { flex: 1; min-width: 0; display: flex; flex-direction: column; line-height: 1.25; }
+.home-mine__body strong { font-size: var(--font-size-sm); }
+.home-mine__body small { display: inline-flex; align-items: center; gap: 4px; font-size: var(--font-size-xs); color: var(--text-muted); }
+
+/* ---- Row skeletons (match .spot-tile / .adv-ticket footprints) ---------- */
+.home-skel--tile { width: 152px; aspect-ratio: 4 / 5; flex-shrink: 0; border-radius: var(--radius-md); }
+.home-skel--ticket { width: 216px; height: 196px; flex-shrink: 0; border-radius: var(--radius-md); }
+
 /* ---- Location ask ------------------------------------------------------ */
 .home-locate {
   margin: 14px var(--gutter) 0;
@@ -209,6 +287,7 @@
   font-weight: 700;
   color: var(--text-body);
 }
+.home-cat__count { margin-top: -4px; font-size: var(--font-size-2xs); font-weight: 500; color: var(--text-faint); }
 .home-cat .sp-glyph { border-radius: 12px; transition: transform var(--transition-fast); }
 .home-cat:hover .sp-glyph { transform: translateY(-2px); }
 
